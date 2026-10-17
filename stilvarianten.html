@@ -1,0 +1,304 @@
+<title>Paul Nagel Stilrichtungen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Montserrat:wght@400;500;600;700&display=swap">
+<style>
+:root{ --page:#EEEEEC; --page-ink:#1B1C1E; --page-muted:#5E6064; --page-line:#D3D3D0; }
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --page:#101113; --page-ink:#E9E9E6; --page-muted:#96989C; --page-line:#26282B; color-scheme:dark; }
+}
+:root[data-theme="dark"]{ --page:#101113; --page-ink:#E9E9E6; --page-muted:#96989C; --page-line:#26282B; color-scheme:dark; }
+
+*{box-sizing:border-box}
+body{background:var(--page);color:var(--page-ink);font:16px/1.6 "Hanken Grotesk",system-ui,sans-serif;padding-inline:20px;padding-block:56px 96px}
+.wrap{max-width:1180px;margin:0 auto}
+a{color:inherit}
+img{max-width:100%}
+
+/* Kopf */
+.intro{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;padding-bottom:40px;border-bottom:1px solid var(--page-line)}
+.intro h1{font:500 clamp(30px,4.4vw,48px)/1.08 "Montserrat",sans-serif;letter-spacing:-.02em;margin:0 0 14px;text-wrap:balance}
+.intro p{margin:0;color:var(--page-muted);max-width:58ch}
+.jump{display:flex;gap:8px;flex-wrap:wrap}
+.jump a{text-decoration:none;border:1px solid var(--page-line);padding:10px 16px;font-weight:600;font-size:14px}
+.jump a:hover,.jump a:focus-visible{border-color:var(--page-ink);outline:none}
+
+/* Logo-Vorschläge */
+.logos{padding-block:48px 64px}
+.sec-h{font:500 30px/1.1 "Montserrat",sans-serif;margin:0 0 8px}
+.sec-p{margin:0 0 28px;color:var(--page-muted);max-width:60ch}
+.lgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:16px}
+.lg{display:flex;flex-direction:column;gap:10px;margin:0}
+.lg .tile{display:grid;place-items:center;padding:clamp(24px,4vw,48px);border:1px solid var(--page-line)}
+.lg figcaption{font-size:14px;color:var(--page-muted)}
+.lg figcaption b{color:var(--page-ink);font-weight:600}
+.t-dark{background:#1C1E21}
+.t-light{background:#F5F5F3}
+.w3{grid-column:span 3}
+.w2{grid-column:span 2}
+.quer img{width:min(100%,420px)}
+.stapel{gap:10px}
+.stapel img{width:min(70%,220px)}
+.stapel span{font:500 11px/1 "Montserrat",sans-serif;letter-spacing:.32em;text-transform:uppercase;color:#B99B63;margin-top:4px;padding-left:.32em}
+.icons{display:flex;gap:18px;align-items:flex-end}
+.icons div{display:grid;place-items:center}
+.ic-l{width:96px;height:96px;background:#1C1E21;border-radius:22px}
+.ic-l img{width:52px}
+.ic-m{width:48px;height:48px;background:#F5F5F3;border:1px solid #D4D4D0;border-radius:11px}
+.ic-m img{width:26px}
+.ic-s{width:24px;height:24px;background:#1C1E21;border-radius:5px}
+.ic-s img{width:14px}
+.frame-img{padding:0!important;background:#2F3134}
+.frame-img img{display:block;width:100%}
+.tips{grid-column:span 6;display:grid;grid-template-columns:repeat(3,1fr);gap:24px 32px;padding-top:28px;margin-top:12px;border-top:1px solid var(--page-line)}
+.tips h3{grid-column:1/-1;font:500 20px/1.2 "Montserrat",sans-serif;margin:0}
+.tips p{margin:0;font-size:15px;color:var(--page-muted)}
+.tips p b{display:block;color:var(--page-ink);font-weight:600;margin-bottom:2px}
+
+/* Modus-Abschnitt */
+.mode{padding-block:56px;border-top:1px solid var(--page-line)}
+.mtitle{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px;margin-bottom:20px}
+.mtitle h2{font:500 30px/1.1 "Montserrat",sans-serif;margin:0}
+.mtitle p{margin:0;color:var(--page-muted)}
+
+.palette{display:flex;height:132px;margin-bottom:28px;border:1px solid var(--page-line)}
+.palette div{display:flex;flex-direction:column;justify-content:flex-end;gap:2px;padding:12px 14px;font-size:12.5px;min-width:0;font-variant-numeric:tabular-nums}
+.palette b{font-weight:600;font-size:13.5px}
+.palette code{font:500 12px/1.2 ui-monospace,Menlo,monospace;opacity:.8}
+
+/* Mini-Website */
+.site{background:var(--bg);color:var(--ink);font-family:"Hanken Grotesk",sans-serif;box-shadow:0 30px 60px -40px rgba(0,0,0,.45)}
+.h{font-family:"Montserrat",sans-serif;font-weight:600;letter-spacing:-.015em;text-wrap:balance}
+
+.nav{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:18px clamp(20px,4vw,48px);border-bottom:1px solid var(--line)}
+.nav .logo{height:42px;width:auto;display:block}
+.links{display:flex;gap:28px;font-size:14px;color:var(--ink-m)}
+.btn{display:inline-block;font-weight:600;font-size:15px;padding:13px 22px;white-space:nowrap}
+.btn.p{background:var(--acc);color:var(--on-acc)}
+.btn.s{border:1px solid var(--line);color:var(--ink)}
+.btn.o{border:1.5px solid var(--acc);color:var(--acc)}
+.nav .btn{padding:10px 16px;font-size:14px}
+
+.hero{display:grid;grid-template-columns:1fr 1.05fr;gap:clamp(24px,4vw,56px);align-items:center;padding:clamp(32px,5vw,64px) clamp(20px,4vw,48px)}
+.hero h3{font-size:clamp(32px,3.8vw,48px);line-height:1.08;margin:0 0 18px}
+.hero p{margin:0 0 28px;color:var(--ink-m);max-width:42ch;font-size:17px}
+.btns{display:flex;gap:12px;flex-wrap:wrap}
+
+/* Bereichs-Mosaik (Fotoplätze) */
+.mosaic{position:relative;padding:0 14px 14px 0}
+.mosaic::before{content:"";position:absolute;inset:14px 0 0 14px;border:1.5px solid var(--acc)}
+.mgrid{position:relative;display:grid;grid-template-columns:1.25fr 1fr;grid-template-rows:1fr 1fr;gap:6px;aspect-ratio:4/3}
+.slot{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:16px;background:var(--slot);color:var(--slot-ink)}
+.slot::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.035) 0 10px,transparent 10px 20px)}
+.slot b{position:relative;font:600 16px/1.2 "Montserrat",sans-serif}
+.slot small{position:relative;font-size:12px;opacity:.75}
+.slot.big{grid-row:span 2}
+.s1{--slot:#4E5A63;--slot-ink:#F2F3F2}
+.s2{--slot:#6F5A45;--slot-ink:#F5EFE6}
+.s3{--slot:#56604F;--slot-ink:#F1F3EE}
+
+/* Leistungen in zwei Bereichen */
+.band{padding:clamp(32px,4.5vw,56px) clamp(20px,4vw,48px)}
+.band > h4{font-size:clamp(24px,3vw,32px);margin:0 0 28px}
+.areas{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line)}
+.area{background:var(--bg);padding:28px clamp(20px,3vw,32px) 12px}
+.area h5{font:600 20px/1.2 "Montserrat",sans-serif;margin:0 0 6px;display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.area h5 span{font:500 13px/1 "Hanken Grotesk",sans-serif;color:var(--acc)}
+.area > p{margin:0 0 14px;color:var(--ink-m);font-size:15px}
+.area ul{list-style:none;margin:0;padding:0}
+.area li{display:flex;justify-content:space-between;gap:16px;padding:14px 0;border-top:1px solid var(--line)}
+.area li strong{font-weight:600}
+.area li small{color:var(--ink-m);font-size:14px;text-align:right}
+
+/* Verkauf: Schachbrett */
+.shop{display:grid;grid-template-columns:1fr 1fr}
+.shop > div{aspect-ratio:1/0.78;position:relative}
+.shop .txt{background:var(--surf);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:clamp(24px,5vw,64px)}
+.shop .kicker{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);margin-bottom:12px}
+.shop .txt h4{font-size:clamp(24px,2.8vw,34px);margin:0 0 14px}
+.shop .txt p{margin:0 0 26px;color:var(--ink-m);max-width:38ch}
+.tex{overflow:hidden;background:#6f563d}
+.wood{position:absolute;inset:-30%;transform:rotate(-12deg);
+  background-image:
+    linear-gradient(90deg,rgba(20,12,4,.45) 0 1.5px,transparent 1.5px),
+    linear-gradient(0deg,rgba(20,12,4,.5) 0 1.5px,transparent 1.5px),
+    repeating-linear-gradient(0deg,rgba(255,240,220,.05) 0 1px,transparent 1px 4px,rgba(0,0,0,.06) 4px 5px,transparent 5px 9px),
+    linear-gradient(0deg,#7a5c3f 0 12.5%,#8d6c4b 12.5% 25%,#735638 25% 37.5%,#96744f 37.5% 50%,#7f6043 50% 62.5%,#8a6947 62.5% 75%,#6f5337 75% 87.5%,#92714e 87.5%);
+  background-size:520px 58px,100% 58px,100% 100%,100% 464px}
+.tex .shade{position:absolute;inset:0;background:radial-gradient(120% 90% at 30% 20%,rgba(255,236,200,.18),transparent 55%),linear-gradient(180deg,transparent 50%,rgba(0,0,0,.35))}
+.fan{display:flex;height:100%}
+.fan div{flex:1;display:flex;align-items:flex-end;padding:14px 10px;font-size:12px;font-weight:600;writing-mode:vertical-rl;transform:rotate(180deg);justify-content:flex-end}
+.ph{position:absolute;right:10px;bottom:10px;font-size:11px;padding:4px 8px;background:rgba(0,0,0,.55);color:#fff}
+
+.cta{background:var(--surf);border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+.cta h4{margin:0;font-size:clamp(22px,2.6vw,30px)}
+.foot{background:var(--foot);color:var(--foot-ink);display:grid;grid-template-columns:repeat(3,1fr);gap:24px;font-size:14px;padding-block:32px}
+.foot div{display:flex;flex-direction:column;gap:4px}
+.foot b{font-weight:600;color:var(--foot-acc)}
+
+.dark{--bg:#1C1E21;--surf:#25282C;--line:#363A3F;--ink:#ECEAE5;--ink-m:#A5A49F;--acc:#B99B63;--on-acc:#1C1E21;--foot:#151719;--foot-ink:#C9C7C1;--foot-acc:#B99B63}
+.light{--bg:#F5F5F3;--surf:#E8E8E5;--line:#D4D4D0;--ink:#1F2124;--ink-m:#56595E;--acc:#806433;--on-acc:#FFFFFF;--foot:#1F2124;--foot-ink:#DAD9D4;--foot-acc:#C2A56D}
+
+.type{display:grid;grid-template-columns:auto 1fr 1fr;gap:28px;align-items:end;padding-top:48px;border-top:1px solid var(--page-line)}
+.type .aa{font:600 84px/.9 "Montserrat",sans-serif}
+.type div{font-size:14px;color:var(--page-muted)}
+.type div b{display:block;color:var(--page-ink);font-size:17px;font-weight:600}
+
+@media screen and (max-width:860px){
+  .intro{grid-template-columns:1fr}
+  .w3,.w2{grid-column:span 6}
+  .tips{grid-template-columns:1fr}
+  .hero,.areas{grid-template-columns:1fr}
+  .links{display:none}
+  .foot{grid-template-columns:1fr}
+  .palette{height:auto;flex-wrap:wrap}
+  .palette div{flex:1 1 33%!important;min-height:92px}
+}
+@media screen and (max-width:560px){
+  .shop{grid-template-columns:1fr}
+  .shop > div{aspect-ratio:auto}
+  .shop .img{aspect-ratio:4/3}
+  .shop .r2.txt{order:3}
+  .nav .btn{display:none}
+  .nav .logo{height:34px}
+  .mgrid{aspect-ratio:1/1}
+  .area li{flex-direction:column;gap:2px}
+  .area li small{text-align:left}
+  .type{grid-template-columns:auto 1fr}
+  .type div:last-child{grid-column:2}
+  .palette div{flex:1 1 50%!important}
+}
+
+@media print{
+  @page{size:A4;margin:12mm}
+  :root{--page:#FFFFFF;--page-ink:#1B1C1E;--page-muted:#5E6064;--page-line:#D3D3D0;color-scheme:light}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{padding:0}
+  .wrap{width:1080px;max-width:none;zoom:.65}
+  .jump{display:none}
+  .logos{padding-top:28px}
+  .mode{break-before:page;padding-block:0;border-top:0}
+  .site{box-shadow:none}
+  .lg,.tips,.nav,.hero,.band,.shop,.cta,.foot,.mtitle,.palette,.type{break-inside:avoid}
+  .shop{break-before:page}
+  .type{border-top:0;padding-top:24px}
+}
+</style>
+
+<div class="wrap">
+  <header class="intro">
+    <div>
+      <h1>Logo und Bereiche, dritte Runde</h1>
+      <p>Neue Logo-Vorschläge auf Basis des PN-Zeichens. Die Website zeigt jetzt beide Bereiche gleichwertig: Gebäudereinigung und Service rund ums Haus.</p>
+    </div>
+    <nav class="jump" aria-label="Abschnitte"><a href="#logo">Logo</a><a href="#dunkel">Dunkel</a><a href="#hell">Hell</a></nav>
+  </header>
+
+  <section class="logos" id="logo">
+    <h2 class="sec-h">Logo-Vorschläge</h2>
+    <p class="sec-p">Ein Zeichen, vier Einsätze. Das PN-Zeichen ist immer Gold, die Schrift Kalkweiß auf dunklem und Graphit auf hellem Grund.</p>
+    <div class="lgrid">
+      <figure class="lg w3"><div class="tile t-dark quer"><img src="logos/quer-dunkel.png" alt="Logo quer: PN-Zeichen in Gold, daneben Paul Nagel Gebäudedienste in Kalkweiß"></div><figcaption><b>Hauptlogo quer, dunkel.</b> Kopfzeile der Website, Transporter, E-Mail-Signatur.</figcaption></figure>
+      <figure class="lg w3"><div class="tile t-light quer"><img src="logos/quer-hell.png" alt="Logo quer: PN-Zeichen in Altgold, Schrift in Graphit"></div><figcaption><b>Hauptlogo quer, hell.</b> Briefkopf, Angebote, Rechnungen, heller Website-Modus.</figcaption></figure>
+      <figure class="lg w2"><div class="tile t-dark stapel" style="display:flex;flex-direction:column;align-items:center"><img src="logos/stapel-dunkel.png" alt="Logo gestapelt: PN-Zeichen über dem Schriftzug"><span>Gebäudedienste</span></div><figcaption><b>Gestapelt.</b> Für quadratische Flächen: Social-Media-Profil, Rücken der Arbeitsjacke, Bauschild.</figcaption></figure>
+      <figure class="lg w2"><div class="tile t-light"><div class="icons"><div class="ic-l"><img src="logos/monogramm-dunkel.png" alt="PN-Zeichen als App-Symbol dunkel"></div><div class="ic-m"><img src="logos/monogramm-hell.png" alt="PN-Zeichen als App-Symbol hell"></div><div class="ic-s"><img src="logos/monogramm-dunkel.png" alt="PN-Zeichen als Favicon"></div></div></div><figcaption><b>Nur das Zeichen.</b> Browser-Tab, Google-Profil, Stick auf Polo und Kappe.</figcaption></figure>
+      <figure class="lg w2"><div class="tile frame-img"><img src="logos/neu/FLUX-2026-09-25-14-28-26.jpeg" alt="Schriftzug Paul Nagel Gebäudedienste in goldenem Rahmen auf Graphit"></div><figcaption><b>Rahmen-Variante.</b> Als Zweitlogo für Türschild, Aufkleber und Stempel.</figcaption></figure>
+
+      <div class="tips">
+        <h3>Unsere Empfehlung</h3>
+        <p><b>Unterzeile nur „Gebäudedienste“.</b> „Innenausbau“ fällt weg. Das Wort passt zu Reinigung und Hausservice, ohne einzuengen.</p>
+        <p><b>Schrift wie auf der Website.</b> Montserrat im Logo, Montserrat in den Überschriften. Das wirkt aus einem Guss.</p>
+        <p><b>Vor dem Druck sauber nachzeichnen lassen.</b> Die Entwürfe sind Bilder. Für Transporter und Kleidung braucht es eine Vektordatei und für kleine Größen ein vereinfachtes Zeichen mit weniger Linien.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="mode" id="dunkel">
+    <div class="mtitle"><h2>Dunkel</h2><p>Standard für die Website.</p></div>
+    <div class="palette">
+      <div style="flex:4;background:#1C1E21;color:#ECEAE5"><b>Graphit</b><code>#1C1E21</code>Hintergrund</div>
+      <div style="flex:2.5;background:#25282C;color:#ECEAE5"><b>Schiefer</b><code>#25282C</code>Flächen</div>
+      <div style="flex:1.2;background:#363A3F;color:#ECEAE5"><b>Linie</b><code>#363A3F</code></div>
+      <div style="flex:1.5;background:#ECEAE5;color:#1C1E21"><b>Kalk</b><code>#ECEAE5</code>Text</div>
+      <div style="flex:1.2;background:#B99B63;color:#1C1E21"><b>Gold</b><code>#B99B63</code>Akzent</div>
+    </div>
+    <div class="site dark" data-logo="logos/quer-dunkel.png"></div>
+  </section>
+
+  <section class="mode" id="hell">
+    <div class="mtitle"><h2>Hell</h2><p>Gleiche Seite im hellen Modus. Das Gold wird dunkler, damit es auf Weiß lesbar bleibt.</p></div>
+    <div class="palette">
+      <div style="flex:4;background:#F5F5F3;color:#1F2124"><b>Kalkweiß</b><code>#F5F5F3</code>Hintergrund</div>
+      <div style="flex:2.5;background:#E8E8E5;color:#1F2124"><b>Nebel</b><code>#E8E8E5</code>Flächen</div>
+      <div style="flex:1.2;background:#D4D4D0;color:#1F2124"><b>Linie</b><code>#D4D4D0</code></div>
+      <div style="flex:1.5;background:#1F2124;color:#F5F5F3"><b>Graphit</b><code>#1F2124</code>Text, Footer</div>
+      <div style="flex:1.2;background:#806433;color:#FFFFFF"><b>Altgold</b><code>#806433</code>Akzent</div>
+    </div>
+    <div class="site light" data-logo="logos/quer-hell.png"></div>
+  </section>
+
+  <div class="type"><span class="aa">Aa</span><div><b>Montserrat Semibold</b>Überschriften, dieselbe Schrift wie im Logo</div><div><b>Hanken Grotesk</b>Fließtext, gut lesbar in beiden Modi</div></div>
+</div>
+
+<template id="site-tpl">
+  <div class="nav"><img class="logo" alt="Paul Nagel Gebäudedienste"><span class="links"><span>Reinigung</span><span>Hausservice</span><span>Materialien</span><span>Kontakt</span></span><span class="btn p">Angebot anfragen</span></div>
+  <div class="hero">
+    <div>
+      <h3 class="h">Gebäudereinigung und Service rund ums Haus</h3>
+      <p>Treppenhaus, Büro und Fenster sauber. Montage, Böden, Wände und Fliegengitter erledigt. Ein Ansprechpartner.</p>
+      <div class="btns"><span class="btn p">Angebot anfragen</span><span class="btn s">Leistungen ansehen</span></div>
+    </div>
+    <div class="mosaic"><div class="mgrid">
+      <div class="slot big s1"><b>Gebäudereinigung</b><small>Foto: Team im Treppenhaus</small></div>
+      <div class="slot s2"><b>Montage</b><small>Foto: Küchenaufbau</small></div>
+      <div class="slot s3"><b>Rund ums Haus</b><small>Foto: Fliegengitter am Fenster</small></div>
+    </div></div>
+  </div>
+  <div class="band">
+    <h4 class="h">Zwei Bereiche, ein Ansprechpartner</h4>
+    <div class="areas">
+      <div class="area">
+        <h5>Gebäudereinigung <span>für Verwaltungen und Gewerbe</span></h5>
+        <p>Regelmäßig, zuverlässig, mit festen Ansprechpartnern.</p>
+        <ul>
+          <li><strong>Unterhaltsreinigung</strong><small>Büros, Praxen, Läden</small></li>
+          <li><strong>Treppenhausreinigung</strong><small>Mehrfamilienhäuser</small></li>
+          <li><strong>Fenster- und Glasreinigung</strong><small>innen und außen</small></li>
+          <li><strong>Grund- und Endreinigung</strong><small>nach Umzug oder Umbau</small></li>
+        </ul>
+      </div>
+      <div class="area">
+        <h5>Service rund ums Haus <span>für Privat und Vermieter</span></h5>
+        <p>Die Arbeiten, für die man sonst drei Handwerker anruft.</p>
+        <ul>
+          <li><strong>Küchen- und Möbelmontage</strong><small>Aufbau und Anschluss</small></li>
+          <li><strong>Bodenverlegung</strong><small>Vinyl, Parkett, Laminat</small></li>
+          <li><strong>Wände streichen</strong><small>sauber abgeklebt</small></li>
+          <li><strong>Fliegengitter</strong><small>nach Maß</small></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="shop">
+    <div class="img tex"><div class="wood"></div><div class="shade"></div><span class="ph">Foto: Boden im Raum</span></div>
+    <div class="txt"><span class="kicker">Materialien</span><h4 class="h">Premium-Bodenbeläge</h4><p>Vinyl, Parkett und Designböden zum Anfassen. Wir beraten, liefern und verlegen.</p><span class="btn o">Bodenbeläge ansehen</span></div>
+    <div class="r2 txt"><h4 class="h">Wandfarben in Profiqualität</h4><p>Farbton aussuchen, Muster an der Wand prüfen, streichen lassen. Alles von uns.</p><span class="btn o">Farben ansehen</span></div>
+    <div class="r2 img tex"><div class="fan">
+      <div style="background:#EDEBE6;color:#3A3D41">Kalkweiß</div>
+      <div style="background:#CFC7BA;color:#3A3D41">Greige</div>
+      <div style="background:#9DA894;color:#23261F">Salbei</div>
+      <div style="background:#8C8076;color:#FFFFFF">Taupe</div>
+      <div style="background:#6D7D8A;color:#FFFFFF">Taubenblau</div>
+      <div style="background:#3A3D41;color:#EDEBE6">Anthrazit</div>
+    </div></div>
+  </div>
+  <div class="band cta"><h4 class="h">Reinigung oder Reparatur? Wir kümmern uns.</h4><span class="btn p">Angebot anfragen</span></div>
+  <div class="band foot"><div><b>Paul Nagel</b>Gebäudereinigung und Service rund ums Haus</div><div><b>Kontakt</b>Telefon und E-Mail folgen</div><div><b>Einsatzgebiet</b>Ort und Umkreis folgen</div></div>
+</template>
+
+<script>
+  var tpl = document.getElementById('site-tpl');
+  document.querySelectorAll('.site[data-logo]').forEach(function (site) {
+    site.appendChild(tpl.content.cloneNode(true));
+    site.querySelector('.logo').src = site.dataset.logo;
+  });
+</script>

@@ -1,0 +1,26 @@
+Paul Nagel Gebäudedienste, Logo-Paket (Stand 30.09.2026)
+
+Farben
+  Gold (auf dunkel)   #B99B63
+  Bronze (auf hell)   #806433
+  Graphit             #1C1E21
+  Kalkweiß            #F5F5F3
+Schrift: Montserrat (Medium, Slogan lang in Regular), im Logo als Pfade.
+
+Versionen
+  quer-verlauf     Hauptlogo mit Goldverlauf in Schrift und Nagel (wie erster Entwurf)
+  quer-glanz       Schrift einfarbig, Nagel mit Metallglanz
+  quer-flach       komplett einfarbig: Stick, Autofolie, Stempel, Druck
+  gestapelt-*      für quadratische Flächen: Social Media, Jackenrücken
+  zeichen-*        nur der Nagel: Profilbild, App-Symbol
+  slogan-kurz      "GEBÄUDEDIENSTE"
+  slogan-lang      "Gebäudedienste und Innenausstattung"
+
+  -dunkel          für dunklen Hintergrund (Website: Renovierung/Innenausbau)
+  -hell            für hellen Hintergrund (Website: Gebäudereinigung)
+  -transparent     ohne Hintergrundfläche
+
+Ordner
+  svg/      Vektor, beliebig skalierbar (Website, Druckerei)
+  png/      Bild in hoher Auflösung
+  favicon/  favicon.svg, favicon-32.png, apple-touch-icon.png (180), icon-512.png
