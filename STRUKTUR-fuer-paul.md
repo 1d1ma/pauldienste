@@ -19,7 +19,7 @@ So soll das Menü der neuen Seite aussehen. Bitte kurz prüfen und freigeben.
 
 **Handwerk** (dunkler Bereich)
 - Boden verlegen (Laminat, Vinyl, Parkett, Teppich)
-- Wände streichen und tapezieren *(nur wenn erlaubt, siehe unten)*
+- Wände streichen und tapezieren
 - Küchen- und Möbelmontage
 - Fliegengitter nach Maß *(von domunova.de)*
 - Plissees nach Maß *(von domunova.de)*
@@ -39,8 +39,7 @@ Telefon, E-Mail, Öffnungszeiten (Mo–Fr 8–17 Uhr), Einsatzgebiet, Impressum,
 - domunova.de zieht komplett um. Alte Links führen automatisch auf die neuen Seiten.
 
 ## Bitte noch klären
-1. Darf Paul Wände streichen und tapezieren anbieten? Sonst lassen wir den Punkt weg.
-2. Bietet Paul auch Entrümpelung oder Gartenpflege an? Dann kommen sie unter Gebäudereinigung dazu.
-3. Fehlt eine Leistung, oder soll etwas raus?
+1. Bietet Paul auch Entrümpelung oder Gartenpflege an? Dann kommen sie unter Gebäudereinigung dazu.
+2. Fehlt eine Leistung, oder soll etwas raus?
 
 Bitte Rückmeldung mit „passt“ oder den Änderungen.

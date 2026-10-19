@@ -196,7 +196,7 @@ Deshalb:
 - Paul fragen, welche Tätigkeiten in seiner Gewerbeanmeldung bzw. Handwerksrolle stehen.
 - **Paul ist kein Maler (Dietrich, 19.10.2026).** Also nie „Maler“, „Malerbetrieb“, „Malerarbeiten“ oder „Malermeister“, auch nicht in Title, Alt-Texten oder Schema. „Maler Kassel“ ist kein Ziel.
 - Formulierungen nur als Dienstleistung („Wohnung streichen lassen“, „Wände und Decken streichen“, „Laminat und Vinyl verlegen“), nicht als Berufsbezeichnung („Parkettleger“, „Bodenleger“ nur, wenn Paul eingetragen ist).
-- Ob einfaches Streichen und Tapezieren als Hausmeister-Leistung zulässig ist, klärt Paul vor Livegang. Bis dahin wird die Seite `/streichen-tapezieren-kassel/` vorbereitet, aber erst nach seiner Bestätigung veröffentlicht.
+- **Streichen und Tapezieren darf Paul anbieten** (Dietrich, 19.10.2026, hat er bereits angefragt). Seite `/streichen-tapezieren-kassel/` kommt fest rein, Wortwahl weiter ohne „Maler“.
 - Keine Rechtsberatung von uns. Im Zweifel klärt Paul das kurz mit der Handwerkskammer Kassel.
 
 ## 5. Aufbau jeder Leistungsseite
@@ -313,7 +313,7 @@ Bestand auf beiden alten Seiten (ohne Logos, Icons, Borlabs-Grafiken):
 
 - [ ] Ausstellung: genaue Adresse (Hackestraße …)
 - [ ] Bodenbeläge und Farben: welche Lieferanten/Marken dürfen genannt werden?
-- [ ] **Meisterpflicht (4b):** Welche Tätigkeiten stehen in Gewerbeanmeldung bzw. Handwerksrolle? Darf er Streichen/Tapezieren anbieten? Parkett, Teppich, Sonnenschutz?
+- [ ] **Meisterpflicht (4b):** Welche Tätigkeiten stehen in Gewerbeanmeldung bzw. Handwerksrolle? Parkett, Teppich, Sonnenschutz?
 - [ ] Hausmeister-Ergänzungen: Entrümpelung, Gartenpflege, Kleinreparaturen. Was davon?
 - [ ] Fassadenreinigung: welche Fassaden (Putz, Klinker, Holz), mit Hebebühne? Imprägnierung/Algenschutz danach?
 - [ ] Steinreinigung: Pflaster, Terrasse, Naturstein, Fugen neu verfüllen, Imprägnierung?
@@ -332,4 +332,5 @@ Bestand auf beiden alten Seiten (ohne Logos, Icons, Borlabs-Grafiken):
 - [x] Einsatzgebiet: 30 km, größere Aufträge 50 km
 - [x] Winterdienst: ja, eigene Seite im hellen Bereich
 - [x] Maler: nein, Paul ist kein Maler
+- [x] Streichen und Tapezieren: ja, darf er anbieten
 - [x] „lahr“-Bilder: raus

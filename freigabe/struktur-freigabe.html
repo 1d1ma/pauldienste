@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Seitenaufbau pauldienste.de</title>
+<style>
+@page{size:A4;margin:0}
+:root{
+  --hell:#F5F5F3; --hell-ink:#1F2124; --hell-mute:#5E6064; --hell-line:#D4D4D0;
+  --dunkel:#1C1E21; --dunkel-ink:#ECEAE5; --dunkel-mute:#A5A49F; --dunkel-line:#363A3F;
+  --gold:#B99B63; --gold-tief:#806433;
+  --papier:#FFFFFF;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--papier);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{font:10.5pt/1.45 "Montserrat",system-ui,sans-serif;color:var(--hell-ink)}
+.seite{width:210mm;height:296mm;overflow:hidden;padding:15mm 16mm 11mm;display:flex;flex-direction:column}
+
+/* Kopf */
+.kopf{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:6mm;border-bottom:1px solid var(--hell-line)}
+.ueber{font-size:8pt;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--gold-tief);margin-bottom:2.5mm}
+h1{font-size:23pt;font-weight:600;letter-spacing:-.02em;line-height:1.1}
+.unter{color:var(--hell-mute);margin-top:2mm;font-size:10pt}
+.stand{text-align:right;font-size:8.5pt;color:var(--hell-mute);line-height:1.6}
+.stand b{color:var(--hell-ink);font-weight:600}
+
+/* Baum */
+.baum{margin-top:5mm;display:flex;flex-direction:column;align-items:center}
+.start{background:linear-gradient(90deg,var(--hell) 0 50%,var(--dunkel) 50% 100%);border:1px solid var(--hell-line);
+  width:110mm;padding:4mm 6mm;text-align:center;position:relative}
+.start .t{font-weight:600;font-size:12pt;display:inline-block;background:var(--papier);padding:1mm 4mm;border:1px solid var(--gold)}
+.start .b{display:flex;justify-content:space-between;font-size:7.5pt;margin-top:2mm;font-weight:500}
+.start .b span:first-child{color:var(--hell-mute)}
+.start .b span:last-child{color:var(--dunkel-mute)}
+.ast{width:1px;height:5mm;background:var(--gold)}
+.quer{width:calc(50% + 1px);height:5mm;border:1px solid var(--gold);border-bottom:0}
+
+.bereiche{display:grid;grid-template-columns:1fr 1fr;gap:5mm;width:100%}
+.bereich{padding:5mm 5.5mm 4.5mm;border-top:3px solid var(--gold)}
+.bereich.h{background:var(--hell);color:var(--hell-ink)}
+.bereich.d{background:var(--dunkel);color:var(--dunkel-ink)}
+.bereich .ue{font-size:7pt;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--gold-tief)}
+.bereich.d .ue{color:var(--gold)}
+.bereich h2{font-size:14pt;font-weight:600;letter-spacing:-.01em;margin:1mm 0 3.5mm}
+.bereich ol{list-style:none;counter-reset:n}
+.bereich li{counter-increment:n;display:grid;grid-template-columns:7mm 1fr;padding:1.7mm 0;border-top:1px solid var(--hell-line);font-size:9.8pt;font-weight:500}
+.bereich.d li{border-top-color:var(--dunkel-line)}
+.bereich li::before{content:counter(n,decimal-leading-zero);font-size:7.5pt;font-weight:600;color:var(--gold-tief);padding-top:.6mm}
+.bereich.d li::before{color:var(--gold)}
+.bereich li small{display:block;grid-column:2;font-size:8pt;font-weight:400;color:var(--hell-mute);line-height:1.35}
+.bereich.d li small{color:var(--dunkel-mute)}
+.marke{display:inline-block;font-size:6.5pt;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:.3mm 1.6mm;margin-left:1.5mm;vertical-align:1px;border:1px solid currentColor}
+.marke.dn{color:var(--gold)}
+.marke.frage{color:#C2410C;border-style:dashed}
+
+.weitere{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:3mm;width:100%;margin-top:4mm}
+.weitere div{border:1px solid var(--hell-line);padding:2.4mm 4mm;align-self:start;font-size:9.5pt;font-weight:600}
+.weitere small{display:block;font-weight:400;font-size:8pt;color:var(--hell-mute)}
+.weitere .ak{border-color:var(--gold);background:#FBF8F2}
+
+/* Unterer Teil */
+.zwei{display:grid;grid-template-columns:1fr 1fr;gap:8mm;margin-top:6mm}
+h3{font-size:10.5pt;font-weight:600;margin-bottom:2.5mm;padding-bottom:1.5mm;border-bottom:1px solid var(--hell-line)}
+.liste{list-style:none}
+.liste li{position:relative;padding-left:5mm;margin-bottom:1.8mm;font-size:9pt;line-height:1.4}
+.liste li::before{content:"";position:absolute;left:0;top:1.8mm;width:2.2mm;height:1px;background:var(--gold-tief)}
+.fragen{list-style:none;counter-reset:f}
+.fragen li{counter-increment:f;display:grid;grid-template-columns:6mm 1fr;margin-bottom:2mm;font-size:9pt;line-height:1.4}
+.fragen li::before{content:counter(f);width:4.2mm;height:4.2mm;border:1px solid var(--gold-tief);border-radius:50%;
+  font-size:7pt;font-weight:600;display:grid;place-items:center;color:var(--gold-tief)}
+.bitte{margin-top:3mm;padding:3mm 4mm;background:var(--dunkel);color:var(--dunkel-ink);font-size:9.5pt;font-weight:500}
+.bitte b{color:var(--gold);font-weight:600}
+
+.fuss{margin-top:auto;padding-top:4mm;border-top:1px solid var(--hell-line);display:flex;justify-content:space-between;align-items:center;font-size:7.5pt;color:var(--hell-mute)}
+.fuss img{height:6mm}
+</style>
+</head>
+<body>
+<div class="seite">
+
+  <header class="kopf">
+    <div>
+      <div class="ueber">Paul Gebäudedienste</div>
+      <h1>Ihre neue Website: der Aufbau</h1>
+      <p class="unter">So sieht das Menü von pauldienste.de aus. Bitte prüfen und freigeben.</p>
+    </div>
+    <div class="stand">Entwurf<br><b>19.10.2026</b></div>
+  </header>
+
+  <section class="baum">
+    <div class="start">
+      <span class="t">Startseite</span>
+      <div class="b"><span>Reinigung</span><span>Handwerk</span></div>
+    </div>
+    <div class="ast"></div>
+    <div class="quer"></div>
+
+    <div class="bereiche">
+      <div class="bereich h">
+        <div class="ue">Heller Bereich</div>
+        <h2>Gebäudereinigung</h2>
+        <ol>
+          <li>Fensterreinigung<small>privat und Gewerbe, auch Glasflächen</small></li>
+          <li>Wintergartenreinigung</li>
+          <li>Büro- und Unterhaltsreinigung<small>auch Praxen und Treppenhäuser</small></li>
+          <li>Grundreinigung<small>zum Einzug, Auszug oder Frühjahrsputz</small></li>
+          <li>Bauendreinigung<small>nach Bau oder Renovierung</small></li>
+          <li>Fassadenreinigung</li>
+          <li>Steinreinigung<small>Pflaster, Terrasse, Einfahrt</small></li>
+          <li>Winterdienst</li>
+        </ol>
+      </div>
+      <div class="bereich d">
+        <div class="ue">Dunkler Bereich</div>
+        <h2>Handwerk</h2>
+        <ol>
+          <li>Boden verlegen<small>Laminat, Vinyl, Parkett, Teppich</small></li>
+          <li>Wände streichen und tapezieren<small>Wohnung renovieren, auch bei Auszug</small></li>
+          <li>Küchen- und Möbelmontage<small>Küche aufbauen, Möbel montieren</small></li>
+          <li>Fliegengitter nach Maß<small>Fenster und Türen · bisher domunova.de</small></li>
+          <li>Plissees nach Maß<small>Sonnen- und Sichtschutz · bisher domunova.de</small></li>
+          <li>Bodenbeläge und Farben<small>Ausstellung in Kassel nach Termin</small></li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="weitere">
+      <div>Über uns</div>
+      <div>Kontakt</div>
+      <div class="ak">Kostenlose Besichtigung<small>Anfrage in wenigen Schritten</small></div>
+    </div>
+  </section>
+
+  <section class="zwei">
+    <div>
+      <h3>Was sich ändert</h3>
+      <ul class="liste">
+        <li>Fensterreinigung privat, Gewerbe und Glasreinigung werden eine Seite. So wird sie bei Google stärker.</li>
+        <li>Büro- und Unterhaltsreinigung werden ebenfalls eine Seite.</li>
+        <li>Schädlingsbekämpfung fällt weg.</li>
+        <li>domunova.de zieht komplett um. Alte Links führen automatisch auf die neuen Seiten.</li>
+        <li>Unten auf jeder Seite: Telefon, E-Mail, Mo–Fr 8–17 Uhr, Einsatzgebiet.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Bitte noch klären</h3>
+      <ol class="fragen">
+        <li>Bieten Sie Entrümpelung oder Gartenpflege an? Dann kommen sie zur Gebäudereinigung dazu.</li>
+        <li>Fehlt eine Leistung, oder soll etwas raus?</li>
+      </ol>
+      <div class="bitte">Kurze Rückmeldung genügt: <b>„passt“</b> oder Ihre Änderungen.</div>
+    </div>
+  </section>
+
+  <footer class="fuss">
+    <span>Farben nach dem abgestimmten Hell-Dunkel-Konzept. Das Logo ist noch in Abstimmung.</span>
+    <img src="d1ma-wortmarke.png" alt="d1ma">
+  </footer>
+
+</div>
+</body>
+</html>
