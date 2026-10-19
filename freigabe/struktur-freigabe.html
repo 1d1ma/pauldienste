@@ -32,8 +32,8 @@ h1{font-size:23pt;font-weight:600;letter-spacing:-.02em;line-height:1.1}
 .start .b{display:flex;justify-content:space-between;font-size:7.5pt;margin-top:2mm;font-weight:500}
 .start .b span:first-child{color:var(--hell-mute)}
 .start .b span:last-child{color:var(--dunkel-mute)}
-.ast{width:1px;height:5mm;background:var(--gold)}
-.quer{width:calc(50% + 1px);height:5mm;border:1px solid var(--gold);border-bottom:0}
+.ast{width:1px;height:4mm;background:var(--gold)}
+.quer{width:calc(50% + 1px);height:4mm;border:1px solid var(--gold);border-bottom:0}
 
 .bereiche{display:grid;grid-template-columns:1fr 1fr;gap:5mm;width:100%}
 .bereich{padding:5mm 5.5mm 4.5mm;border-top:3px solid var(--gold)}
@@ -43,7 +43,7 @@ h1{font-size:23pt;font-weight:600;letter-spacing:-.02em;line-height:1.1}
 .bereich.d .ue{color:var(--gold)}
 .bereich h2{font-size:14pt;font-weight:600;letter-spacing:-.01em;margin:1mm 0 3.5mm}
 .bereich ol{list-style:none;counter-reset:n}
-.bereich li{counter-increment:n;display:grid;grid-template-columns:7mm 1fr;padding:1.7mm 0;border-top:1px solid var(--hell-line);font-size:9.8pt;font-weight:500}
+.bereich li{counter-increment:n;display:grid;grid-template-columns:7mm 1fr;padding:1.35mm 0;border-top:1px solid var(--hell-line);font-size:9.8pt;font-weight:500}
 .bereich.d li{border-top-color:var(--dunkel-line)}
 .bereich li::before{content:counter(n,decimal-leading-zero);font-size:7.5pt;font-weight:600;color:var(--gold-tief);padding-top:.6mm}
 .bereich.d li::before{color:var(--gold)}
@@ -59,10 +59,10 @@ h1{font-size:23pt;font-weight:600;letter-spacing:-.02em;line-height:1.1}
 .weitere .ak{border-color:var(--gold);background:#FBF8F2}
 
 /* Unterer Teil */
-.zwei{display:grid;grid-template-columns:1fr 1fr;gap:8mm;margin-top:6mm}
+.zwei{display:grid;grid-template-columns:1fr 1fr;gap:8mm;margin-top:5mm}
 h3{font-size:10.5pt;font-weight:600;margin-bottom:2.5mm;padding-bottom:1.5mm;border-bottom:1px solid var(--hell-line)}
 .liste{list-style:none}
-.liste li{position:relative;padding-left:5mm;margin-bottom:1.8mm;font-size:9pt;line-height:1.4}
+.liste li{position:relative;padding-left:5mm;margin-bottom:1.4mm;font-size:9pt;line-height:1.4}
 .liste li::before{content:"";position:absolute;left:0;top:1.8mm;width:2.2mm;height:1px;background:var(--gold-tief)}
 .fragen{list-style:none;counter-reset:f}
 .fragen li{counter-increment:f;display:grid;grid-template-columns:6mm 1fr;margin-bottom:2mm;font-size:9pt;line-height:1.4}
@@ -81,8 +81,8 @@ h3{font-size:10.5pt;font-weight:600;margin-bottom:2.5mm;padding-bottom:1.5mm;bor
   <header class="kopf">
     <div>
       <div class="ueber">Paul Gebäudedienste</div>
-      <h1>Ihre neue Website: der Aufbau</h1>
-      <p class="unter">So sieht das Menü von pauldienste.de aus. Bitte prüfen und freigeben.</p>
+      <h1>Deine neue Website: der Aufbau</h1>
+      <p class="unter">So sieht das Menü von pauldienste.de aus. Bitte kurz prüfen und freigeben.</p>
     </div>
     <div class="stand">Entwurf<br><b>19.10.2026</b></div>
   </header>
@@ -107,6 +107,7 @@ h3{font-size:10.5pt;font-weight:600;margin-bottom:2.5mm;padding-bottom:1.5mm;bor
           <li>Bauendreinigung<small>nach Bau oder Renovierung</small></li>
           <li>Fassadenreinigung</li>
           <li>Steinreinigung<small>Pflaster, Terrasse, Einfahrt</small></li>
+          <li>Reinigungsroboter für Gewerbe<small>gemeinsam mit Fröhlich Robotics</small></li>
           <li>Winterdienst</li>
         </ol>
       </div>
@@ -145,10 +146,11 @@ h3{font-size:10.5pt;font-weight:600;margin-bottom:2.5mm;padding-bottom:1.5mm;bor
     <div>
       <h3>Bitte noch klären</h3>
       <ol class="fragen">
-        <li>Bieten Sie Entrümpelung oder Gartenpflege an? Dann kommen sie zur Gebäudereinigung dazu.</li>
+        <li>Bietest du Entrümpelung oder Gartenpflege an? Eine davon passt noch rein.</li>
+        <li>Fröhlich Robotics: Dürfen wir den Namen nennen und verlinken? Hast du Fotos oder Unterlagen?</li>
         <li>Fehlt eine Leistung, oder soll etwas raus?</li>
       </ol>
-      <div class="bitte">Kurze Rückmeldung genügt: <b>„passt“</b> oder Ihre Änderungen.</div>
+      <div class="bitte">Kurze Rückmeldung genügt: <b>„passt“</b> oder deine Änderungen.</div>
     </div>
   </section>
 

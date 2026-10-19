@@ -1,6 +1,6 @@
 # Plan neue Website pauldienste.de
 
-Stand 19.10.2026 (4. Fassung nach Rücksprache Dietrich). Logo und Slogan noch nicht freigegeben, Website wird trotzdem gebaut (Logo als austauschbare Komponente, Slogan als eine Variable).
+Stand 19.10.2026 (5. Fassung nach Rücksprache Dietrich). Logo und Slogan noch nicht freigegeben, Website wird trotzdem gebaut (Logo als austauschbare Komponente, Slogan als eine Variable).
 
 Auftrag (25.09.2026): Astro, ohne Cookies, SEO, bis 20 Unterseiten, neue Leistungen (Fliegengitter, Bodenverlegung, Möbel- und Küchenmontage), Verkaufsbereich Premium-Bodenbeläge und Farben, 2 Korrekturschleifen. Design: **Gebäudereinigung hell, Handwerk dunkel**.
 
@@ -12,6 +12,7 @@ Auftrag (25.09.2026): Astro, ohne Cookies, SEO, bis 20 Unterseiten, neue Leistun
 - **Grundreinigung und Bauendreinigung** bekommen je eine eigene Seite.
 - **Typische Hausmeister- und Renovierungsleistungen** gehören dazu (Laminat verlegen, Wohnung streichen usw.).
 - **Winterdienst** kommt fest rein, im hellen Bereich Gebäudereinigung/Gebäudedienste.
+- **Reinigungsroboter für Gewerbe** in Zusammenarbeit mit Fröhlich Robotics (froehlich-robotics.de, Nordhessen, PUDU-Roboter, Kauf oder Miete „Robot as a Service“). Pauls Wunsch, Link kam am 19.10.2026.
 - **Paul ist kein Maler:** nie „Maler“, „Malerbetrieb“ oder „Malerarbeiten“ als Begriff, kein Ziel „Maler Kassel“.
 - **Bilder mit „lahr“ im Namen bleiben draußen.**
 - **Alle Leistungen für Privat und Gewerbe.**
@@ -152,6 +153,7 @@ Bodenarten (Laminat, Vinyl, Parkett, Teppich) starten als **Abschnitte einer** B
 | `/bauendreinigung-kassel/` | Bauendreinigung Kassel | Baureinigung, Baufeinreinigung, Reinigung nach Renovierung | neu, Brücke zum Handwerk |
 | `/fassadenreinigung-kassel/` | Fassadenreinigung Kassel | Hauswand reinigen, Algen und Grünbelag entfernen, Klinker, Putz | neu |
 | `/steinreinigung-kassel/` | Steinreinigung Kassel | Pflasterreinigung, Terrassenreinigung, Einfahrt, Naturstein, Fugen, Imprägnierung | neu |
+| `/reinigungsroboter-gewerbe/` | Reinigungsroboter Gewerbe (480/Monat, Klickpreis 5,89 €) | Reinigungsroboter Industrie (480), Reinigungsroboter für Büro, Praxis, Hotel, Einzelhandel, Reinigung automatisieren, Roboter mieten, in Zusammenarbeit mit Fröhlich Robotics | neu |
 | `/winterdienst-kassel/` | Winterdienst Kassel (140/Monat) | Schneeräumen, Streudienst, Räum- und Streupflicht für Vermieter, Hausverwaltungen und Gewerbe, Kosten | neu |
 
 ### Bereich Handwerk (dunkel)
@@ -175,7 +177,7 @@ Bodenarten (Laminat, Vinyl, Parkett, Teppich) starten als **Abschnitte einer** B
 `/ueber-uns/` (bleibt), `/kontakt/` mit mehrstufigem Anfrageformular (Bereich → Leistung → Objekt → Wunschtermin für kostenlose Besichtigung → Kontakt), `/impressum/`, `/datenschutz/`.
 
 ### Seitenzahl und Auftrag
-Kern: 9 Reinigung/Gebäudedienste (inkl. Winterdienst) + 7 Handwerk + Über uns + Kontakt = **18 Unterseiten** (+ Startseite, Impressum, Datenschutz). Mit Entrümpelung und Gartenpflege sind es **20**, der Rahmen ist dann voll. Jede weitere Seite (z. B. ausgegliederte Bodenarten, Ortsseiten) als **Nachtrag** anbieten.
+Kern: 10 Reinigung/Gebäudedienste (inkl. Winterdienst, Reinigungsroboter) + 7 Handwerk + Über uns + Kontakt = **19 Unterseiten** (+ Startseite, Impressum, Datenschutz). Entrümpelung und Gartenpflege würden den Rahmen von 20 überschreiten: eine davon passt noch, die zweite wäre Nachtrag. Jede weitere Seite (z. B. ausgegliederte Bodenarten, Ortsseiten) als **Nachtrag** anbieten.
 
 ### Entfällt
 `/schaedlingsbekaempfung/` → **410 Gone** (Leistung gibt es nicht mehr). Kein 301 auf die Startseite: Google wertet das als Soft-404, und Kammerjäger-Suchende landen enttäuscht bei der Reinigung. Falls Paul einen Partner empfehlen möchte, alternativ eine kurze Hinweisseite (Paul fragen).
@@ -187,6 +189,15 @@ Kern: 9 Reinigung/Gebäudedienste (inkl. Winterdienst) + 7 Handwerk + Über uns 
 - Standard **30 km um Kassel**, größere Aufträge (Gewerbe, Fassade, Bauendreinigung, Bodenverlegung, Renovierung) **bis 50 km**.
 - Textbaustein je Seite, unterschiedlich formuliert, mit Orten im 30-km-Kreis, z. B. Baunatal, Vellmar, Kaufungen, Lohfelden, Niestetal, Fuldatal, Fuldabrück, Ahnatal, Calden, Schauenburg, Espenau, Söhrewald, Hann. Münden, Hofgeismar. Für größere Aufträge ausdrücklich: „auch darüber hinaus bis ca. 50 km“, z. B. Melsungen, Wolfhagen, Fritzlar, Witzenhausen, Göttingen. Orte vor Veröffentlichung per Entfernung prüfen.
 - Schema `areaServed`: GeoCircle 30 km um den Standort. Karte als statisches Bild (keine Google-Maps-Einbettung, sonst Cookies).
+
+## 4c. Reinigungsroboter (Fröhlich Robotics)
+
+- **Partner:** Fröhlich Robotics, Nordhessen (seit über 50 Jahren Dokumenten-Management, neu Robotik). PUDU-Roboter, u. a. CC1 Pro (Reinigungsroboter 4-in-1: kehren, saugen, wischen, schrubben), Kauf oder Miete.
+- **Pauls Rolle (mit ihm abstimmen):** Berät, welcher Roboter zum Objekt passt, kombiniert Roboter und Unterhaltsreinigung (Roboter täglich auf großen Flächen, Team für Ecken, Sanitär, Glas), betreut vor Ort. Das ist der Unterschied zu einem reinen Roboterhändler.
+- **Zielgruppe:** Gewerbe mit großen Bodenflächen: Büros, Praxen, Hotels, Einzelhandel, Sporthallen, Industrie.
+- **Nutzen für Kunden:** gleichbleibend saubere Böden auch bei Personalmangel, Reinigung nachts oder während des Betriebs, planbare Kosten.
+- **Seite:** heller Bereich, Gewerbe-Fokus. Hauptbegriff „Reinigungsroboter Gewerbe“, Varianten in Abschnitten nach Branche. Partnername mit Link zu froehlich-robotics.de, sobald Fröhlich zustimmt. Keine Herstellerbilder ohne deren Freigabe.
+- **Vorsicht Konkurrenz:** Fröhlich hat eigene Ortsseiten („Robotics Kassel“ usw.). Unsere Seite zielt auf Gewerbekunden, die Reinigung als Dienstleistung wollen, nicht auf Roboterkauf.
 
 ## 4b. Vorsicht Meisterpflicht (vor dem Texten mit Paul klären)
 
@@ -228,7 +239,8 @@ Kein gemeinsamer Textblock über 2–3 Sätze auf mehreren Seiten.
   - Grundreinigung (Einzug) → Küchen- und Möbelmontage
   - Wintergarten → Plissees (Sonnenschutz), Fliegengitter
   - Steinreinigung → Fassadenreinigung, Gartenpflege, Winterdienst (Einfahrt und Wege das ganze Jahr)
-  - Büroreinigung → Fensterreinigung (Gewerbe-Abschnitt), Grundreinigung, Winterdienst
+  - Büroreinigung → Fensterreinigung (Gewerbe-Abschnitt), Grundreinigung, Winterdienst, Reinigungsroboter
+  - Reinigungsroboter ↔ Büro- und Unterhaltsreinigung (Roboter übernimmt die täglichen Bodenflächen, Pauls Team den Rest)
 - Linktexte beschreibend und abwechselnd („Fliegengitter nach Maß“, „unsere Fensterreinigung“), keine immer gleichen Keyword-Anker. Footer: Leistungen mit Namen, nicht „Fensterputzer Kassel günstig“.
 
 ## 7. Vorteile für Kunden (laut Dietrich ungefähr richtig, Feinschliff mit Paul)
@@ -314,7 +326,8 @@ Bestand auf beiden alten Seiten (ohne Logos, Icons, Borlabs-Grafiken):
 - [ ] Ausstellung: genaue Adresse (Hackestraße …)
 - [ ] Bodenbeläge und Farben: welche Lieferanten/Marken dürfen genannt werden?
 - [ ] **Meisterpflicht (4b):** Welche Tätigkeiten stehen in Gewerbeanmeldung bzw. Handwerksrolle? Parkett, Teppich, Sonnenschutz?
-- [ ] Hausmeister-Ergänzungen: Entrümpelung, Gartenpflege, Kleinreparaturen. Was davon?
+- [ ] Hausmeister-Ergänzungen: Entrümpelung, Gartenpflege, Kleinreparaturen. Was davon? (Rahmen: nur noch eine Seite frei)
+- [ ] Fröhlich Robotics: Dürfen wir Namen und Logo nennen und verlinken? Fotos/Unterlagen von ihnen? Was genau macht Paul (Beratung, Vorführung, Einrichtung, Betreuung, Kombination mit Reinigung)? Bekommt er Provision?
 - [ ] Fassadenreinigung: welche Fassaden (Putz, Klinker, Holz), mit Hebebühne? Imprägnierung/Algenschutz danach?
 - [ ] Steinreinigung: Pflaster, Terrasse, Naturstein, Fugen neu verfüllen, Imprägnierung?
 - [ ] Grundreinigung und Bauendreinigung: Umfang

@@ -1,6 +1,6 @@
 # Neue Website pauldienste.de: Aufbau zur Freigabe
 
-So soll das Menü der neuen Seite aussehen. Bitte kurz prüfen und freigeben.
+So soll das Menü deiner neuen Seite aussehen. Bitte kurz prüfen und freigeben.
 
 ## Menü oben
 
@@ -15,6 +15,7 @@ So soll das Menü der neuen Seite aussehen. Bitte kurz prüfen und freigeben.
 - Bauendreinigung
 - Fassadenreinigung
 - Steinreinigung (Pflaster, Terrasse, Einfahrt)
+- Reinigungsroboter für Gewerbe *(mit Fröhlich Robotics)*
 - Winterdienst
 
 **Handwerk** (dunkler Bereich)
@@ -39,7 +40,8 @@ Telefon, E-Mail, Öffnungszeiten (Mo–Fr 8–17 Uhr), Einsatzgebiet, Impressum,
 - domunova.de zieht komplett um. Alte Links führen automatisch auf die neuen Seiten.
 
 ## Bitte noch klären
-1. Bietet Paul auch Entrümpelung oder Gartenpflege an? Dann kommen sie unter Gebäudereinigung dazu.
-2. Fehlt eine Leistung, oder soll etwas raus?
+1. Bietest du auch Entrümpelung oder Gartenpflege an? Eine davon passt noch rein.
+2. Fröhlich Robotics: Dürfen wir den Namen nennen und verlinken? Hast du Fotos oder Unterlagen?
+3. Fehlt eine Leistung, oder soll etwas raus?
 
-Bitte Rückmeldung mit „passt“ oder den Änderungen.
+Kurze Rückmeldung genügt: „passt“ oder deine Änderungen.
