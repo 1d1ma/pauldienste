@@ -1,6 +1,6 @@
 # Plan neue Website pauldienste.de
 
-Stand 19.10.2026 (3. Fassung nach Rücksprache Dietrich). Logo und Slogan noch nicht freigegeben, Website wird trotzdem gebaut (Logo als austauschbare Komponente, Slogan als eine Variable).
+Stand 19.10.2026 (4. Fassung nach Rücksprache Dietrich). Logo und Slogan noch nicht freigegeben, Website wird trotzdem gebaut (Logo als austauschbare Komponente, Slogan als eine Variable).
 
 Auftrag (25.09.2026): Astro, ohne Cookies, SEO, bis 20 Unterseiten, neue Leistungen (Fliegengitter, Bodenverlegung, Möbel- und Küchenmontage), Verkaufsbereich Premium-Bodenbeläge und Farben, 2 Korrekturschleifen. Design: **Gebäudereinigung hell, Handwerk dunkel**.
 
@@ -11,6 +11,9 @@ Auftrag (25.09.2026): Astro, ohne Cookies, SEO, bis 20 Unterseiten, neue Leistun
 - **Fassadenreinigung und Steinreinigung** bekommen je eine eigene Seite.
 - **Grundreinigung und Bauendreinigung** bekommen je eine eigene Seite.
 - **Typische Hausmeister- und Renovierungsleistungen** gehören dazu (Laminat verlegen, Wohnung streichen usw.).
+- **Winterdienst** kommt fest rein, im hellen Bereich Gebäudereinigung/Gebäudedienste.
+- **Paul ist kein Maler:** nie „Maler“, „Malerbetrieb“ oder „Malerarbeiten“ als Begriff, kein Ziel „Maler Kassel“.
+- **Bilder mit „lahr“ im Namen bleiben draußen.**
 - **Alle Leistungen für Privat und Gewerbe.**
 - **Öffnungszeiten:** Montag bis Freitag 8 bis 17 Uhr.
 - **Keine Festnetznummer**, Telefon bleibt 0155 66028476.
@@ -60,7 +63,7 @@ Auftrag (25.09.2026): Astro, ohne Cookies, SEO, bis 20 Unterseiten, neue Leistun
 ### Hausmeister, Handwerk, Kassel
 | Begriff | Suchen/Monat |
 |---|---|
-| maler kassel / kassel maler / maler in kassel | 320 / 390 / 70 (siehe Hinweis Meisterpflicht in 4b) |
+| maler kassel / kassel maler / maler in kassel | 320 / 390 / 70 (**kein Ziel**, Paul ist kein Maler, siehe 4b) |
 | entrümpelung kassel | 320 (Klickpreis 12 €, sehr wertvoll) |
 | winterdienst kassel | 140 |
 | hausmeisterservice kassel | 110 |
@@ -138,7 +141,7 @@ Bodenarten (Laminat, Vinyl, Parkett, Teppich) starten als **Abschnitte einer** B
 
 **Warum nicht die Startseite auf Gebäudereinigung?** Eine Startseite, die zur Hälfte über Böden und Montage spricht, ist für Google keine klare Gebäudereinigungsseite. Eine eigene Seite kann zu 100 % beim Thema bleiben und bekommt die Kraft der Startseite über den Link direkt im ersten Bildschirm. Verlust gibt es kaum: Die Startseite steht heute für „gebäudereinigung kassel“ nur auf Platz 28–40.
 
-### Bereich Gebäudereinigung (hell)
+### Bereich Gebäudereinigung und Gebäudedienste (hell)
 | URL | Hauptbegriff | Varianten auf derselben Seite | ersetzt (301) |
 |---|---|---|---|
 | `/gebaeudereinigung-kassel/` (Bereichsseite) | Gebäudereinigung Kassel | Reinigungsfirma Kassel, Reinigungsservice, Putzfirma, Gebäudereiniger, Privathaushalt und Gewerbe, Überblick aller Reinigungsleistungen | neu |
@@ -149,6 +152,7 @@ Bodenarten (Laminat, Vinyl, Parkett, Teppich) starten als **Abschnitte einer** B
 | `/bauendreinigung-kassel/` | Bauendreinigung Kassel | Baureinigung, Baufeinreinigung, Reinigung nach Renovierung | neu, Brücke zum Handwerk |
 | `/fassadenreinigung-kassel/` | Fassadenreinigung Kassel | Hauswand reinigen, Algen und Grünbelag entfernen, Klinker, Putz | neu |
 | `/steinreinigung-kassel/` | Steinreinigung Kassel | Pflasterreinigung, Terrassenreinigung, Einfahrt, Naturstein, Fugen, Imprägnierung | neu |
+| `/winterdienst-kassel/` | Winterdienst Kassel (140/Monat) | Schneeräumen, Streudienst, Räum- und Streupflicht für Vermieter, Hausverwaltungen und Gewerbe, Kosten | neu |
 
 ### Bereich Handwerk (dunkel)
 | URL | Hauptbegriff | Varianten | ersetzt (301) |
@@ -165,14 +169,13 @@ Bodenarten (Laminat, Vinyl, Parkett, Teppich) starten als **Abschnitte einer** B
 | URL | Hauptbegriff | Suchen/Monat Kassel | Bereich |
 |---|---|---|---|
 | `/entruempelung-kassel/` | Entrümpelung Kassel | 320 (Klickpreis 12 €) | hell (Brücke zu Grundreinigung) |
-| `/winterdienst-kassel/` | Winterdienst Kassel | 140 | hell |
 | `/gartenpflege-kassel/` | Gartenpflege Kassel | 90 | hell |
 
 ### Sonstige
 `/ueber-uns/` (bleibt), `/kontakt/` mit mehrstufigem Anfrageformular (Bereich → Leistung → Objekt → Wunschtermin für kostenlose Besichtigung → Kontakt), `/impressum/`, `/datenschutz/`.
 
 ### Seitenzahl und Auftrag
-Kern: 8 Reinigung + 7 Handwerk + Über uns + Kontakt = **17 Unterseiten** (+ Startseite, Impressum, Datenschutz). Mit den drei Hausmeister-Ergänzungen sind es **20**, der Rahmen ist dann voll. Jede weitere Seite (z. B. ausgegliederte Bodenarten, Ortsseiten) als **Nachtrag** anbieten.
+Kern: 9 Reinigung/Gebäudedienste (inkl. Winterdienst) + 7 Handwerk + Über uns + Kontakt = **18 Unterseiten** (+ Startseite, Impressum, Datenschutz). Mit Entrümpelung und Gartenpflege sind es **20**, der Rahmen ist dann voll. Jede weitere Seite (z. B. ausgegliederte Bodenarten, Ortsseiten) als **Nachtrag** anbieten.
 
 ### Entfällt
 `/schaedlingsbekaempfung/` → **410 Gone** (Leistung gibt es nicht mehr). Kein 301 auf die Startseite: Google wertet das als Soft-404, und Kammerjäger-Suchende landen enttäuscht bei der Reinigung. Falls Paul einen Partner empfehlen möchte, alternativ eine kurze Hinweisseite (Paul fragen).
@@ -191,7 +194,9 @@ Einige Handwerke sind in Deutschland zulassungspflichtig (Anlage A HwO), u. a. *
 
 Deshalb:
 - Paul fragen, welche Tätigkeiten in seiner Gewerbeanmeldung bzw. Handwerksrolle stehen.
-- Bis dahin Formulierungen als Dienstleistung („Wohnung streichen lassen“, „Laminat und Vinyl verlegen“), nicht als Berufsbezeichnung („Maler“, „Parkettleger“). Deshalb zielt die Streichen-Seite auf „Wohnung streichen lassen“ und nicht auf „Maler Kassel“, obwohl „Maler Kassel“ mehr Suchen hat.
+- **Paul ist kein Maler (Dietrich, 19.10.2026).** Also nie „Maler“, „Malerbetrieb“, „Malerarbeiten“ oder „Malermeister“, auch nicht in Title, Alt-Texten oder Schema. „Maler Kassel“ ist kein Ziel.
+- Formulierungen nur als Dienstleistung („Wohnung streichen lassen“, „Wände und Decken streichen“, „Laminat und Vinyl verlegen“), nicht als Berufsbezeichnung („Parkettleger“, „Bodenleger“ nur, wenn Paul eingetragen ist).
+- Ob einfaches Streichen und Tapezieren als Hausmeister-Leistung zulässig ist, klärt Paul vor Livegang. Bis dahin wird die Seite `/streichen-tapezieren-kassel/` vorbereitet, aber erst nach seiner Bestätigung veröffentlicht.
 - Keine Rechtsberatung von uns. Im Zweifel klärt Paul das kurz mit der Handwerkskammer Kassel.
 
 ## 5. Aufbau jeder Leistungsseite
@@ -222,7 +227,7 @@ Kein gemeinsamer Textblock über 2–3 Sätze auf mehreren Seiten.
   - Grundreinigung (Auszug) → Streichen & Tapezieren, Entrümpelung
   - Grundreinigung (Einzug) → Küchen- und Möbelmontage
   - Wintergarten → Plissees (Sonnenschutz), Fliegengitter
-  - Steinreinigung → Fassadenreinigung, Gartenpflege
+  - Steinreinigung → Fassadenreinigung, Gartenpflege, Winterdienst (Einfahrt und Wege das ganze Jahr)
   - Büroreinigung → Fensterreinigung (Gewerbe-Abschnitt), Grundreinigung, Winterdienst
 - Linktexte beschreibend und abwechselnd („Fliegengitter nach Maß“, „unsere Fensterreinigung“), keine immer gleichen Keyword-Anker. Footer: Leistungen mit Namen, nicht „Fensterputzer Kassel günstig“.
 
@@ -279,7 +284,7 @@ Bestand auf beiden alten Seiten (ohne Logos, Icons, Borlabs-Grafiken):
 | domunova: `AdobeStock_331309624_Preview.jpeg` | **Adobe-Stock-Vorschau ohne Lizenz** | **nur wenn gekaufte Lizenz vorliegt**, sonst gleiches Motiv lizenzieren oder ersetzen |
 | pauldienste: architecture-2256489_1920, dining-room-3108037_1280 | Pixabay (freie Lizenz) | ja |
 | pauldienste: 2149345516, 2149374451, 2150358973 | Dateinamen wie Freepik-Downloads | ja, wenn Premium-Lizenz; bei freier Freepik-Lizenz Quellenangabe nötig |
-| pauldienste: grundreinigung-**lahr**-1, unterhaltsreinigung-**lahr**-1 | Name deutet auf eine **fremde Firma in Lahr**, evtl. kopiert | erst Herkunft klären, sonst ersetzen |
+| pauldienste: grundreinigung-**lahr**-1, unterhaltsreinigung-**lahr**-1 | Name deutet auf eine **fremde Firma in Lahr** | **nein**, bleiben draußen (Dietrich, 19.10.2026) |
 | pauldienste: fensterputzer-kassel1, steinreinigung-kassel, wintergartenreinigung-kassel | vermutlich eigene | ja |
 | pauldienste: kammerjaeger-kassel-industrie | – | entfällt mit der Leistung |
 | pauldienste: 1.png, 2-1.png, 3.png usw. (2025/01) | Grafiken/Icons der Divi-Seite | ansehen, meist durch neues Design ersetzt |
@@ -308,15 +313,15 @@ Bestand auf beiden alten Seiten (ohne Logos, Icons, Borlabs-Grafiken):
 
 - [ ] Ausstellung: genaue Adresse (Hackestraße …)
 - [ ] Bodenbeläge und Farben: welche Lieferanten/Marken dürfen genannt werden?
-- [ ] **Meisterpflicht (4b):** Welche Tätigkeiten stehen in Gewerbeanmeldung bzw. Handwerksrolle? (Streichen, Parkett, Teppich, Sonnenschutz)
-- [ ] Hausmeister-Ergänzungen: Entrümpelung, Winterdienst, Gartenpflege, Kleinreparaturen. Was davon?
+- [ ] **Meisterpflicht (4b):** Welche Tätigkeiten stehen in Gewerbeanmeldung bzw. Handwerksrolle? Darf er Streichen/Tapezieren anbieten? Parkett, Teppich, Sonnenschutz?
+- [ ] Hausmeister-Ergänzungen: Entrümpelung, Gartenpflege, Kleinreparaturen. Was davon?
 - [ ] Fassadenreinigung: welche Fassaden (Putz, Klinker, Holz), mit Hebebühne? Imprägnierung/Algenschutz danach?
 - [ ] Steinreinigung: Pflaster, Terrasse, Naturstein, Fugen neu verfüllen, Imprägnierung?
 - [ ] Grundreinigung und Bauendreinigung: Umfang
 - [ ] Schädlingsbekämpfung: Gibt es einen Partner zum Empfehlen? (sonst 410)
 - [ ] Vorteile: Nachbesserung kostenlos? Versichert? Wochenend-Termine für Gewerbe?
 - [ ] domunova: Gibt es ein eigenes Google-Profil? Woher stammen die Bewertungen auf der Seite?
-- [ ] Bilder: Lizenz für das Adobe-Stock-Bild? Freepik Premium? Woher stammen die „lahr“-Bilder?
+- [ ] Bilder: Lizenz für das Adobe-Stock-Bild? Freepik Premium?
 - [ ] Neue Fotos: echte Einsätze, Team, Fahrzeug, Ausstellung, Vorher/Nachher (Fassade, Stein, Bauendreinigung, Boden)
 - [x] Öffnungszeiten: Mo–Fr 8–17 Uhr
 - [x] Ausstellung: nur nach Termin
@@ -325,3 +330,6 @@ Bestand auf beiden alten Seiten (ohne Logos, Icons, Borlabs-Grafiken):
 - [x] Preise: keine, Besichtigung kostenlos
 - [x] Festnetz: keins
 - [x] Einsatzgebiet: 30 km, größere Aufträge 50 km
+- [x] Winterdienst: ja, eigene Seite im hellen Bereich
+- [x] Maler: nein, Paul ist kein Maler
+- [x] „lahr“-Bilder: raus
