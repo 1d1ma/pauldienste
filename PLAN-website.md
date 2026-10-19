@@ -150,7 +150,7 @@ Statt „Ehrlich, zuverlässig, faire Preise“ prüfbare Aussagen, zum Beispiel
 ## 9. Außerhalb der Website (gehört zum Ranking dazu)
 
 - Google-Profil: Hauptkategorie prüfen (Gebäudereinigung vs. Fensterreinigungsdienst), alle Leistungen als Dienstleistungen eintragen, Links auf die passenden Unterseiten, Fotos
-- Bewertungen systematisch sammeln (Bewertungsflow anbieten, siehe unten)
+- Bewertungen systematisch sammeln (Bewertungsflow von d1ma anbieten)
 - Verzeichnisse mit gleicher NAP
 
 ## 10. Ablauf
