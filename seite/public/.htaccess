@@ -1,0 +1,43 @@
+# Apache-Konfiguration für Shared Hosting (All-Inkl, Strato, IONOS …)
+# TODO: Domain unten ersetzen.
+# Diese Datei landet beim Build in dist/ und wird mit hochgeladen.
+
+RewriteEngine On
+
+# --- HTTPS + www erzwingen (eine kanonische Variante) ---
+RewriteCond %{HTTPS} off [OR]
+RewriteCond %{HTTP_HOST} !^www\. [NC]
+RewriteRule ^(.*)$ https://www.TODO-marke.de/$1 [R=301,L]
+
+ErrorDocument 404 /404.html
+
+# --- Sensible Dateien sperren ---
+<FilesMatch "^(config\.php|\.env.*|composer\.(json|lock))$">
+  Require all denied
+</FilesMatch>
+
+# --- Kompression ---
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
+  AddOutputFilterByType DEFLATE application/javascript application/json
+  AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# --- Caching ---
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/avif "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType text/html "access plus 1 hour"
+</IfModule>
+
+# --- Sicherheits-Header ---
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-Frame-Options "SAMEORIGIN"
+</IfModule>

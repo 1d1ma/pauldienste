@@ -1,0 +1,108 @@
+---
+/**
+ * Section – Standard-Sektion.
+ *
+ * `space` steuert den vertikalen Rhythmus. Bewusst NICHT überall gleich:
+ * eine Seite, in der jeder Abschnitt identisch atmet, liest sich monoton.
+ * Eng = inhaltlich zusammengehörig, weit = neues Kapitel.
+ *
+ * `eyebrow` existiert, wird aber gezielt sparsam eingesetzt – eine kleine
+ * Grossbuchstaben-Zeile über JEDER Überschrift ist Schablone, keine Gestaltung.
+ */
+interface Props {
+  title?: string;
+  eyebrow?: string;
+  /** Einleitender Absatz unter der Überschrift */
+  lead?: string;
+  /** 'petrol-dark' ist fuer die Abschluss-CTA direkt ueber dem Footer:
+   *  der Footer ist selbst petrol, ohne Tonstufe verschmelzen beide. */
+  variant?: 'default' | 'alt' | 'petrol' | 'petrol-dark';
+  space?: 'tight' | 'default' | 'generous';
+  /** Überschrift + Lead mittig statt linksbündig */
+  centered?: boolean;
+  id?: string;
+  class?: string;
+}
+
+const {
+  title,
+  eyebrow,
+  lead,
+  variant = 'default',
+  space = 'default',
+  centered = false,
+  id,
+  class: className = '',
+} = Astro.props;
+---
+
+<section
+  id={id}
+  class={`section section--bg-${variant} section--sp-${space} ${centered ? 'is-centered' : ''} ${className}`}
+>
+  <div class="container">
+    {
+      (eyebrow || title || lead) && (
+        <header class="section__head reveal">
+          {eyebrow && <p class="section__eyebrow">{eyebrow}</p>}
+          {title && <h2>{title}</h2>}
+          {lead && <p class="section__lead">{lead}</p>}
+        </header>
+      )
+    }
+    <slot />
+  </div>
+</section>
+
+<style>
+  /* Abstand (sp) und Hintergrund (bg) haben BEWUSST getrennte Namensraeume.
+     Vorher hiessen beide "--default" und kollidierten: die Nachbarregel
+     unten griff dann auch bei unterschiedlichen Hintergruenden und riss die
+     obere Polsterung weg. */
+  .section--sp-tight { padding-block: clamp(2rem, 4vw, 3rem); }
+  .section--sp-default { padding-block: clamp(3rem, 6vw, 5rem); }
+  .section--sp-generous { padding-block: clamp(4.5rem, 9vw, 7.5rem); }
+
+  /* Zwei Sektionen mit GLEICHEM Hintergrund stossen sonst mit doppelter
+     Polsterung aneinander – das liest sich als tote Luecke, nicht als Pause.
+     Die obere Polsterung wird reduziert, nicht entfernt: die Ueberschrift
+     braucht weiterhin Luft nach oben. */
+  .section--bg-default + .section--bg-default,
+  .section--bg-alt + .section--bg-alt,
+  .section--bg-petrol + .section--bg-petrol { padding-top: var(--space-4); }
+
+  .section--bg-alt { background: var(--color-bg-alt); }
+
+  .section--bg-petrol { background: var(--color-petrol); color: #e8f1f5; }
+  .section--bg-petrol-dark { background: var(--color-petrol-dark); color: #e8f1f5; }
+
+  .section--bg-petrol :global(h2),
+  .section--bg-petrol :global(h3),
+  .section--bg-petrol-dark :global(h2),
+  .section--bg-petrol-dark :global(h3) { color: #fff; }
+
+  .section--bg-petrol .section__lead,
+  .section--bg-petrol-dark .section__lead { color: #cfe3ea; }
+
+  .section__head { margin-bottom: var(--space-8); max-width: 46rem; }
+
+  /* `centered` zentriert die GESAMTE Sektion, nicht nur die Überschrift –
+     sonst stünde der Inhalt darunter linksbündig in einem zentrierten Block. */
+  .is-centered { text-align: center; }
+  .is-centered .section__head { margin-inline: auto; }
+
+  .section__eyebrow {
+    font-size: var(--size-small);
+    font-weight: var(--weight-medium);
+    color: var(--color-accent-text);
+    margin-bottom: var(--space-2);
+  }
+  .section--bg-petrol .section__eyebrow,
+  .section--bg-petrol-dark .section__eyebrow { color: var(--color-primary-on-dark); }
+
+  .section__lead {
+    margin-top: var(--space-4);
+    font-size: 1.05rem;
+    color: var(--color-text);
+  }
+</style>

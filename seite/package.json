@@ -1,0 +1,30 @@
+{
+  "name": "pauldienste-website",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Statische Astro-Website für einen Handwerksbetrieb",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "npm run validate && npm run llms && astro build && npm run pruefen",
+    "preview": "astro preview",
+    "validate": "node scripts/validate-links.mjs",
+    "validate:preise": "node scripts/validate-prices.mjs",
+    "astro": "astro",
+    "llms": "node scripts/generate-llms-txt.mjs",
+    "pruefen": "node scripts/pruefe-qualitaet.mjs && node scripts/pruefe-floskeln.mjs"
+  },
+  "//": [
+    "validate laeuft VOR astro build – ein toter interner Link stoppt damit",
+    "das Deployment, statt still online zu gehen.",
+    "",
+    "Veroeffentlicht das Projekt Preise auf der Website, zusaetzlich den",
+    "Preis-Waechter aktivieren:",
+    "  \"validate\": \"node scripts/validate-links.mjs && node scripts/validate-prices.mjs\"",
+    "Er prueft, dass jeder Betrag in Title/Description/H1 in preise.json existiert."
+  ],
+  "dependencies": {
+    "@astrojs/sitemap": "^3.2.1",
+    "astro": "^5.2.5"
+  }
+}

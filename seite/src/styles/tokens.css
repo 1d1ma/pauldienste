@@ -1,0 +1,90 @@
+/**
+ * DESIGN-TOKENS – einzige Quelle für Farben, Typografie, Abstände.
+ * Keine Farb-/Größenwerte direkt in Komponenten hartkodieren.
+ * Alle Marken-Entscheidungen stehen HIER. Fuer ein neues Projekt nur diese
+ * Datei umfaerben – Komponenten enthalten keine Farbwerte.
+ */
+
+:root {
+  /* --- Farben: Marke (Logo-Paket 30.09.2026) ---
+     Gold auf Graphit, Kalkweiss als helle Flaeche. Hell = Gebaeudereinigung,
+     dunkel = Handwerk. Die Variablennamen "petrol" stammen vom Starter und
+     meinen hier Graphit, damit die Komponenten unveraendert bleiben. */
+  --color-primary: #B99B63;          /* Gold: alle CTAs */
+  --color-primary-hover: #CBAF7A;
+  /* Text auf Gold: Graphit (6,6:1) */
+  --color-primary-contrast: #1C1E21;
+  /* Gold auf Graphit (6,9:1) */
+  --color-primary-on-dark: #C9AD78;
+  /* Bronze: Gold-Text auf hellem Grund (5,9:1 auf Weiss, 5,4:1 auf Kalkweiss) */
+  --color-accent-text: #6F5528;
+
+  --color-petrol: #1C1E21;           /* Graphit: Header, Footer, dunkle Flaechen */
+  --color-petrol-dark: #131517;
+  --color-graphit-soft: #26292D;
+
+  /* --- Farben: Text --- */
+  --color-text: #3B3F45;
+  --color-heading: #1C1E21;
+  --color-heading-sub: #26292D;
+  --color-text-muted: #5F656D;
+  --color-on-dark-soft: #D6D8DB;
+
+  /* --- Farben: Flaechen --- */
+  --color-bg: #ffffff;
+  --color-bg-alt: #F5F5F3;           /* Kalkweiss */
+  --color-border: #E3E2DD;
+  --color-border-dark: #34383D;
+
+  /* --- Feedback --- */
+  --color-success: #15803d;
+  --color-error: #b91c1c;
+
+  /* --- Typografie --- */
+  --font-heading: 'Montserrat', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body: 'Montserrat', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-bold: 700;
+
+  --size-h1: clamp(2rem, 1.4rem + 2.6vw, 3rem);      /* ~32–48px */
+  --size-h2: clamp(1.6875rem, 1.35rem + 1.5vw, 2.25rem); /* 27px mobil → 36px desktop */
+  --size-h3: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);  /* → 24px */
+  --size-body: 1rem;                                   /* 16px */
+  --size-small: 0.875rem;
+
+  --leading-body: 1.7;
+  --leading-heading: 1.2;
+
+  /* --- Abstände (4px-Raster) --- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+
+  /* Vertikaler Rhythmus einer Sektion */
+  --section-padding-y: clamp(3rem, 6vw, 5rem);
+
+  /* --- Layout --- */
+  --container-max: 1180px;
+  --container-narrow: 760px;
+  --container-padding: clamp(1rem, 4vw, 2rem);
+
+  /* --- Radien & Schatten --- */
+  --radius-sm: 6px;
+  --radius: 10px;            /* CTA-Konvention */
+  --radius-lg: 16px;
+  /* Einheitliche Ecke für ALLE Bilder/Grafiken – nie pro Stelle abweichen */
+  --radius-media: 14px;
+  --shadow-media: 0 8px 24px rgb(28 30 33 / 0.14);
+
+  --shadow-sm: 0 1px 2px rgb(28 30 33 / 0.06);
+  --shadow: 0 4px 14px rgb(28 30 33 / 0.08);
+  --shadow-lg: 0 12px 32px rgb(28 30 33 / 0.12);
+}

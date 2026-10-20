@@ -1,0 +1,661 @@
+---
+/**
+ * Mehrstufiges Anfrageformular als eigene Lead-Landingpage (Funnel).
+ *
+ * KOPIEREN nach `src/pages/anfrage/index.astro` (oder passend zu site.angebotUrl)
+ * und die Schritte an den Betrieb anpassen. Der PHP-Handler liegt daneben:
+ * `anfrage-senden.php` → nach `public/` kopieren.
+ *
+ * Warum eine eigene Seite mit SCHLANKER Navigation? Auf einer Lead-Seite lenkt
+ * jedes Menü und jeder Footer-Link vom Abschluss ab. Deshalb NICHT die
+ * Header/Footer-Komponenten, sondern schlanke Inline-Varianten in den Slots –
+ * nur Logo + Vertrauenszeile oben, Pflicht-Rechtslinks unten.
+ *
+ * Wichtige, teuer gelernte Regeln stehen in `references/funnel.md`. Kurzform:
+ *  - Der schlanke Kopf muss GENAU so hoch sein wie der Haupt-Header
+ *    (min-height: 4.25rem, KEIN zusätzliches padding-block – das addiert sich).
+ *  - Optionskarten auf Mobile IMMER 2 nebeneinander, nie einspaltig.
+ *  - Große Marketing-H1 nur auf Schritt 1 (Perzeption „eigene Unterseite").
+ *  - Zahlenfelder mit step="1" (echte Ist-Werte); step=10 erst in einem
+ *    späteren Konfigurator, der nur bestellbare Werte zulassen soll.
+ *  - Progressive Enhancement: ohne JS sind alle Schritte sichtbar, der normale
+ *    POST läuft, PHP leitet auf ?erfolg=1 um.
+ *  - Spamschutz per Honeypot + Zeitprüfung, KEIN reCAPTCHA (DSGVO-freundlich).
+ */
+import Base from '../../layouts/Base.astro';
+import Reviews from '../../components/Reviews.astro';
+import { site } from '../../data/site';
+
+// Logo wie im Haupt-Header aus dem Markennamen ableiten (Name.TLD).
+const [logoName, logoTld = ''] = site.name.split(/\.(?=[^.]+$)/);
+const jahr = new Date().getFullYear();
+---
+
+<Base slug="/anfrage/">
+  {/* Minimaler Kopf: Logo + optionale Vertrauenszeile, KEINE Navigation. */}
+  <header slot="header" class="lp-header">
+    <div class="container lp-header__inner">
+      <a href="/" class="lp-logo" aria-label="Zur Startseite">
+        {logoName}<span>.</span>{logoTld}
+      </a>
+      {/* Optional: Bewertungen/Trust. Weglassen, wenn keine belastbaren Zahlen. */}
+      <p class="lp-header__trust">
+        <span class="lp-stars" aria-hidden="true">★★★★★</span>
+        <strong>TODO 5,0</strong> · TODO&nbsp;Bewertungen
+      </p>
+    </div>
+  </header>
+
+  {/* Minimaler Fuß: nur Pflicht-Rechtslinks. */}
+  <footer slot="footer" class="lp-footer">
+    <div class="container lp-footer__inner">
+      <p>© {jahr} {site.name}</p>
+      <nav class="lp-footer__legal" aria-label="Rechtliches">
+        <a href="/impressum/">Impressum</a>
+        <a href="/datenschutz/">Datenschutz</a>
+      </nav>
+    </div>
+  </footer>
+
+  <section class="lp">
+    <div class="container lp__inner">
+      <div class="lp__intro">
+        {/* Haken für den ersten Klick. Akzentwort in Markenfarbe. */}
+        <h1>Fordere dein <span class="lp-akzent">TODO kostenloses Angebot</span> in nur 60&nbsp;Sekunden an</h1>
+      </div>
+
+      {/* Erfolgsmeldung – per JS oder ?erfolg=1 sichtbar gemacht. */}
+      <div class="lp-success" data-success hidden>
+        <div class="lp-success__icon" aria-hidden="true">✓</div>
+        <h2>Anfrage erfolgreich gesendet</h2>
+        <p>
+          Vielen Dank! Wir melden uns zeitnah bei dir. Bei Rückfragen erreichst du uns unter
+          <a href={`mailto:${site.kontakt.email}`}>{site.kontakt.email}</a>.
+        </p>
+        <a href="/" class="lp-btn lp-btn--ghost">Zurück zur Startseite</a>
+      </div>
+
+      <form class="lp-form" data-form action="/anfrage-senden.php" method="POST" novalidate>
+        {/* Honeypot – für Menschen unsichtbar, muss leer bleiben. */}
+        <div class="lp-hp" aria-hidden="true">
+          <label>Website<input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+        </div>
+        <input type="hidden" name="ts" data-ts value="" />
+
+        <div class="lp-form__bar" aria-hidden="true">
+          <span class="lp-form__bar-fill" data-bar></span>
+        </div>
+        <p class="lp-form__count">
+          Schritt <span data-current>1</span> von <span data-total>5</span>
+        </p>
+
+        {/* 1 – Einstiegsfrage (Radio → Auswahl schaltet automatisch weiter). */}
+        <fieldset class="fstep" data-step>
+          <legend>TODO: Worum geht es?</legend>
+          <p class="lp-hint lp-choose">Wähle eine Option aus <span aria-hidden="true">↓</span></p>
+          <div class="lp-options lp-options--2">
+            <label class="lp-opt"><input type="radio" name="anliegen" value="TODO Option A" required /><span class="lp-opt__emoji" aria-hidden="true">🛠️</span><span class="lp-opt__label">TODO Option A</span></label>
+            <label class="lp-opt"><input type="radio" name="anliegen" value="TODO Option B" /><span class="lp-opt__emoji" aria-hidden="true">🏠</span><span class="lp-opt__label">TODO Option B</span></label>
+          </div>
+        </fieldset>
+
+        {/*
+          BILD-OPTIONEN statt Emoji: `import { Image } from 'astro:assets'` oben
+          ergänzen, Bilder importieren und die Option so bauen:
+
+          <label class="lp-opt lp-opt--img">
+            <input type="radio" name="variante" value="Variante A" required />
+            <Image src={bildA} alt="" width={365} height={230} loading="eager" />
+            <span class="lp-opt__label">Variante A</span>
+          </label>
+
+          Auf Mobile bleiben zwei Karten nebeneinander; die Bilder werden dort
+          automatisch kleiner (max-height 84px).
+        */}
+
+        {/* 2 – Dringlichkeit (Radio). */}
+        <fieldset class="fstep" data-step hidden>
+          <legend>TODO: Wie dringend ist es?</legend>
+          <p class="lp-hint lp-choose">Wähle eine Option aus <span aria-hidden="true">↓</span></p>
+          <div class="lp-options lp-options--3">
+            <label class="lp-opt"><input type="radio" name="dringlichkeit" value="Sofort" required /><span class="lp-opt__emoji" aria-hidden="true">⚡</span><span class="lp-opt__label">Sofort</span></label>
+            <label class="lp-opt"><input type="radio" name="dringlichkeit" value="Diese Woche" /><span class="lp-opt__emoji" aria-hidden="true">📅</span><span class="lp-opt__label">Diese Woche</span></label>
+            <label class="lp-opt"><input type="radio" name="dringlichkeit" value="Flexibel" /><span class="lp-opt__emoji" aria-hidden="true">🗓️</span><span class="lp-opt__label">Flexibel</span></label>
+          </div>
+        </fieldset>
+
+        {/* 3 – Mehrfachauswahl (Checkbox) mit „Keines davon"-Logik. */}
+        <fieldset class="fstep" data-step hidden>
+          <legend>TODO: Was trifft zu?</legend>
+          <p class="lp-hint">Mehrfachauswahl möglich</p>
+          <div class="lp-options lp-options--2">
+            <label class="lp-opt lp-opt--check"><input type="checkbox" name="zusatz" value="TODO A" /><span class="lp-opt__emoji" aria-hidden="true">✅</span><span class="lp-opt__label">TODO A</span></label>
+            <label class="lp-opt lp-opt--check"><input type="checkbox" name="zusatz" value="TODO B" /><span class="lp-opt__emoji" aria-hidden="true">✅</span><span class="lp-opt__label">TODO B</span></label>
+            <label class="lp-opt lp-opt--check"><input type="checkbox" name="zusatz" value="TODO C" /><span class="lp-opt__emoji" aria-hidden="true">✅</span><span class="lp-opt__label">TODO C</span></label>
+            <label class="lp-opt lp-opt--check"><input type="checkbox" name="zusatz" value="Keines davon" data-none /><span class="lp-opt__emoji" aria-hidden="true">✖️</span><span class="lp-opt__label">Keines davon</span></label>
+          </div>
+          <button type="button" class="lp-btn lp-next" data-next>Weiter</button>
+        </fieldset>
+
+        {/* 4 – Standort (Textfeld). */}
+        <fieldset class="fstep" data-step hidden>
+          <legend>TODO: Wo sollen wir tätig werden?</legend>
+          <p class="lp-hint">Die Postleitzahl genügt.</p>
+          <label class="lp-field lp-field--wide"><span>📫 Postleitzahl / Ort</span><input type="text" name="plz" autocomplete="postal-code" placeholder="z. B. 56072 Koblenz" required /></label>
+          <button type="button" class="lp-btn lp-next" data-next>Weiter</button>
+        </fieldset>
+
+        {/* 5 – Kontakt / Opt-in (letzter Schritt: Balken + Zurück ausgeblendet). */}
+        <fieldset class="fstep" data-step hidden>
+          <legend>Fast geschafft – wohin dürfen wir dein <span class="lp-akzent">Angebot</span> senden?</legend>
+          <label class="lp-field lp-field--wide"><span>👋 Name</span><input type="text" name="name" autocomplete="name" placeholder="Vor- und Nachname" required /></label>
+          <label class="lp-field lp-field--wide"><span>✉ E-Mail</span><input type="email" name="email" autocomplete="email" placeholder="deine@email.de" required /></label>
+          {/* Telefon Pflicht ODER optional? Pflicht = weniger, aber besser
+              erreichbare Leads. Für „optional" das required entfernen und im
+              Label „(optional)" ergänzen. Siehe references/funnel.md. */}
+          <label class="lp-field lp-field--wide"><span>📱 Telefon</span><input type="tel" name="telefon" autocomplete="tel" placeholder="Für schnelle Rückfragen" required /></label>
+          <label class="lp-consent">
+            <input type="checkbox" name="einwilligung" value="ja" required />
+            <span>Ich bin damit einverstanden, dass meine Angaben zur Bearbeitung meiner Anfrage verwendet werden. Es gilt unsere <a href="/datenschutz/">Datenschutzerklärung</a>.</span>
+          </label>
+          <button type="submit" class="lp-btn lp-btn--submit" data-submit>Anfrage kostenlos absenden</button>
+          <p class="lp-form__reassure lp-form__reassure--optin">
+            <span aria-hidden="true">🔒</span> Deine Daten sind sicher. Wir melden uns nur bei Rückfragen. Kein Spam.
+          </p>
+          <p class="lp-safe" data-error hidden></p>
+        </fieldset>
+
+        <div class="lp-form__nav">
+          <button type="button" class="lp-back" data-back hidden>← Zurück</button>
+        </div>
+      </form>
+
+      {/* USPs bewusst UNTER dem Formular – lenken oben nicht vom Lead ab. */}
+      <ul class="lp__usps">
+        <li><span aria-hidden="true">✓</span> TODO USP eins</li>
+        <li><span aria-hidden="true">✓</span> TODO USP zwei</li>
+        <li><span aria-hidden="true">✓</span> TODO USP drei</li>
+      </ul>
+
+      {/* Optional: Vertrauen über echte Bewertungen. */}
+      <div class="lp-trust">
+        <Reviews widgetStyle="carousel" />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  // Mehrstufiges Formular – reines Vanilla-JS, progressive Enhancement.
+  const form = document.querySelector('[data-form]') as HTMLFormElement | null;
+  const success = document.querySelector('[data-success]') as HTMLElement | null;
+
+  // No-JS-Fallback bzw. Redirect-Rückkehr: ?erfolg=1 zeigt direkt die Meldung.
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('erfolg') === '1' && form && success) {
+    form.hidden = true;
+    success.hidden = false;
+    // Conversion ohne JS (PHP-Redirect-Rückweg): Ziel in Plausible zählen.
+    (window as any).plausible?.('Anfrage abgesendet');
+  }
+
+  if (form && !form.hidden) {
+    const steps = Array.from(form.querySelectorAll('[data-step]')) as HTMLElement[];
+    const bar = form.querySelector('[data-bar]') as HTMLElement;
+    const barWrap = form.querySelector('.lp-form__bar') as HTMLElement;
+    const current = form.querySelector('[data-current]') as HTMLElement;
+    const total = form.querySelector('[data-total]') as HTMLElement;
+    const countEl = form.querySelector('.lp-form__count') as HTMLElement;
+    const backBtn = form.querySelector('[data-back]') as HTMLButtonElement;
+    const errorEl = form.querySelector('[data-error]') as HTMLElement;
+    const tsEl = form.querySelector('[data-ts]') as HTMLInputElement;
+    // Große Marketing-H1 nur auf Schritt 1 zeigen (Perspective-Muster): Sie ist
+    // der Haken für den ersten Klick. Ab Schritt 2 ist die Frage die Überschrift.
+    const intro = document.querySelector('.lp__intro') as HTMLElement | null;
+    tsEl.value = String(Date.now());
+    total.textContent = String(steps.length);
+
+    let idx = 0;
+    let ersteAnzeige = true;
+
+    function zeige(n: number) {
+      steps.forEach((s, i) => (s.hidden = i !== n));
+      if (intro) intro.hidden = n !== 0;
+      idx = n;
+      current.textContent = String(n + 1);
+      bar.style.width = ((n + 1) / steps.length) * 100 + '%';
+      // Zurück-Pfeil weg auf dem ersten UND dem letzten Schritt (Opt-in):
+      // beim Opt-in soll nichts vom Absenden ablenken.
+      const letzter = n === steps.length - 1;
+      backBtn.hidden = n === 0 || letzter;
+      countEl.hidden = letzter;
+      barWrap.hidden = letzter;
+      // Fokus aufs erste Bedienelement – aber NICHT beim allerersten Anzeigen,
+      // sonst bekäme die erste Option beim Laden einen Fokusring.
+      if (!ersteAnzeige) {
+        const first = steps[n].querySelector('input, button') as HTMLElement;
+        if (first) setTimeout(() => first.focus({ preventScroll: true }), 40);
+      }
+      ersteAnzeige = false;
+      // Nur scrollen, wenn der Formularanfang nicht bequem im Blick ist.
+      const rect = form!.getBoundingClientRect();
+      if (rect.top < 0 || rect.top > window.innerHeight * 0.33) {
+        form!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function stepGueltig(n: number): boolean {
+      const req = Array.from(steps[n].querySelectorAll('[required]')) as HTMLInputElement[];
+      if (req.length === 0) return true;
+      const radios = req.filter((r) => r.type === 'radio');
+      if (radios.length) {
+        const name = radios[0].name;
+        if (!form!.querySelector(`input[name="${name}"]:checked`)) return false;
+      }
+      // Pflicht-Checkboxen (z. B. DSGVO-Einwilligung) müssen angehakt sein.
+      const checkboxes = req.filter((r) => r.type === 'checkbox');
+      for (const c of checkboxes) if (!c.checked) return false;
+      const texts = req.filter((r) => r.type !== 'radio' && r.type !== 'checkbox');
+      for (const t of texts) if (!t.value.trim() || !t.checkValidity()) return false;
+      return true;
+    }
+
+    function weiter() {
+      if (!stepGueltig(idx)) {
+        steps[idx].classList.add('fstep--shake');
+        setTimeout(() => steps[idx].classList.remove('fstep--shake'), 400);
+        // Klartext statt stillem Wackeln: native Meldung am ersten ungültigen Feld.
+        const bad = steps[idx].querySelector(
+          'input:invalid, select:invalid, textarea:invalid',
+        ) as HTMLInputElement | null;
+        if (bad) bad.reportValidity();
+        return;
+      }
+      if (idx < steps.length - 1) zeige(idx + 1);
+    }
+
+    // Radio-Schritte: Auswahl führt automatisch weiter.
+    form.querySelectorAll('input[type="radio"]').forEach((r) =>
+      r.addEventListener('change', () => setTimeout(weiter, 180)),
+    );
+
+    // „Keines davon" schließt die anderen Häkchen im selben Schritt aus (und umgekehrt).
+    const none = form.querySelector('[data-none]') as HTMLInputElement | null;
+    if (none) {
+      const gruppe = none.closest('[data-step]') as HTMLElement;
+      const andere = Array.from(
+        gruppe.querySelectorAll('input[type="checkbox"]:not([data-none])'),
+      ) as HTMLInputElement[];
+      none.addEventListener('change', () => {
+        if (none.checked) andere.forEach((c) => (c.checked = false));
+      });
+      andere.forEach((c) =>
+        c.addEventListener('change', () => {
+          if (c.checked) none.checked = false;
+        }),
+      );
+    }
+
+    // Weiter-Buttons (Checkbox-/Text-Schritte).
+    form.querySelectorAll('[data-next]').forEach((b) => b.addEventListener('click', weiter));
+    backBtn.addEventListener('click', () => idx > 0 && zeige(idx - 1));
+
+    // Absenden per fetch, damit die Seite nicht neu lädt.
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!stepGueltig(idx)) return;
+      errorEl.hidden = true;
+      const submitBtn = form!.querySelector('[data-submit]') as HTMLButtonElement;
+      const label = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Wird gesendet …';
+      try {
+        const res = await fetch(form!.action, {
+          method: 'POST',
+          body: new FormData(form!),
+          headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        });
+        const data = await res.json().catch(() => ({ ok: res.ok }));
+        if (data.ok) {
+          form!.hidden = true;
+          success!.hidden = false;
+          // Conversion-Ziel in Plausible zählen (Tagged Event).
+          (window as any).plausible?.('Anfrage abgesendet');
+          success!.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          throw new Error(data.error || 'fehler');
+        }
+      } catch (err) {
+        errorEl.textContent = 'Da ist etwas schiefgelaufen. Bitte versuch es erneut.';
+        errorEl.hidden = false;
+        submitBtn.disabled = false;
+        submitBtn.textContent = label;
+      }
+    });
+
+    zeige(0);
+  }
+</script>
+
+<style>
+  /* ---------- Minimaler Kopf & Fuß ---------- */
+  .lp-header {
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .lp-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    /* GLEICHE Leistenhöhe wie der Haupt-Header (site-header__inner: 4.25rem).
+       KEIN zusätzliches padding-block auf .lp-header – das addiert sich zur
+       min-height und macht die Leiste höher als auf den übrigen Seiten. */
+    min-height: 4.25rem;
+  }
+  .lp-logo {
+    font-family: var(--font-heading);
+    font-weight: var(--weight-bold);
+    /* Exakt wie .logo im Haupt-Header. */
+    font-size: clamp(1.25rem, 1.05rem + 0.8vw, 1.5rem);
+    letter-spacing: -0.015em;
+    line-height: 1;
+    color: var(--color-petrol);
+    text-decoration: none;
+  }
+  .lp-logo span { color: var(--color-primary); }
+  .lp-header__trust {
+    font-size: var(--size-small);
+    color: var(--color-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .lp-header__trust strong { color: var(--color-petrol); }
+  .lp-stars { color: var(--color-primary); letter-spacing: 1px; }
+  /* Mobile: Logo + Bewertung mittig stapeln. */
+  @media (max-width: 560px) {
+    .lp-header__inner {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-1);
+      text-align: center;
+    }
+    .lp-header__trust { justify-content: center; }
+  }
+
+  .lp-footer {
+    background: var(--color-petrol);
+    color: #d7e6ec;
+    padding-block: var(--space-6);
+  }
+  .lp-footer__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    font-size: var(--size-small);
+  }
+  .lp-footer__legal { display: flex; gap: var(--space-6); }
+  .lp-footer__legal a { color: #d7e6ec; text-decoration: none; }
+  .lp-footer__legal a:hover { text-decoration: underline; }
+
+  /* ---------- Layout ---------- */
+  .lp {
+    background: var(--color-bg-alt);
+    padding-block: clamp(2rem, 5vw, 3.5rem) clamp(3rem, 7vw, 5rem);
+    min-height: 60vh;
+  }
+  .lp__inner { max-width: 720px; }
+
+  .lp__intro { text-align: center; margin-bottom: var(--space-8); }
+  .lp__intro h1 {
+    font-size: clamp(1.6rem, 1.2rem + 2vw, 2.375rem);
+    text-wrap: balance;
+  }
+  /* Mobile: Kopf straffen, damit die erste Frage früher above the fold liegt. */
+  @media (max-width: 560px) {
+    .lp { padding-block: var(--space-4) var(--space-8); }
+    .lp__intro { margin-bottom: var(--space-6); }
+    .lp__intro h1 { font-size: 1.5rem; line-height: 1.2; }
+  }
+
+  /* USPs unter dem Formular – bewusst als INLINE-Text (nicht Flexbox): so
+     sitzen alle Punkte garantiert auf EINER Grundlinie. */
+  .lp__usps {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-8) auto 0;
+    text-align: center;
+    font-size: 0.85rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+  .lp__usps li { display: inline; white-space: nowrap; }
+  .lp__usps li + li { margin-left: var(--space-6); }
+  .lp__usps span { color: var(--color-success); font-weight: var(--weight-bold); }
+  @media (max-width: 560px) {
+    .lp__usps li { display: block; }
+    .lp__usps li + li { margin: var(--space-2) 0 0; }
+  }
+
+  /* ---------- Formular-Karte ---------- */
+  .lp-form {
+    background: var(--color-bg);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    box-shadow: var(--shadow);
+  }
+  .lp-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+  .lp-form__bar { height: 6px; border-radius: 999px; background: var(--color-border); overflow: hidden; }
+  .lp-form__bar-fill {
+    display: block;
+    height: 100%;
+    width: 11%;
+    background: var(--color-primary);
+    border-radius: 999px;
+    transition: width var(--duration-base, 200ms) var(--ease-out-soft, ease-out);
+  }
+  .lp-form__count { font-size: var(--size-small); color: var(--color-text-muted); margin: var(--space-3) 0 var(--space-6); }
+
+  .fstep { border: 0; padding: 0; margin: 0; min-inline-size: 0; }
+  .fstep legend {
+    font-family: var(--font-heading);
+    font-weight: var(--weight-bold);
+    font-size: clamp(1.25rem, 1rem + 1vw, 1.625rem);
+    color: var(--color-petrol);
+    line-height: 1.25;
+    text-wrap: balance;
+    padding: 0;
+    margin-bottom: var(--space-4);
+  }
+  .lp-hint { font-size: var(--size-small); color: var(--color-text-muted); margin: -0.5rem 0 var(--space-4); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .fstep--shake { animation: lp-shake 0.4s; }
+  }
+  @keyframes lp-shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+
+  /* ---------- Optionen als große Klickflächen ---------- */
+  .lp-options { display: grid; gap: var(--space-3); }
+  .lp-options--2 { grid-template-columns: repeat(2, 1fr); }
+  .lp-options--3 { grid-template-columns: repeat(3, 1fr); }
+  /* Auf Mobile IMMER zwei nebeneinander (nie einspaltig) – kompakter und
+     hält die Schritte flach. Dreier-Grids brechen auf 2 Spalten um. */
+  @media (max-width: 560px) {
+    .lp-options { gap: var(--space-2); }
+    .lp-options--2, .lp-options--3 { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .lp-opt {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    text-align: center;
+    /* Einheitliche Kartenhöhe über ALLE Schritte, damit das Formular Schritt
+       für Schritt ruhig bleibt. */
+    min-height: 12rem;
+    padding: var(--space-4);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition:
+      border-color var(--duration-fast, 150ms) var(--ease-out-soft, ease-out),
+      background var(--duration-fast, 150ms) var(--ease-out-soft, ease-out);
+  }
+  .lp-opt:hover { border-color: var(--color-primary); }
+  .lp-opt input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+  .lp-opt input:focus-visible ~ .lp-opt__label { outline: 2px solid var(--color-primary); outline-offset: 4px; }
+  .lp-opt:has(input:checked) {
+    border-color: var(--color-primary);
+    /* Zarter Marken-Wash – funktioniert für jede --color-primary. */
+    background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  }
+  .lp-opt__emoji { font-size: 2.4rem; line-height: 1; }
+  .lp-opt__label { font-weight: var(--weight-medium); color: var(--color-heading-sub); font-size: 0.95rem; }
+  .lp-opt--check:has(input:checked)::after {
+    content: '✓';
+    position: absolute;
+    top: 0.5rem;
+    right: 0.6rem;
+    color: var(--color-primary);
+    font-weight: var(--weight-bold);
+  }
+
+  /* Bild-Optionen: kompakte, zentrierte Illustration über dem Label. */
+  .lp-opt--img { padding: var(--space-4); gap: var(--space-2); }
+  .lp-opt--img :global(img) {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    max-height: 148px;
+    margin: 0 auto;
+    border-radius: 8px;
+  }
+
+  /* Mobile: zwei Karten nebeneinander → deutlich kompakter. */
+  @media (max-width: 560px) {
+    .lp-opt { min-height: 8rem; padding: var(--space-3); gap: var(--space-2); }
+    .lp-opt__emoji { font-size: 1.9rem; }
+    .lp-opt__label { font-size: 0.85rem; }
+    .lp-opt--img :global(img) { max-height: 84px; }
+  }
+
+  /* Akzentwort in Überschriften: dunklere, lesbare Variante der Markenfarbe
+     (helles Orange/Gelb als Text sonst zu kontrastarm). */
+  .lp-akzent { color: color-mix(in srgb, var(--color-primary) 78%, #000); }
+
+  /* Dezenter „Wähle eine Option aus"-Hinweis unter der Frage. */
+  .lp-choose {
+    text-align: center;
+    color: var(--color-petrol);
+    font-weight: var(--weight-bold);
+    margin: 0 0 var(--space-6);
+  }
+
+  /* ---------- Eingabefelder ---------- */
+  .lp-field { display: flex; flex-direction: column; gap: var(--space-2); }
+  .lp-field--wide { margin-bottom: var(--space-4); }
+  .lp-field span { font-size: var(--size-small); font-weight: var(--weight-bold); color: var(--color-petrol); }
+  .lp-field input {
+    font: inherit;
+    padding: var(--space-3) var(--space-4);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-bg);
+    color: var(--color-text);
+  }
+  .lp-field input:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 1px; border-color: var(--color-primary); }
+
+  .lp-consent {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-3);
+    align-items: start;
+    font-size: var(--size-small);
+    color: var(--color-text);
+    margin: var(--space-2) 0 var(--space-6);
+  }
+  .lp-consent input { margin-top: 0.2rem; width: 1.1rem; height: 1.1rem; accent-color: var(--color-primary); }
+
+  /* ---------- Buttons ---------- */
+  .lp-btn {
+    font: inherit;
+    font-weight: var(--weight-bold);
+    cursor: pointer;
+    border: 0;
+    border-radius: var(--radius);
+    padding: var(--space-4) var(--space-6);
+    background: var(--color-primary);
+    color: var(--color-primary-contrast);
+    transition: background var(--duration-fast, 150ms) var(--ease-out-soft, ease-out);
+  }
+  .lp-btn:hover { background: var(--color-primary-hover); }
+  .lp-btn:disabled { opacity: 0.6; cursor: default; }
+  .lp-next { margin-top: var(--space-6); width: 100%; }
+  .lp-btn--submit { width: 100%; font-size: 1.0625rem; }
+  .lp-btn--ghost {
+    background: transparent;
+    color: var(--color-petrol);
+    border: 1.5px solid var(--color-border);
+    display: inline-block;
+    text-decoration: none;
+  }
+  .lp-btn--ghost:hover { background: var(--color-bg-alt); color: var(--color-petrol); }
+
+  /* Enthält nur den Zurück-Button; leer → ausgeblendet (keine leere Linie). */
+  .lp-form__nav { margin-top: var(--space-6); }
+  .lp-form__nav:empty { display: none; }
+  .lp-back {
+    font: inherit;
+    background: none;
+    border: 0;
+    color: var(--color-petrol);
+    font-weight: var(--weight-bold);
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .lp-form__reassure { font-size: var(--size-small); color: var(--color-text-muted); display: flex; align-items: center; gap: 0.4rem; }
+  .lp-form__reassure--optin { justify-content: center; margin-top: var(--space-4); }
+  .lp-safe { color: var(--color-error); font-size: var(--size-small); margin-top: var(--space-3); }
+
+  /* ---------- Erfolg ---------- */
+  .lp-success {
+    background: var(--color-bg);
+    border-radius: var(--radius-lg);
+    padding: clamp(2rem, 5vw, 3rem);
+    text-align: center;
+    box-shadow: var(--shadow);
+    max-width: 44rem;
+    margin-inline: auto;
+  }
+  .lp-success__icon {
+    width: 3.5rem;
+    height: 3.5rem;
+    margin: 0 auto var(--space-4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--color-success);
+    color: #fff;
+    font-size: 1.75rem;
+    font-weight: var(--weight-bold);
+  }
+  .lp-success h2 { margin-bottom: var(--space-3); }
+  .lp-success p { max-width: 44ch; margin: 0 auto var(--space-6); }
+
+  .lp-trust { margin-top: clamp(2.5rem, 6vw, 4rem); }
+</style>

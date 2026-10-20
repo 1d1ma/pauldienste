@@ -1,0 +1,46 @@
+---
+/**
+ * FooterMark – großes Marken-Finale am Fuß der Seite: die (helle) Wortmarke
+ * läuft zentriert und angeschnitten aus dem Seitenende, per Maske sanft
+ * ausgeblendet, mit Scroll-Reveal.
+ *
+ * VERWENDUNG (im Footer als LETZTES Element im .container, Logo als Slot):
+ *   <FooterMark>
+ *     <LogoNegativ width={924} height={240} />
+ *   </FooterMark>
+ *
+ * Der Footer selbst braucht dann:
+ *   - padding-bottom: 0 (die Marke bildet den Abschluss)
+ *   - overflow: clip  (NICHT hidden – hidden friert view()-Timelines
+ *     von Reveals im Footer ein)
+ *
+ * Rein dekorativ → aria-hidden, pointer-events: none.
+ */
+---
+
+<div class="footer-mark reveal" aria-hidden="true">
+  <slot />
+</div>
+
+<style>
+  .footer-mark {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--space-12);
+    pointer-events: none;
+  }
+  .footer-mark :global(svg),
+  .footer-mark :global(img) {
+    width: min(100%, 58rem);
+    height: auto;
+    /* Läuft nach unten sanft aus – die Seite endet in der Marke */
+    -webkit-mask-image: linear-gradient(to bottom, #000 45%, transparent 96%);
+    mask-image: linear-gradient(to bottom, #000 45%, transparent 96%);
+    /* Untere Partie beschneiden: die Marke wächst aus dem Seitenende */
+    margin-bottom: -4.5rem;
+  }
+  @media (max-width: 40rem) {
+    .footer-mark :global(svg),
+    .footer-mark :global(img) { margin-bottom: -2rem; }
+  }
+</style>

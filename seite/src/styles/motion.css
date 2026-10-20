@@ -1,0 +1,130 @@
+/**
+ * ANIMATIONSSYSTEM – nach den Prinzipien von Emil Kowalski.
+ *
+ * Grundregeln (bitte einhalten, statt pro Komponente neu zu erfinden):
+ *  1. SCHNELL. UI-Bewegung 150–300 ms. Alles darüber fühlt sich träge an.
+ *  2. NUR `transform` und `opacity` animieren (GPU, kein Layout-Reflow).
+ *     Niemals width/height/top/left animieren.
+ *  3. EASE-OUT für Eintritte (Element kommt herein und bremst ab).
+ *     Ease-in nur beim Verschwinden. Linear nur für Endlos-Loops.
+ *  4. BEWEGUNG MIT GRUND. Motion erklärt Herkunft/Beziehung – kein Dekor.
+ *  5. DEZENT. Distanzen klein halten (8–16 px), nicht über den halben Screen.
+ *  6. `prefers-reduced-motion` IMMER respektieren (unten global geregelt).
+ */
+
+:root {
+  /* --- Dauer --- */
+  --duration-instant: 100ms;
+  --duration-fast: 150ms;   /* Hover, kleine State-Wechsel */
+  --duration-base: 200ms;   /* Standard */
+  --duration-slow: 300ms;   /* Eintritte größerer Flächen */
+
+  /* --- Easing ---
+     Ausschliesslich exponentielle Ease-out-Kurven. KEIN Bounce, kein Elastic:
+     echte Objekte bremsen ab, sie federn nicht zurück. Ueberschwingen wirkt
+     schnell billig und widerspricht der ruhigen Markenanmutung.
+     ease-out-soft ist die Signature-Kurve (langer, weicher Ausklang). */
+  --ease-out-soft: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* --- Bewegungsdistanzen --- */
+  --motion-rise: 12px;   /* Reveal von unten */
+  --motion-lift: -2px;   /* Hover-Anhebung */
+}
+
+/* ------------------------------------------------------------------ *
+ * SCROLL-REVEAL
+ * Markup: <div class="reveal">…</div>  (Reveal.astro kapselt das)
+ * Der IntersectionObserver setzt .is-visible – siehe Reveal.astro.
+ * Wichtig: kein Flash-of-unstyled – Startzustand gilt nur, wenn JS aktiv ist
+ * (html.js), damit ohne JS alles sichtbar bleibt.
+ * ------------------------------------------------------------------ */
+
+.js .reveal {
+  opacity: 0;
+  transform: translate3d(0, var(--motion-rise), 0);
+  transition:
+    opacity var(--duration-slow) var(--ease-out-soft),
+    transform var(--duration-slow) var(--ease-out-soft);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.js .reveal.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Nach dem Eintritt will-change wieder freigeben */
+.js .reveal.is-settled {
+  will-change: auto;
+}
+
+/* Gestaffelte Kinder (z. B. Karten-Grid): jedes Kind etwas später.
+   Bewusst kurz gestaffelt – lange Staffelungen wirken zäh. */
+.stagger > * {
+  --reveal-delay: 0ms;
+}
+.stagger > *:nth-child(2) { --reveal-delay: 60ms; }
+.stagger > *:nth-child(3) { --reveal-delay: 120ms; }
+.stagger > *:nth-child(4) { --reveal-delay: 180ms; }
+.stagger > *:nth-child(5) { --reveal-delay: 240ms; }
+.stagger > *:nth-child(n + 6) { --reveal-delay: 300ms; }
+
+/* ------------------------------------------------------------------ *
+ * INTERAKTIONEN – wiederverwendbare Utility-Klassen
+ * ------------------------------------------------------------------ */
+
+/* Karten/Buttons heben sich minimal beim Hover. Nur transform+shadow. */
+.lift {
+  transition:
+    transform var(--duration-fast) var(--ease-out-soft),
+    box-shadow var(--duration-fast) var(--ease-out-soft);
+}
+@media (hover: hover) {
+  .lift:hover { transform: translate3d(0, var(--motion-lift), 0); }
+}
+/* Taktiles Feedback beim Klick – Bewegung folgt dem Finger/Cursor */
+.lift:active { transform: translate3d(0, 0, 0) scale(0.99); }
+
+/* Sanfter Farb-/Opacity-Wechsel für Links & Icons */
+.transition-colors {
+  transition:
+    color var(--duration-fast) var(--ease-out-soft),
+    background-color var(--duration-fast) var(--ease-out-soft),
+    border-color var(--duration-fast) var(--ease-out-soft);
+}
+
+/* Sichtbarer, ruhiger Fokus-Ring (Accessibility, nicht animiert) */
+:where(a, button, input, textarea, select, summary):focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ------------------------------------------------------------------ *
+ * REDUCED MOTION – global. Bewegung aus, Inhalt bleibt sichtbar.
+ * ------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .js .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .lift:hover,
+  .lift:active {
+    transform: none;
+  }
+}

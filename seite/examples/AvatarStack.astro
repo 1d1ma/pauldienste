@@ -1,0 +1,97 @@
+---
+/**
+ * AvatarStack – Conversion-Element für den Hero: überlappende runde
+ * Initialen-Avatare + fünf Sterne + Link zum Google-Profil. Passt in den
+ * `rating`-Slot von Hero.astro:
+ *
+ *   <Hero …>
+ *     <AvatarStack slot="rating" profilUrl={bewertungen.profilUrl}
+ *       initials={['S', 'M', 'A']} label="Kundenstimmen auf Google" />
+ *   </Hero>
+ *
+ * REGELN
+ *   - Initialen-Kreise in Markenfarben, KEINE erfundenen Gesichtsfotos
+ *     (bei kleinen Betrieben fällt jedes fremde Gesicht sofort auf).
+ *   - Keine harte Durchschnittsnote anzeigen, solange keine echten
+ *     Google-Daten vorliegen (UWG; bei Praxen auch HWG).
+ */
+interface Props {
+  profilUrl: string;
+  /** 3–4 Initialen, z. B. aus den echten Rezensenten-Namen */
+  initials: string[];
+  /** z. B. "Kundenstimmen auf Google" / "Patientenstimmen auf Google" */
+  label: string;
+}
+const { profilUrl, initials, label } = Astro.props;
+
+const fills = [
+  'var(--color-petrol)',
+  'var(--color-primary)',
+  'var(--color-petrol-dark)',
+];
+---
+
+<a class="avatar-stack" href={profilUrl} rel="noopener">
+  <span class="avatar-stack__faces" aria-hidden="true">
+    {
+      initials.map((letter, i) => (
+        <span class="avatar-stack__face" style={`background:${fills[i % fills.length]}`}>
+          {letter}
+        </span>
+      ))
+    }
+  </span>
+  <span class="avatar-stack__meta">
+    <span class="avatar-stack__stars" aria-hidden="true">
+      {
+        Array.from({ length: 5 }).map(() => (
+          <svg viewBox="0 0 20 20" width="16" height="16">
+            <path
+              d="M10 1.6l2.5 5.2 5.7.7-4.2 3.9 1.1 5.6L10 14.2 4.9 17l1.1-5.6L1.8 7.5l5.7-.7z"
+              fill="currentColor"
+            />
+          </svg>
+        ))
+      }
+    </span>
+    <span class="avatar-stack__label">{label}</span>
+  </span>
+</a>
+
+<style>
+  .avatar-stack {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    text-decoration: none;
+    min-height: 44px; /* interaktive Fläche */
+  }
+
+  .avatar-stack__faces { display: flex; }
+  .avatar-stack__face {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 999px;
+    border: 2px solid var(--color-bg);
+    color: #fff;
+    font-size: 0.8125rem;
+    font-weight: var(--weight-bold);
+  }
+  .avatar-stack__face + .avatar-stack__face { margin-left: -0.5rem; }
+
+  .avatar-stack__meta { display: flex; flex-direction: column; gap: 2px; }
+  .avatar-stack__stars { display: inline-flex; gap: 2px; color: var(--color-primary); }
+  .avatar-stack__stars svg { display: block; }
+
+  .avatar-stack__label {
+    font-size: var(--size-small);
+    color: var(--color-text-muted);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+  .avatar-stack:hover .avatar-stack__label { color: var(--color-petrol); }
+</style>

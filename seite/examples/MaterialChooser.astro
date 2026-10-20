@@ -1,0 +1,142 @@
+---
+/**
+ * MaterialChooser – "Material wählen": vier Optionen mit Einstiegspreis und
+ * einem Satz, der die Entscheidung wirklich trägt.
+ *
+ * Bewusst anders gebaut als der WidthChooser (dort Boxen auf Petrol, hier eine
+ * ruhige Liste mit Trennlinien) – drei identische Kartenraster hintereinander
+ * lesen sich monoton.
+ *
+ * Holz und Holz-Alu zeigen beide auf /holz/, weil es dafür eine gemeinsame
+ * Seite gibt. Fehlt ein Preis, wird das ehrlich ausgewiesen statt geraten.
+ */
+import Icon from './Icon.astro';
+import InternalLink from './InternalLink.astro';
+import {
+  getPrice, formatPrice, MATERIAL_LABELS, availableWidths,
+  type MaterialKey,
+} from '../data/preise';
+
+interface Props {
+  exclude?: MaterialKey;
+}
+
+const { exclude } = Astro.props;
+
+const copy: Record<MaterialKey, { slug: string; text: string }> = {
+  kunststoff: {
+    slug: '/kunststoff/',
+    text: 'Bestes Preis-Leistungs-Verhältnis und sehr gute Dämmung. Der meistgewählte Werkstoff.',
+  },
+  aluminium: {
+    slug: '/aluminium/',
+    text: 'Schmale Profile, maximale Glasfläche. Erste Wahl für große Formate und moderne Architektur.',
+  },
+  holz: {
+    slug: '/holz/',
+    text: 'Warme, natürliche Optik im Innenraum. Braucht regelmäßige Pflege an der Wetterseite.',
+  },
+  holz_alu: {
+    slug: '/holz/',
+    text: 'Holz innen, wetterfeste Alu-Schale außen. Die pflegeleichteste Holz-Variante.',
+  },
+};
+
+const materials = (Object.keys(MATERIAL_LABELS) as MaterialKey[])
+  .filter((m) => m !== exclude)
+  .map((m) => {
+    const widths = availableWidths(m);
+    const cheapest = widths.length ? getPrice(m, widths[0]) : null;
+    return {
+      key: m,
+      label: MATERIAL_LABELS[m],
+      price: cheapest,
+      maxNote: m === 'holz' || m === 'holz_alu' ? 'bis ca. 5,5 m' : 'bis 6 m',
+      ...copy[m],
+    };
+  });
+---
+
+<ul class="materials">
+  {
+    materials.map((m) => (
+      <li class="materials__item reveal">
+        <div class="materials__head">
+          <h3 class="materials__label">{m.label}</h3>
+          <p class="materials__price">
+            {m.price !== null ? <>ab {formatPrice(m.price)}</> : 'auf Anfrage'}
+            <span class="materials__max">{m.maxNote}</span>
+          </p>
+        </div>
+        <p class="materials__text">{m.text}</p>
+        <p class="materials__link">
+          <InternalLink to={m.slug}>
+            {m.label} im Detail
+          </InternalLink>
+          <Icon name="pfeil" size={15} />
+        </p>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .materials {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 0;
+  }
+
+  .materials__item {
+    margin: 0;
+    padding: var(--space-6) var(--space-6) var(--space-6) 0;
+    border-top: 2px solid var(--color-petrol);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .materials__head { display: flex; flex-direction: column; gap: var(--space-1); }
+  .materials__label { font-size: 1.25rem; color: var(--color-petrol); }
+
+  .materials__price {
+    font-family: var(--font-heading);
+    font-weight: var(--weight-bold);
+    font-size: 1.25rem;
+    color: var(--color-text);
+    font-variant-numeric: tabular-nums;
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+  .materials__max {
+    font-family: var(--font-body);
+    font-size: var(--size-small);
+    font-weight: var(--weight-normal);
+    color: var(--color-text-muted);
+  }
+
+  .materials__text { font-size: 0.95rem; }
+
+  /* Linktext in Petrol (8,8:1), Pfeil bleibt orange als Akzent.
+     Orange als Textfarbe auf hellem Grund erreicht nur 2,7:1. */
+  .materials__link {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--color-petrol);
+  }
+  .materials__link :global(a) {
+    color: var(--color-petrol);
+    font-weight: var(--weight-bold);
+    font-size: 0.95rem;
+    text-decoration: none;
+  }
+  .materials__link :global(a:hover) { text-decoration: underline; }
+  .materials__link :global(.icon) { color: var(--color-primary); }
+</style>

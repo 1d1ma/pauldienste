@@ -1,0 +1,113 @@
+---
+/**
+ * 404 – Fehlerseite (PFLICHT). Wird von Apache über `ErrorDocument 404 /404.html`
+ * (public/.htaccess, liegt im Starter bei) für jede unbekannte URL ausgeliefert.
+ * Astro baut daraus dist/404.html.
+ *
+ * Kein pages.ts-Eintrag: `title` + `noindex` kommen direkt als Base-Props.
+ * Ziel ist kein Ranking, sondern den Besucher schnell zurück ins Angebot zu
+ * holen (deshalb Header/Footer, hilfreiche Links und die CTA).
+ *
+ * ANPASSEN: Überschrift/Text in die Marken-Tonalität bringen und die Pill-Links
+ * auf die wichtigsten realen Seiten dieser Site setzen (Slugs müssen in
+ * pages.ts existieren, sonst bricht der Build – so ist die interne Verlinkung
+ * abgesichert).
+ */
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Cta from '../components/Cta.astro';
+import InternalLink from '../components/InternalLink.astro';
+---
+
+<Base title="Seite nicht gefunden (404)" noindex>
+  <Header slot="header" />
+  <Footer slot="footer" />
+
+  <section class="fehler">
+    <div class="container fehler__inner">
+      <p class="fehler__code" aria-hidden="true">4<span class="fehler__o">0</span>4</p>
+
+      <h1 class="fehler__titel">Diese Seite gibt es nicht (mehr)</h1>
+
+      <p class="fehler__text">
+        Kein Drama. Vielleicht hat sich die Adresse geändert oder es hat sich ein Tippfehler
+        eingeschlichen. Von hier kommst du in einem Klick wieder ans Ziel.
+      </p>
+
+      <div class="fehler__cta">
+        <Cta />
+      </div>
+
+      <nav class="fehler__links" aria-label="Beliebte Seiten">
+        <InternalLink to="/">Startseite</InternalLink>
+        {/* TODO: weitere Pill-Links auf die wichtigsten Seiten dieser Site, z. B.:
+            <InternalLink to="/leistungen/">Leistungen</InternalLink>
+            <InternalLink to="/preise/">Preise</InternalLink>
+            <InternalLink to="/kontakt/">Kontakt</InternalLink> */}
+      </nav>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .fehler__inner {
+    max-width: 44rem;
+    margin-inline: auto;
+    text-align: center;
+    padding-block: clamp(3rem, 9vw, 6rem);
+  }
+
+  /* Die 404 als ruhiges Display-Element, mit dem Punkt-Akzent aus dem Logo
+     (die „0" trägt die Markenfarbe). Kein Gradient, kein Effekt. */
+  .fehler__code {
+    font-family: var(--font-heading);
+    font-weight: var(--weight-bold);
+    font-size: clamp(3.5rem, 12vw, 6rem);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--color-petrol);
+    margin: 0;
+  }
+  .fehler__o { color: var(--color-primary); }
+
+  .fehler__titel {
+    font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2rem);
+    margin-top: var(--space-6);
+    text-wrap: balance;
+  }
+
+  .fehler__text {
+    margin-top: var(--space-4);
+    margin-inline: auto;
+    max-width: 46ch;
+    color: var(--color-text-muted);
+  }
+
+  .fehler__cta { margin-top: var(--space-8); }
+
+  /* Beliebte Seiten als dezente Pill-Links. Volle Fläche, kein Rahmen-plus-Schatten. */
+  .fehler__links {
+    margin-top: var(--space-12);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    justify-content: center;
+  }
+  .fehler__links :global(a) {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    background: var(--color-bg-alt);
+    color: var(--color-petrol);
+    font-size: 0.9375rem;
+    font-weight: var(--weight-medium);
+    text-decoration: none;
+    transition: background var(--duration-fast) var(--ease-out-soft),
+      color var(--duration-fast) var(--ease-out-soft);
+  }
+  .fehler__links :global(a:hover) {
+    background: var(--color-petrol);
+    color: #fff;
+  }
+</style>

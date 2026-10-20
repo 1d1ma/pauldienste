@@ -1,0 +1,437 @@
+---
+/**
+ * Startseite: Dach ueber beide Bereiche (Gebaeudereinigung hell, Handwerk
+ * dunkel). Dramaturgie nach PLAN-website.md Abschnitt 4 und der Skill-Referenz
+ * startseite.md. Bewertungen fehlen bewusst, bis echte Rezensionen vorliegen.
+ *
+ * Animations-Haken fuer die Bewegungsschicht stehen als data-anim="…" im
+ * Markup und sind in ANIMATIONEN.md beschrieben.
+ */
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Section from '../components/Section.astro';
+import Faq from '../components/Faq.astro';
+import CtaInline from '../components/CtaInline.astro';
+import Cta from '../components/Cta.astro';
+import Icon from '../components/Icon.astro';
+import InternalLink from '../components/InternalLink.astro';
+import { internalLink, registry } from '../data/pages';
+import { site } from '../data/site';
+
+const href = (slug: string) => internalLink(slug).href;
+
+const reinigung = [
+  ['/fensterreinigung-kassel/', 'Fenster, Glas und Rahmen, privat und gewerblich. Fensterbänke sind inklusive.'],
+  ['/wintergartenreinigung-kassel/', 'Glasdach, Rahmen und Dichtungen, auch bei Terrassenüberdachungen.'],
+  ['/bueroreinigung-kassel/', 'Regelmäßig in festen Intervallen: Büros, Praxen und Treppenhäuser.'],
+  ['/grundreinigung-kassel/', 'Vor dem Einzug, nach dem Auszug oder als gründlicher Frühjahrsputz.'],
+  ['/bauendreinigung-kassel/', 'Baustaub, Farb- und Mörtelreste sind weg, bevor Sie übernehmen.'],
+  ['/fassadenreinigung-kassel/', 'Algen und Grünbelag von Putz und Klinker entfernen.'],
+  ['/steinreinigung-kassel/', 'Pflaster, Terrasse und Einfahrt wieder sauber.'],
+  ['/reinigungsroboter-gewerbe/', 'Roboter für große Bodenflächen im Gewerbe, kombiniert mit Unterhaltsreinigung.'],
+  ['/winterdienst-kassel/', 'Schneeräumen und Streuen für Vermieter, Hausverwaltungen und Gewerbe.'],
+  ['/entruempelung-kassel/', 'Wohnungen, Keller und Garagen räumen, auf Wunsch mit anschließender Grundreinigung.'],
+  ['/gartenpflege-kassel/', 'Gartenarbeiten rund ums Haus, einmalig oder regelmäßig.'],
+] as const;
+
+const handwerk = [
+  ['/boden-verlegen-kassel/', 'Laminat, Vinyl, Parkett und Teppich, ohne dass Sie mehrere Handwerker koordinieren.'],
+  ['/streichen-tapezieren-kassel/', 'Wände und Decken, bei Renovierung und Auszug.'],
+  ['/kuechenmontage-moebelmontage-kassel/', 'Küchen, Schränke und Möbel aufbauen, auch aus dem Möbelhaus.'],
+  ['/fliegengitter-kassel/', 'Aufmaß vor Ort, Montage inklusive. Auch mit Pollenschutz und Haustiergewebe.'],
+  ['/plissees-kassel/', 'Sicht- und Sonnenschutz nach Maß, mit Montage.'],
+  ['/bodenbelaege-farben-kassel/', 'Vinyl, Parkett, Teppich und Innenfarben. Ausstellung in Kassel nach Termin.'],
+] as const;
+
+const auszug = [
+  ['Entrümpeln', '/entruempelung-kassel/', 'Die alte Einrichtung geht raus.'],
+  ['Streichen und Tapezieren', '/streichen-tapezieren-kassel/', 'Wände und Decken bekommen ihren frischen Zustand.'],
+  ['Boden verlegen', '/boden-verlegen-kassel/', 'Neuer Belag, passend zur Nutzung.'],
+  ['Bauendreinigung', '/bauendreinigung-kassel/', 'Staub und Reste verschwinden vor der Übergabe.'],
+] as const;
+
+const ablauf = [
+  ['Anfrage', 'Sie rufen an oder schreiben uns, worum es geht. Ein Foto hilft, ist aber keine Pflicht.'],
+  ['Kostenlose Besichtigung', 'Paul sieht sich vor Ort an, was zu tun ist, und misst bei Bedarf auf.'],
+  ['Festpreis', 'Sie bekommen ein schriftliches Angebot mit einem festen Preis. Was darin steht, kommt so auf die Rechnung.'],
+  ['Ausführung', 'Wir arbeiten zum vereinbarten Termin und übergeben das Ergebnis sauber.'],
+] as const;
+
+const vorteile = [
+  ['preis', 'Besichtigung kostenlos', 'Sie zahlen erst, wenn Sie das Festpreisangebot angenommen haben.'],
+  ['erfahrung', 'Seit 2013 in Kassel', 'Paul ist Ihr fester Ansprechpartner, vom ersten Anruf bis zur Übergabe.'],
+  ['fachbetrieb', 'Alles aus einer Hand', 'Reinigung und Handwerk bei einem Betrieb. Das spart Absprachen und Termine.'],
+  ['lieferung', 'Privat und Gewerbe', 'Jede Leistung gibt es für Haushalte, Büros, Praxen und Hausverwaltungen.'],
+] as const;
+
+const faq = [
+  {
+    q: 'Was kostet die Besichtigung?',
+    a: 'Nichts. Paul kommt zu Ihnen, sieht sich Fläche und Zustand an und nennt Ihnen danach einen Festpreis. Sie gehen damit keine Verpflichtung ein und entscheiden in Ruhe.',
+  },
+  {
+    q: 'Wie kommt der Preis zustande?',
+    a: 'Der Festpreis richtet sich nach Fläche, Zustand, Material, Zugang und Höhe. Weil wir vorher vor Ort waren, steht er fest und ändert sich nicht während der Arbeit. Pauschale Preise ohne Besichtigung nennen wir deshalb nicht.',
+  },
+  {
+    q: 'Arbeiten Sie für Privatkunden und für Gewerbe?',
+    a: 'Für beide. Jede Leistung gibt es für Haushalte, Büros, Praxen, Hausverwaltungen und Handel. Für Gewerbe planen wir Termine früh, abends oder am Wochenende, damit Ihr Betrieb nicht unterbrochen wird.',
+  },
+  {
+    q: 'In welchem Gebiet sind Sie unterwegs?',
+    a: 'Im Umkreis von 30 Kilometern um Kassel. Größere Aufträge übernehmen wir auch bis etwa 50 Kilometer, zum Beispiel Gewerbe, Fassaden oder Bodenverlegung. Fragen Sie einfach nach, wenn Sie knapp außerhalb liegen.',
+  },
+  {
+    q: 'Kann ich Reinigung und Handwerk zusammen beauftragen?',
+    a: 'Ja, und das ist oft sinnvoll. Bei einem Auszug entrümpeln, streichen, den Boden erneuern und zum Schluss reinigen wir in einem Auftrag. Sie haben einen Ansprechpartner und einen Festpreis statt vier Angebote.',
+  },
+  {
+    q: 'Wie erreiche ich Paul?',
+    a: `Telefonisch unter ${site.kontakt.telefonAnzeige} von Montag bis Freitag zwischen 8 und 17 Uhr, per E-Mail an ${site.kontakt.email} oder über das Anfrageformular. Außerhalb der Zeiten melden wir uns am nächsten Werktag.`,
+  },
+];
+
+const orte30 = ['Baunatal', 'Vellmar', 'Kaufungen', 'Lohfelden', 'Niestetal', 'Fuldatal', 'Fuldabrück', 'Ahnatal', 'Calden', 'Schauenburg', 'Espenau', 'Söhrewald', 'Hann. Münden', 'Hofgeismar'];
+const orte50 = ['Melsungen', 'Wolfhagen', 'Fritzlar', 'Witzenhausen', 'Göttingen'];
+---
+
+<Base slug="/">
+  <Header slot="header" />
+
+  <!-- 1 Hero: Dach ueber beide Bereiche -->
+  <section class="hero section--bg-alt" data-anim="hero">
+    <div class="container hero__top">
+      <p class="hero__eyebrow">Paul Gebäudedienste · Kassel und Umgebung</p>
+      <h1 data-anim="hero-title">Reinigung und Handwerk aus einer Hand in Kassel</h1>
+      <p class="hero__intro">
+        Fenster putzen, Wohnung renovieren, Boden verlegen, sauber übergeben. Paul kommt zur kostenlosen
+        Besichtigung und nennt Ihnen danach einen Festpreis.
+      </p>
+      <div class="hero__actions">
+        <Cta align="start" />
+        <a class="hero__tel transition-colors" href={`tel:${site.kontakt.telefon}`}>{site.kontakt.telefonAnzeige}</a>
+      </div>
+    </div>
+
+    <div class="container hero__bereiche" data-anim="bereiche">
+      <a class="bereich bereich--hell" href={href('/gebaeudereinigung-kassel/')} data-anim="bereich">
+        <span class="bereich__kicker">Hell und sauber</span>
+        <h2 class="bereich__title">Gebäudereinigung</h2>
+        <p>Fenster, Büro, Grundreinigung, Fassade und Winterdienst für Haushalte und Gewerbe.</p>
+        <span class="bereich__link">Zur Gebäudereinigung <Icon name="pfeil" size={18} /></span>
+      </a>
+      <a class="bereich bereich--dunkel" href={href('/handwerker-kassel/')} data-anim="bereich">
+        <span class="bereich__kicker">Renovierung und Innenausbau</span>
+        <h2 class="bereich__title">Handwerk</h2>
+        <p>Boden verlegen, streichen, Küchen und Möbel montieren, Fliegengitter und Plissees nach Maß.</p>
+        <span class="bereich__link">Zum Handwerk <Icon name="pfeil" size={18} /></span>
+      </a>
+    </div>
+  </section>
+
+  <!-- 2 Vertrauensleiste -->
+  <Section id="vertrauen" variant="default" space="tight">
+    <ul class="trust__list" data-anim="trust" aria-label="Das Wichtigste in Kürze">
+      <li>Besichtigung kostenlos</li>
+      <li>Festpreis nach Besichtigung</li>
+      <li>Seit 2013 in Kassel</li>
+      <li>Privat und Gewerbe</li>
+      <li>Mo bis Fr 8 bis 17 Uhr</li>
+    </ul>
+  </Section>
+
+  <!-- 3 Gebaeudereinigung (hell) -->
+  <Section
+    id="gebaeudereinigung"
+    variant="alt"
+    eyebrow="Gebäudereinigung und Gebäudedienste"
+    title="Sauber von der Fensterscheibe bis zum Winterdienst"
+  >
+    <p class="bereichs-lead reveal">
+      Für Haushalte, Büros, Praxen und Hausverwaltungen. Einen Überblick über alle Reinigungsleistungen
+      finden Sie unter <InternalLink to="/gebaeudereinigung-kassel/">Gebäudereinigung in Kassel</InternalLink>.
+    </p>
+    <ul class="tiles tiles--hell stagger" data-anim="tiles">
+      {
+        reinigung.map(([slug, text]) => (
+          <li class="reveal" data-anim="tile">
+            <a href={href(slug)} class="tile lift">
+              <h3>{registry[slug].label}</h3>
+              <p>{text}</p>
+              <span class="tile__more" aria-hidden="true"><Icon name="pfeil" size={18} /></span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <CtaInline text="Welche Reinigung passt zu Ihrem Objekt? Paul schaut es sich kostenlos an." />
+  </Section>
+
+  <!-- 4 Handwerk (dunkel) -->
+  <Section
+    id="handwerk"
+    variant="petrol"
+    eyebrow="Renovierung und Innenausbau"
+    title="Handwerk, das Ihre Räume fertig macht"
+  >
+    <p class="bereichs-lead reveal">
+      Vom Boden bis zum Insektenschutz. Alle Arbeiten finden Sie unter
+      <InternalLink to="/handwerker-kassel/">Handwerker in Kassel</InternalLink>.
+    </p>
+    <ul class="tiles tiles--dunkel stagger" data-anim="tiles">
+      {
+        handwerk.map(([slug, text]) => (
+          <li class="reveal" data-anim="tile">
+            <a href={href(slug)} class="tile lift">
+              <h3>{registry[slug].label}</h3>
+              <p>{text}</p>
+              <span class="tile__more" aria-hidden="true"><Icon name="pfeil" size={18} /></span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  <!-- 5 Alles aus einer Hand -->
+  <Section
+    id="aus-einer-hand"
+    variant="default"
+    eyebrow="Alles aus einer Hand"
+    title="Ein Auszug, ein Ansprechpartner, ein Festpreis"
+    lead="Wer eine Wohnung übergibt oder renoviert, braucht meist mehrere Gewerke nacheinander. Bei Paul laufen sie in einem Auftrag zusammen."
+  >
+    <ol class="kette" data-anim="kette">
+      {
+        auszug.map(([titel, slug, text], i) => (
+          <li class="kette__schritt reveal" data-anim="kette-schritt">
+            <span class="kette__nr" aria-hidden="true">{i + 1}</span>
+            <h3><a href={href(slug)}>{titel}</a></h3>
+            <p>{text}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </Section>
+
+  <!-- 6 Ablauf -->
+  <Section id="ablauf" variant="alt" title="So läuft es ab">
+    <ol class="ablauf stagger" data-anim="ablauf">
+      {
+        ablauf.map(([titel, text], i) => (
+          <li class="ablauf__schritt reveal" data-anim="ablauf-schritt">
+            <span class="ablauf__nr" aria-hidden="true">{i + 1}</span>
+            <h3>{titel}</h3>
+            <p>{text}</p>
+          </li>
+        ))
+      }
+    </ol>
+    <CtaInline text="Für die Besichtigung genügt ein Anruf oder eine kurze Nachricht." />
+  </Section>
+
+  <!-- 7 Vorteile -->
+  <Section id="vorteile" variant="default" title="Darauf können Sie sich verlassen">
+    <ul class="vorteile stagger">
+      {
+        vorteile.map(([icon, titel, text]) => (
+          <li class="vorteil reveal">
+            <Icon name={icon} size={30} />
+            <h3>{titel}</h3>
+            <p>{text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  <!-- 8 Einsatzgebiet -->
+  <Section id="einsatzgebiet" variant="alt" title="Dort sind wir für Sie im Einsatz">
+    <div class="gebiet">
+      <figure class="gebiet__karte reveal" data-anim="radius">
+        <svg viewBox="0 0 400 400" role="img" aria-labelledby="radius-titel">
+          <title id="radius-titel">Einsatzgebiet: 30 Kilometer um Kassel, größere Aufträge bis 50 Kilometer</title>
+          <circle class="radius radius--50" cx="200" cy="200" r="190" />
+          <circle class="radius radius--30" cx="200" cy="200" r="114" />
+          <circle class="radius__punkt" cx="200" cy="200" r="7" />
+          <text x="200" y="228" text-anchor="middle" class="radius__label radius__label--stadt">Kassel</text>
+          <text x="200" y="130" text-anchor="middle" class="radius__label">30 km</text>
+          <text x="200" y="46" text-anchor="middle" class="radius__label">bis 50 km</text>
+        </svg>
+      </figure>
+      <div class="gebiet__text reveal">
+        <p>
+          Wir arbeiten im Umkreis von 30 Kilometern um Kassel, zum Beispiel in
+          {' '}{orte30.join(', ')}.
+        </p>
+        <p>
+          Größere Aufträge übernehmen wir auch bis etwa 50 Kilometer, etwa in {orte50.slice(0, -1).join(', ')} und {orte50.at(-1)}.
+        </p>
+        <Cta align="start" label="Liegt Ihr Objekt im Gebiet? Jetzt anfragen" />
+      </div>
+    </div>
+  </Section>
+
+  <!-- 9 FAQ -->
+  <Section id="faq" variant="default" title="Häufige Fragen">
+    <div class="faq-wrap">
+      <Faq items={faq} />
+    </div>
+  </Section>
+
+  <!-- 10 Abschluss -->
+  <Section id="anfrage" variant="petrol-dark" space="generous" centered title="Kostenlose Besichtigung anfragen">
+    <p class="abschluss__text">
+      Sagen Sie uns, was ansteht. Paul meldet sich werktags zwischen 8 und 17 Uhr und vereinbart einen Termin.
+    </p>
+    <div class="abschluss__aktionen">
+      <Cta />
+      <a class="abschluss__tel transition-colors" href={`tel:${site.kontakt.telefon}`}>{site.kontakt.telefonAnzeige}</a>
+    </div>
+  </Section>
+
+  <Footer slot="footer" />
+</Base>
+
+<style>
+  /* --- Hero --- */
+  .hero { padding-top: clamp(2.5rem, 6vw, 4.5rem); background: var(--color-bg-alt); }
+  .hero__top { max-width: 60rem; }
+  .hero__eyebrow {
+    font-size: var(--size-small);
+    font-weight: var(--weight-medium);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-accent-text);
+    margin-bottom: var(--space-4);
+  }
+  .hero h1 { max-width: 20ch; font-size: clamp(2.1rem, 1.3rem + 3.6vw, 3.75rem); letter-spacing: -0.02em; }
+  .hero__intro { margin-top: var(--space-6); font-size: 1.15rem; max-width: 44ch; }
+  .hero__actions { margin-top: var(--space-8); display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-6); }
+  .hero__tel { font-weight: var(--weight-bold); color: var(--color-heading); text-decoration: none; min-height: 44px; display: inline-flex; align-items: center; }
+  .hero__tel:hover { color: var(--color-accent-text); }
+
+  .hero__bereiche {
+    margin-top: clamp(2.5rem, 6vw, 4rem);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    max-width: none;
+    padding-inline: 0;
+    gap: 0;
+  }
+  @media (max-width: 760px) { .hero__bereiche { grid-template-columns: 1fr; } }
+
+  .bereich {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: clamp(2rem, 5vw, 3.5rem) max(var(--container-padding), calc((100vw - var(--container-max)) / 2 + var(--container-padding)));
+    text-decoration: none;
+    min-height: 15rem;
+    transition: background-color var(--duration-base) var(--ease-out-soft);
+  }
+  .bereich--hell { background: #fff; border-top: 1px solid var(--color-border); }
+  .bereich--dunkel { background: var(--color-petrol); }
+  .bereich__kicker { font-size: var(--size-small); font-weight: var(--weight-medium); letter-spacing: 0.06em; text-transform: uppercase; }
+  .bereich--hell .bereich__kicker { color: var(--color-accent-text); }
+  .bereich--dunkel .bereich__kicker { color: var(--color-primary-on-dark); }
+  .bereich__title { font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem); }
+  .bereich--hell .bereich__title { color: var(--color-heading); }
+  .bereich--dunkel .bereich__title { color: #fff; }
+  .bereich p { max-width: 36ch; }
+  .bereich--hell p { color: var(--color-text); }
+  .bereich--dunkel p { color: var(--color-on-dark-soft); }
+  .bereich__link { margin-top: auto; display: inline-flex; align-items: center; gap: var(--space-2); font-weight: var(--weight-bold); }
+  .bereich--hell .bereich__link { color: var(--color-heading); }
+  .bereich--dunkel .bereich__link { color: var(--color-primary-on-dark); }
+  .bereich__link :global(.icon) { transition: transform var(--duration-base) var(--ease-out-soft); }
+  .bereich:hover .bereich__link :global(.icon) { transform: translate3d(4px, 0, 0); }
+  .bereich--hell:hover { background: #fbfbfa; }
+  .bereich--dunkel:hover { background: var(--color-graphit-soft); }
+
+  /* --- Vertrauensleiste --- */
+  .trust__list { list-style: none; padding: 0; display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-3) var(--space-8); }
+  .trust__list li { font-weight: var(--weight-medium); color: var(--color-heading); font-size: 0.95rem; display: flex; align-items: center; gap: var(--space-2); }
+  .trust__list li::before { content: ''; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--color-primary); }
+
+  .bereichs-lead { margin-top: calc(var(--space-4) * -1); margin-bottom: var(--space-8); max-width: 46rem; }
+  .bereichs-lead :global(a) { font-weight: var(--weight-medium); }
+
+  /* --- Kacheln --- */
+  .tiles { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); }
+  @media (max-width: 960px) { .tiles { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .tiles { grid-template-columns: 1fr; } }
+  .tile {
+    position: relative;
+    display: flex; flex-direction: column; gap: var(--space-2);
+    height: 100%;
+    padding: var(--space-6);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+  }
+  .tile h3 { font-size: 1.15rem; }
+  .tile p { font-size: 0.95rem; line-height: 1.55; padding-right: var(--space-6); }
+  .tile__more { position: absolute; right: var(--space-4); bottom: var(--space-4); transition: transform var(--duration-base) var(--ease-out-soft); }
+  .tile:hover .tile__more { transform: translate3d(4px, 0, 0); }
+  .tiles--hell .tile { background: #fff; border: 1px solid var(--color-border); box-shadow: var(--shadow-sm); }
+  .tiles--hell .tile:hover { box-shadow: var(--shadow); border-color: var(--color-primary); }
+  .tiles--hell .tile h3 { color: var(--color-heading); }
+  .tiles--hell .tile p { color: var(--color-text); }
+  .tiles--hell .tile__more { color: var(--color-accent-text); }
+  .tiles--dunkel .tile { background: var(--color-graphit-soft); border: 1px solid var(--color-border-dark); }
+  .tiles--dunkel .tile:hover { border-color: var(--color-primary); }
+  .tiles--dunkel .tile h3 { color: #fff; }
+  .tiles--dunkel .tile p { color: var(--color-on-dark-soft); }
+  .tiles--dunkel .tile__more { color: var(--color-primary-on-dark); }
+
+  /* --- Kette (Auszug) --- */
+  .kette { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-6); counter-reset: none; position: relative; }
+  @media (max-width: 900px) { .kette { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .kette { grid-template-columns: 1fr; } }
+  .kette__schritt { padding-top: var(--space-6); border-top: 2px solid var(--color-primary); }
+  .kette__nr { font-family: var(--font-heading); font-weight: var(--weight-bold); font-size: 2.25rem; color: var(--color-accent-text); line-height: 1; display: block; margin-bottom: var(--space-3); }
+  .kette__schritt h3 a { color: var(--color-heading); text-decoration: none; }
+  .kette__schritt h3 a:hover { color: var(--color-accent-text); }
+  .kette__schritt p { margin-top: var(--space-2); font-size: 0.95rem; }
+
+  /* --- Ablauf --- */
+  .ablauf { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-6); }
+  @media (max-width: 900px) { .ablauf { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .ablauf { grid-template-columns: 1fr; } }
+  .ablauf__nr {
+    display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 50%;
+    background: var(--color-petrol); color: var(--color-primary-on-dark); font-weight: var(--weight-bold); margin-bottom: var(--space-4);
+  }
+  .ablauf__schritt p { margin-top: var(--space-2); font-size: 0.95rem; }
+
+  /* --- Vorteile --- */
+  .vorteile { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-8) var(--space-6); }
+  @media (max-width: 900px) { .vorteile { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .vorteile { grid-template-columns: 1fr; } }
+  .vorteil :global(.icon) { color: var(--color-accent-text); margin-bottom: var(--space-3); }
+  .vorteil h3 { font-size: 1.05rem; }
+  .vorteil p { margin-top: var(--space-2); font-size: 0.95rem; }
+
+  /* --- Einsatzgebiet --- */
+  .gebiet { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr); gap: clamp(2rem, 6vw, 5rem); align-items: center; }
+  @media (max-width: 760px) { .gebiet { grid-template-columns: 1fr; } }
+  .gebiet__karte { max-width: 26rem; margin: 0; }
+  .gebiet__text { display: flex; flex-direction: column; gap: var(--space-4); max-width: 38rem; }
+  .gebiet__text p + p { margin-top: 0; }
+  .radius { fill: none; stroke: var(--color-primary); stroke-width: 2; }
+  .radius--50 { stroke-dasharray: 6 8; stroke: var(--color-accent-text); opacity: 0.6; }
+  .radius--30 { fill: rgb(185 155 99 / 0.14); }
+  .radius__punkt { fill: var(--color-petrol); }
+  .radius__label { font: 600 14px var(--font-body); fill: var(--color-accent-text); }
+  .radius__label--stadt { fill: var(--color-heading); font-size: 16px; }
+
+  /* --- FAQ --- */
+  .faq-wrap { max-width: 46rem; }
+
+  /* --- Abschluss --- */
+  .abschluss__text { max-width: 40rem; margin: 0 auto var(--space-8); color: var(--color-on-dark-soft); }
+  .abschluss__aktionen { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: var(--space-6); }
+  .abschluss__tel { color: #fff; font-weight: var(--weight-bold); text-decoration: none; min-height: 44px; display: inline-flex; align-items: center; }
+  .abschluss__tel:hover { color: var(--color-primary-on-dark); }
+</style>

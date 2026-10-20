@@ -1,0 +1,139 @@
+---
+/**
+ * Laufband – horizontal endlos laufende Bildleiste (Referenzen, Projekte,
+ * Partnerlogos, Team).
+ *
+ * WOFUER
+ *   Ein 4x3-Raster kostet auf einer Startseite schnell 900 Pixel Hoehe fuer
+ *   eine Botschaft, die nach drei Bildern verstanden ist. Das Laufband zeigt
+ *   mehr Motive auf einem Viertel der Flaeche und bewegt sich – das zieht den
+ *   Blick, ohne zu draengen. Die vollstaendige Galerie kommt auf eine eigene
+ *   Seite, darunter ein Button dorthin.
+ *
+ * VERWENDUNG
+ *   examples/Laufband.astro → src/components/ kopieren.
+ *
+ *     <Laufband items={bilder} dauer={60} />
+ *
+ *   `items` ist ein Array aus { bild: ImageMetadata, alt: string }.
+ *   Faustregel: mindestens 8 Motive, sonst sieht man die Wiederholung.
+ *
+ *   Volle Fensterbreite statt Container-Breite wirkt deutlich besser. Dafuer
+ *   in der umgebenden Sektion:
+ *     .sektion :global(.container) { max-width: none; padding-inline: 0; }
+ *   und den Sektionskopf separat wieder eingrenzen.
+ *
+ * TECHNIK, die man sonst zweimal lernt
+ *   - Kein JavaScript, keine Bibliothek. Reine CSS-Animation.
+ *   - Die Liste wird EINMAL dupliziert und die Spur um -50 % verschoben.
+ *     Dadurch ist der Umbruch nahtlos, ohne Breitenberechnung.
+ *   - Das Duplikat ist `aria-hidden` und hat leere alt-Texte, sonst liest
+ *     der Screenreader jedes Motiv doppelt vor.
+ *   - Animation als EINZEL-Properties, nicht als Kurzschreibweise: der
+ *     Minifier zerlegt eine `animation`-Shorthand ohne Dauer in leere
+ *     Longhands, und die Bewegung ist im Build tot (siehe SKILL.md).
+ *   - `overflow: clip`, nicht `hidden` – hidden macht das Element zum
+ *     Scroll-Container und friert view()-Timelines im Inneren ein.
+ *   - Pause beim Darueberfahren und bei Tastaturfokus: sonst kann man ein
+ *     Motiv nicht ansehen.
+ *   - prefers-reduced-motion haelt das Band an und macht es stattdessen
+ *     horizontal scrollbar. Der Inhalt bleibt also erreichbar, statt
+ *     abgeschnitten stehenzubleiben.
+ */
+import { Image } from 'astro:assets';
+
+interface Props {
+  items: Array<{ bild: ImageMetadata; alt: string }>;
+  /** Sekunden fuer einen kompletten Durchlauf. Mehr = langsamer. */
+  dauer?: number;
+  /** Breite einer Kachel. */
+  breite?: string;
+}
+
+const { items, dauer = 60, breite = '17.5rem' } = Astro.props;
+---
+
+<div class="lauf" style={`--lauf-dauer:${dauer}s;--lauf-breite:${breite}`}>
+  <div class="lauf__spur">
+    {
+      [0, 1].map((durchgang) => (
+        <ul class="lauf__reihe" aria-hidden={durchgang === 1 ? 'true' : undefined}>
+          {items.map((r) => (
+            <li class="lauf__zelle">
+              <Image
+                src={r.bild}
+                alt={durchgang === 1 ? '' : r.alt}
+                widths={[320, 560]}
+                sizes={breite}
+                loading="lazy"
+                class="lauf__bild"
+              />
+            </li>
+          ))}
+        </ul>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .lauf {
+    overflow: clip;
+    /* Weiche Kanten, damit die Bilder aus der Seite laufen statt
+       abgeschnitten zu wirken. */
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  }
+
+  .lauf__spur {
+    display: flex;
+    width: max-content;
+  }
+
+  .lauf__reihe {
+    display: flex;
+    gap: var(--space-4);
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 var(--space-4);
+  }
+  .lauf__reihe li { margin: 0; }
+
+  .lauf__zelle { flex: none; width: var(--lauf-breite); }
+
+  .lauf__bild {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--radius-media);
+    box-shadow: var(--shadow-sm);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .lauf__spur {
+      animation-name: lauf-band;
+      animation-duration: var(--lauf-dauer);
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      animation-fill-mode: both;
+    }
+    .lauf:hover .lauf__spur,
+    .lauf:focus-within .lauf__spur { animation-play-state: paused; }
+  }
+
+  @keyframes lauf-band {
+    from { transform: translate3d(0, 0, 0); }
+    /* Genau die halbe Spur – dort steht das Duplikat deckungsgleich. */
+    to { transform: translate3d(-50%, 0, 0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lauf { overflow-x: auto; }
+    .lauf__reihe[aria-hidden] { display: none; }
+  }
+
+  @media (max-width: 640px) {
+    .lauf__zelle { width: 13rem; }
+  }
+</style>

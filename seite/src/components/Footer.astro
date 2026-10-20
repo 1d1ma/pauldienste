@@ -1,0 +1,129 @@
+---
+/**
+ * Footer: Spalten aus pages.ts, Kontaktblock mit NAP wie im Google-Profil.
+ * Im Copyright steht die Marke, die Firmierung steht im Impressum.
+ */
+import { navByCluster, pagesByCluster } from '../data/pages';
+import { site } from '../data/site';
+import InternalLink from './InternalLink.astro';
+
+const rechtliches = [...pagesByCluster('kontakt'), ...pagesByCluster('rechtliches')];
+
+const columns = [
+  { title: 'Gebäudereinigung', items: navByCluster('reinigung') },
+  { title: 'Handwerk', items: navByCluster('handwerk') },
+];
+
+const year = 2026;
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__top">
+      <div class="site-footer__brand">
+        <img src="/logo/quer-dunkel.svg" alt="Paul Nagel Gebäudedienste" width="464" height="128" class="site-footer__logo" />
+        <p class="site-footer__text">
+          Reinigung, Renovierung und Hausmeisterservice für Privat und Gewerbe.
+          Wir arbeiten in {site.vorOrtGebiet}.
+        </p>
+        <address class="site-footer__nap">
+          {site.kontakt.strasse}<br />
+          {site.kontakt.plz} {site.kontakt.ort}<br />
+          <a href={`tel:${site.kontakt.telefon}`}>{site.kontakt.telefonAnzeige}</a><br />
+          <a href={`mailto:${site.kontakt.email}`}>{site.kontakt.email}</a><br />
+          Mo bis Fr 8 bis 17 Uhr
+        </address>
+      </div>
+
+      {
+        columns.map((col) => (
+          <nav class="site-footer__col" aria-label={col.title}>
+            <h3 class="site-footer__title">{col.title}</h3>
+            <ul>
+              {col.items.map((p) => (
+                <li><InternalLink to={p.slug}>{p.label ?? p.title}</InternalLink></li>
+              ))}
+            </ul>
+          </nav>
+        ))
+      }
+    </div>
+
+    <div class="site-footer__bottom">
+      <p>© {year} {site.name}</p>
+      <ul class="site-footer__legal">
+        {
+          rechtliches.map((p) => (
+            <li><InternalLink to={p.slug}>{p.label ?? p.title}</InternalLink></li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--color-petrol);
+    color: var(--color-on-dark-soft);
+    padding-block: var(--space-16) var(--space-6);
+    /* KEIN margin-top: die vorhergehende Sektion bringt ihren eigenen
+       Abstand mit. Ein Aussenabstand erzeugte hier einen weissen Streifen
+       zwischen der farbigen CTA-Sektion und dem Footer. */
+  }
+
+  .site-footer__top {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: var(--space-8);
+  }
+  @media (max-width: 980px) {
+    .site-footer__top { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .site-footer__top { grid-template-columns: 1fr; }
+  }
+
+  .site-footer__logo { width: 14rem; height: auto; margin-bottom: var(--space-4); }
+  .site-footer__nap { font-style: normal; font-size: var(--size-small); line-height: 1.8; margin-top: var(--space-4); }
+  .site-footer__claim {
+    font-family: var(--font-heading);
+    font-weight: var(--weight-bold);
+    color: #fff;
+    font-size: 1.05rem;
+    margin-bottom: var(--space-3);
+  }
+  .site-footer__text { font-size: var(--size-small); line-height: 1.6; }
+
+  .site-footer__title {
+    font-size: var(--size-small);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-primary);
+    margin-bottom: var(--space-3);
+  }
+
+  .site-footer ul { list-style: none; margin: 0; padding: 0; }
+  .site-footer li { margin: 0 0 var(--space-2); }
+
+  .site-footer :global(a) {
+    color: var(--color-on-dark-soft);
+    text-decoration: none;
+    font-size: var(--size-small);
+  }
+  .site-footer :global(a:hover) { color: var(--color-primary); }
+
+  .site-footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-top: var(--space-12);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border-dark);
+    font-size: var(--size-small);
+  }
+  .site-footer__legal { display: flex; gap: var(--space-4); }
+  .site-footer__legal li { margin: 0; }
+</style>

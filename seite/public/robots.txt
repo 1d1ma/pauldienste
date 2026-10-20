@@ -1,0 +1,13 @@
+# KI-Crawler ausdruecklich erlauben.
+# Wer GPTBot, PerplexityBot, ClaudeBot oder Google-Extended blockiert, kann von
+# der jeweiligen Plattform nicht zitiert werden. Fuer lokale Betriebe ist das
+# fast immer ein Nachteil ohne Gegenwert.
+#
+# Bewusst NICHT blockiert, aber erwaehnenswert: CCBot (Common Crawl) dient
+# primaer dem Modelltraining, nicht dem Zitieren. Wer ausschliesslich Training
+# ausschliessen will, blockiert gezielt CCBot - nicht die Such-Bots.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://www.TODO-marke.de/sitemap-index.xml

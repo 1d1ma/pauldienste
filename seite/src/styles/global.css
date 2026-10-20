@@ -1,0 +1,142 @@
+@import './tokens.css';
+@import './motion.css';
+
+/* ------------------------------------------------------------------ *
+ * Schriften – lokal ausgeliefert aus public/fonts/.
+ * Bewusst KEIN Google-Fonts-Request: das waere ein Verbindungsaufbau zu
+ * Google bei jedem Seitenaufruf und damit ein Datenschutzthema.
+ * `font-display: swap` zeigt sofort die Systemschrift und tauscht nach –
+ * kein unsichtbarer Text beim Laden.
+ * ------------------------------------------------------------------ */
+@font-face { font-family: 'Montserrat'; font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/montserrat-400.woff2') format('woff2'); }
+@font-face { font-family: 'Montserrat'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/montserrat-500.woff2') format('woff2'); }
+@font-face { font-family: 'Montserrat'; font-style: normal; font-weight: 600; font-display: swap; src: url('/fonts/montserrat-600.woff2') format('woff2'); }
+@font-face { font-family: 'Montserrat'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/montserrat-700.woff2') format('woff2'); }
+
+/* ------------------------------------------------------------------ *
+ * Reset (minimal, modern)
+ * ------------------------------------------------------------------ */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+
+html { -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--size-body);
+  line-height: var(--leading-body);
+  color: var(--color-text);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+input, button, textarea, select { font: inherit; color: inherit; }
+p, h1, h2, h3, h4 { overflow-wrap: break-word; }
+
+/* ------------------------------------------------------------------ *
+ * Typografie (HANDOVER §8)
+ * ------------------------------------------------------------------ */
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-heading);
+  text-wrap: balance;
+}
+
+h1 { font-size: var(--size-h1); color: var(--color-heading); }
+h2 { font-size: var(--size-h2); color: var(--color-heading); }
+h3 { font-size: var(--size-h3); color: var(--color-heading-sub); }
+
+p { text-wrap: pretty; }
+p + p { margin-top: var(--space-4); }
+
+a { color: var(--color-petrol); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a:hover { color: var(--color-primary-hover); }
+
+ul, ol { padding-left: 1.25rem; }
+li + li { margin-top: var(--space-2); }
+
+/* ------------------------------------------------------------------ *
+ * Layout-Primitive
+ * ------------------------------------------------------------------ */
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-padding);
+}
+.container--narrow { max-width: var(--container-narrow); }
+
+.stack > * + * { margin-top: var(--space-4); }
+.stack-lg > * + * { margin-top: var(--space-8); }
+
+/* ------------------------------------------------------------------ *
+ * Bilder – EINE Behandlung für alle Medien.
+ * `.media` umschliesst Foto oder Grafik; die Ecke sitzt am Wrapper, damit
+ * auch Grafiken mit eigener weisser Flaeche sauber gerundet wirken.
+ * ------------------------------------------------------------------ */
+.media {
+  position: relative;
+  border-radius: var(--radius-media);
+  overflow: hidden;
+  box-shadow: var(--shadow-media);
+  background: #fff;
+}
+.media > img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+/* Herkunfts-Badge (z. B. "Symbolbild") dezent unten rechts INS Bild – die
+ * Kennzeichnung nach KI-VO / § 5 UWG, "spätestens bei der ersten Exposition".
+ * Ein Ort fuer ALLE .media-Bilder (nicht nur der Hero). Den Text liefert
+ * bildHinweis() aus src/data/bildherkunft.ts; im Markup steht innerhalb des
+ * .media-Wrappers:  {bildHinweis(bild) && <span class="bild-badge">{bildHinweis(bild)}</span>}
+ * Als Bildunterschrift UNTER dem Bild wirkt derselbe Hinweis schnell wie ein
+ * echter Bildtitel – der Badge im Bild ist eindeutiger und ruhiger. */
+.media > .bild-badge {
+  position: absolute;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-sm);
+  background: rgb(36 40 44 / 0.72);
+  color: #fff;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  pointer-events: none;
+}
+/* Nur für Screenreader */
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Skip-Link */
+.skip-link {
+  position: absolute;
+  left: var(--space-4);
+  top: -100px;
+  z-index: 100;
+  background: var(--color-petrol);
+  color: #fff;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  transition: top var(--duration-fast) var(--ease-out-soft);
+}
+.skip-link:focus { top: var(--space-4); color: #fff; }

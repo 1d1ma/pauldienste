@@ -1,0 +1,81 @@
+{
+  "_meta": {
+    "beschreibung": "ZENTRALE PREIS-QUELLE. Alle Seiten rendern daraus – keine hartkodierten Preise im Content.",
+    "waehrung": "EUR",
+    "inklusive": "inkl. MwSt.",
+    "exklusive": "ohne Montage/Versand",
+    "ausfuehrung": "2-teilig, Höhe 2200 mm, Standardausstattung, 2-fach-Verglasung",
+    "breitenklassen": "Die Spalten sind Klassen, keine exakten Maße: '2m' = 2,0–2,9 m, '3m' = 3,0–3,9 m usw. Der jeweilige Preis ist der Einstieg der Klasse (schmalste lieferbare Breite bei Referenzhöhe 2200 mm).",
+    "referenzmasse_mm": {
+      "2m": "Kunststoff 2010×2200 · Aluminium 2000×2200 · Holz/Holz-Alu 2135×2200 (schmaler ist systembedingt nicht lieferbar)",
+      "3m": "3000×2200",
+      "4m": "4000×2200",
+      "5m": "5000×2200",
+      "6m": "6000×2200"
+    },
+    "hoehen_effekt": "Höhe 2200 statt 2100 mm kostet nur ca. +2,4 % – deshalb durchgängig 2200 mm als Referenz.",
+    "warnung_minimalmass": "NICHT mit dem technischen Minimum werben: Kunststoff 2010×2010 kostet zwar nur 2.121 € (Aktion), das ist aber ein Sondertarif exakt auf der Mindesthöhe. 90 mm mehr Höhe verteuern um +30 % (Kunststoff) bis +88 % (Holz-Alu). Als 'ab'-Preis unehrlich.",
+    "preislogik": "Fensterversand AKTIONSPREIS (effektiver Marktpreis – die -20 %-Aktion läuft dauerhaft) + 3,5 %, gerundet auf 10 €. Grundsatz: nie unter dem effektiven Fensterversand-Preis.",
+    "wichtig": "Nicht der Fensterversand-Regulärpreis, sondern der dauerhaft rabattierte Aktionspreis ist die Referenz – das ist der Preis, den Kunden real zahlen.",
+    "referenzquelle": "content/research/fensterversand-matrix.md (Spalte Aktionspreis)",
+    "stand": "2026-07-23",
+    "status": {
+      "kunststoff": "final – Konfigurator-Matrix (Aktionspreis)",
+      "aluminium": "final – Konfigurator-Matrix (Aktionspreis; Basis Schüco ASE Einstieg, Lieferzeit 8–11 Wochen)",
+      "holz": "final – Konfigurator-Matrix; max. ~5510 mm, kein 6-m-Format (Profil Kiefer)",
+      "holz_alu": "final – Konfigurator-Matrix; max. ~5510 mm, kein 6-m-Format",
+      "2m": "final – Konfigurator-Matrix bei Referenzhöhe 2200 mm (Seite /2m/ noch geplant)"
+    }
+  },
+
+  "materialien": {
+    "kunststoff": {
+      "2m": 2940,
+      "3m": 3560,
+      "4m": 4190,
+      "5m": 4890,
+      "6m": 5490,
+      "quelle": "final"
+    },
+    "aluminium": {
+      "2m": 3470,
+      "3m": 4510,
+      "4m": 5010,
+      "5m": 5290,
+      "6m": 5790,
+      "quelle": "final",
+      "hinweis": "Basis Schüco ASE Einstieg; Lieferzeit länger (8–11 Wochen)."
+    },
+    "holz": {
+      "2m": 4690,
+      "3m": 5440,
+      "4m": 6350,
+      "5m": 7770,
+      "6m": null,
+      "quelle": "final",
+      "hinweis": "Max. Breite ~5510 mm – KEIN 6-m-Holz möglich. Profil Kiefer."
+    },
+    "holz_alu": {
+      "2m": 6320,
+      "3m": 7310,
+      "4m": 8530,
+      "5m": 10460,
+      "6m": null,
+      "quelle": "final",
+      "hinweis": "Max. Breite ~5510 mm – kein 6-m-Format. Kiefer-Kern mit Alu-Schale."
+    }
+  },
+
+  "montage": {
+    "min": 800,
+    "max": 1400,
+    "hinweis": "Vereinheitlicht (Handover Problem 5). Zuvor 5 widersprüchliche Spannen."
+  },
+
+  "aufschlaege": {
+    "_hinweis": "Premium-Marken als Aufschlag auf die Material-Basis, nicht als eigene Zahlen (Handover §5). Werte = kaufmännische Entscheidung des Betreibers.",
+    "rehau_ueber_kunststoff_pct": null,
+    "schueco_premium_ueber_aluminium_pct": null,
+    "aluplast_hinweis": "Frühere '1.894 €' (Profil-/Basispreis) entfällt als Türpreis; aluplast-Türpreis = Kunststoff-Basis."
+  }
+}

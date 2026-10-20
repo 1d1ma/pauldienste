@@ -1,0 +1,149 @@
+---
+/**
+ * PriceTable – EINE Preistabelle für alle Seiten. Rendert ausschließlich aus
+ * preise.json. Nicht lieferbare Kombinationen (z. B. Holz 6 m) werden korrekt
+ * als "–" mit Hinweis ausgewiesen statt erfunden.
+ *
+ *   <PriceTable />                                   // alles
+ *   <PriceTable materials={['kunststoff']} />        // nur Kunststoff
+ *   <PriceTable highlightWidth="4m" />               // Spalte hervorheben
+ */
+import {
+  WIDTHS, MATERIAL_LABELS, WIDTH_LABELS,
+  getPrice, formatPrice, materialHint,
+  type MaterialKey, type WidthKey,
+} from '../data/preise';
+
+interface Props {
+  materials?: MaterialKey[];
+  widths?: WidthKey[];
+  highlightWidth?: WidthKey;
+  caption?: string;
+  class?: string;
+}
+
+const {
+  materials = ['kunststoff', 'aluminium', 'holz', 'holz_alu'] as MaterialKey[],
+  widths = WIDTHS,
+  highlightWidth,
+  caption,
+  class: className = '',
+} = Astro.props;
+
+// Hinweise nur für die tatsächlich gezeigten Materialien sammeln
+const hints = materials
+  .map((m) => ({ material: m, hint: materialHint(m) }))
+  .filter((h): h is { material: MaterialKey; hint: string } => Boolean(h.hint));
+---
+
+<div class={`ptable-wrap ${className}`}>
+  <table class="ptable">
+    {caption && <caption>{caption}</caption>}
+    <thead>
+      <tr>
+        <th scope="col">Material</th>
+        {
+          widths.map((w) => (
+            <th scope="col" class={w === highlightWidth ? 'is-highlight' : undefined}>
+              {WIDTH_LABELS[w]}
+            </th>
+          ))
+        }
+      </tr>
+    </thead>
+    <tbody>
+      {
+        materials.map((m) => (
+          <tr>
+            <th scope="row">{MATERIAL_LABELS[m]}</th>
+            {widths.map((w) => {
+              const price = getPrice(m, w);
+              return (
+                <td class={w === highlightWidth ? 'is-highlight' : undefined}>
+                  {price === null ? (
+                    <span class="ptable__na" title="Für dieses Format nicht lieferbar">–</span>
+                  ) : (
+                    <>ab {formatPrice(price)}</>
+                  )}
+                </td>
+              );
+            })}
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+
+  <p class="ptable__note">
+    Alle Preise inkl. MwSt., ohne Montage. 2-teilige Ausführung, Höhe 2,20 m,
+    Standardausstattung. Maßgefertigt – der Endpreis hängt von Maß, Farbe und
+    Verglasung ab.
+  </p>
+
+  {
+    hints.length > 0 && (
+      <ul class="ptable__hints">
+        {hints.map((h) => (
+          <li>
+            <strong>{MATERIAL_LABELS[h.material]}:</strong> {h.hint}
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</div>
+
+<style>
+  /* Breite Tabellen scrollen in sich selbst – die Seite scrollt nie horizontal */
+  .ptable-wrap { overflow-x: auto; }
+
+  .ptable {
+    width: 100%;
+    min-width: 32rem;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+
+  caption {
+    caption-side: top;
+    text-align: left;
+    font-weight: var(--weight-bold);
+    color: var(--color-heading);
+    padding-bottom: var(--space-3);
+  }
+
+  th, td {
+    padding: var(--space-3) var(--space-4);
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  thead th {
+    background: var(--color-petrol);
+    color: #fff;
+    font-size: var(--size-small);
+    letter-spacing: 0.02em;
+  }
+
+  tbody th { font-weight: var(--weight-bold); color: var(--color-heading); }
+  tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+  tbody tr:nth-child(even) { background: var(--color-bg-alt); }
+
+  td { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  .is-highlight { background: rgb(243 156 18 / 0.12); }
+  thead .is-highlight { background: var(--color-primary); }
+
+  .ptable__na { color: var(--color-text-muted); }
+
+  .ptable__note,
+  .ptable__hints {
+    margin-top: var(--space-3);
+    font-size: var(--size-small);
+    color: var(--color-text-muted);
+  }
+  .ptable__hints { padding-left: 1.1rem; }
+</style>

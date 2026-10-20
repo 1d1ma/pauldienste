@@ -1,0 +1,80 @@
+---
+/**
+ * Features – die Vertrauensleiste unter dem Hero.
+ *
+ * Bewusst KEINE Karten und keine farbigen Seitenstreifen: die Gruppierung
+ * entsteht allein über Abstand und ein kleines Linien-Icon. Vier gleich
+ * gewichtete Aussagen, die man im Vorbeiscrollen liest.
+ */
+import Icon from './Icon.astro';
+
+export interface Feature {
+  icon: 'lieferung' | 'stern' | 'erfahrung' | 'preis' | 'fachbetrieb';
+  title: string;
+  text?: string;
+}
+
+interface Props {
+  items: Feature[];
+  variant?: 'default' | 'alt';
+}
+
+const { items, variant = 'default' } = Astro.props;
+---
+
+<section class={`features features--${variant}`}>
+  <div class="container">
+    <ul class="features__row stagger">
+      {
+        items.map((f) => (
+          <li class="features__item reveal">
+            <Icon name={f.icon} size={22} class="features__icon" />
+            <div>
+              <p class="features__title">{f.title}</p>
+              {f.text && <p class="features__text">{f.text}</p>}
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .features {
+    padding-block: var(--space-8);
+    border-block: 1px solid var(--color-border);
+  }
+  .features--alt { background: var(--color-bg-alt); }
+
+  .features__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-8) var(--space-12);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .features__item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    margin: 0;
+    flex: 1 1 13rem;
+  }
+
+  .features__icon { color: var(--color-primary); margin-top: 2px; }
+
+  .features__title {
+    font-family: var(--font-heading);
+    font-weight: var(--weight-bold);
+    color: var(--color-petrol);
+    line-height: 1.3;
+  }
+  .features__text {
+    font-size: var(--size-small);
+    color: var(--color-text-muted);
+    margin-top: var(--space-1);
+  }
+</style>

@@ -1,0 +1,31 @@
+---
+/**
+ * InternalLink – der EINZIGE Weg, interne Links zu setzen.
+ *
+ *   <InternalLink to="/preise/">Preisübersicht</InternalLink>
+ *   <InternalLink to="/leistungen/" />       // nimmt den Title aus der DB
+ *
+ * `internalLink()` wirft bei unbekanntem Slug → der Build bricht ab.
+ * Damit fallen tote interne Links sofort auf (HANDOVER §7).
+ */
+import { internalLink } from '../data/pages';
+
+interface Props {
+  to: string;
+  class?: string;
+  /** rel/target nur für Sonderfälle */
+  rel?: string;
+}
+
+const { to, class: className = '', rel } = Astro.props;
+const { href, title, planned } = internalLink(to);
+
+// Geplante Seiten dürfen referenziert werden, sollen aber im Build sichtbar sein.
+if (planned && import.meta.env.PROD) {
+  console.warn(`[InternalLink] "${to}" ist als "geplant" markiert und noch nicht live.`);
+}
+---
+
+<a href={href} class={`transition-colors ${className}`} rel={rel}>
+  <slot>{title}</slot>
+</a>

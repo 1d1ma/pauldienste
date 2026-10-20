@@ -1,5 +1,7 @@
 # Plan neue Website pauldienste.de
 
+Stand 20.10.2026 (6. Fassung). **20.10.2026: Paul hat Entrümpelung und Gartenarbeit bestätigt, beide kommen als eigene Seiten rein. Die 20-Seiten-Grenze wird überschritten (Dietrich: kein Problem). Bau: Astro-Projekt in `seite/`, Startseite steht, Animationen in `seite/ANIMATIONEN.md`.**
+
 Stand 19.10.2026 (5. Fassung nach Rücksprache Dietrich). Logo und Slogan noch nicht freigegeben, Website wird trotzdem gebaut (Logo als austauschbare Komponente, Slogan als eine Variable).
 
 Auftrag (25.09.2026): Astro, ohne Cookies, SEO, bis 20 Unterseiten, neue Leistungen (Fliegengitter, Bodenverlegung, Möbel- und Küchenmontage), Verkaufsbereich Premium-Bodenbeläge und Farben, 2 Korrekturschleifen. Design: **Gebäudereinigung hell, Handwerk dunkel**.

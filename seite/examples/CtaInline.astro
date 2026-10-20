@@ -1,0 +1,93 @@
+---
+/**
+ * CtaInline – schlanker Handlungsaufruf zwischen zwei Sektionen.
+ *
+ * Zweck: Auf einer langen Seite darf der Leser nicht erst ganz unten wieder
+ * auf einen Termin-Button treffen. Gesetzt wird er nach den Momenten, in
+ * denen der Leser gerade einen Grund bekommen hat (nach den Leistungen,
+ * nach dem Behandlungsablauf).
+ *
+ * Bewusst KEINE volle Sektion mit Überschrift: das würde die Dramaturgie
+ * zerhacken und nach Werbedruck aussehen. Eine Zeile, ein Satz, zwei Wege.
+ */
+import { site } from '../data/site';
+
+interface Props {
+  /** Ein Satz, der an den vorherigen Abschnitt anschließt */
+  text: string;
+  ctaLabel?: string;
+}
+const { text, ctaLabel = site.ctaLabel } = Astro.props;
+---
+
+<aside class="cta-inline reveal">
+  <p class="cta-inline__text">{text}</p>
+  <div class="cta-inline__aktionen">
+    <a class="cta-inline__btn lift" href={site.angebotUrl}>{ctaLabel}</a>
+    <a class="cta-inline__tel transition-colors" href={`tel:${site.kontakt.telefon}`}>
+      {site.kontakt.telefonAnzeige}
+    </a>
+  </div>
+</aside>
+
+<style>
+  .cta-inline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-6);
+    margin-top: var(--space-12);
+    padding: var(--space-6) var(--space-8);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-alt);
+  }
+
+  .cta-inline__text {
+    font-family: var(--font-heading);
+    font-size: var(--size-h3);
+    line-height: var(--leading-heading);
+        color: var(--color-heading);
+    max-width: 34ch;
+    text-wrap: balance;
+  }
+
+  .cta-inline__aktionen {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    flex-wrap: wrap;
+  }
+
+  .cta-inline__btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.8rem 1.6rem;
+    border-radius: var(--radius);
+    background: var(--color-petrol);
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+    min-height: 44px;
+    box-shadow: var(--shadow-sm);
+  }
+  .cta-inline__btn:hover {
+    background: var(--color-petrol-dark);
+    color: #fff;
+  }
+
+  .cta-inline__tel {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-weight: 600;
+    color: var(--color-heading);
+    text-decoration: none;
+  }
+  .cta-inline__tel:hover { color: var(--color-primary-hover); }
+
+  @media (max-width: 40rem) {
+    .cta-inline { flex-direction: column; align-items: flex-start; }
+  }
+</style>

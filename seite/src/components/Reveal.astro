@@ -1,0 +1,28 @@
+---
+/**
+ * Reveal – gestaffelter Scroll-Eintritt.
+ * Kapselt die Motion-Regeln, damit sie nirgends neu erfunden werden.
+ *
+ *   <Reveal>…</Reveal>
+ *   <Reveal as="section" stagger>…</Reveal>   // Kinder gestaffelt
+ *   <Reveal delay={120}>…</Reveal>
+ *
+ * Der IntersectionObserver läuft einmal global in Base.astro.
+ */
+interface Props {
+  /** Wrapper-Element (default: div) */
+  as?: string;
+  /** Kinder nacheinander einblenden */
+  stagger?: boolean;
+  /** Zusätzliche Verzögerung in ms */
+  delay?: number;
+  class?: string;
+}
+
+const { as: Tag = 'div', stagger = false, delay = 0, class: className = '' } = Astro.props;
+const cls = ['reveal', stagger ? 'stagger' : '', className].filter(Boolean).join(' ');
+---
+
+<Tag class={cls} style={delay ? `--reveal-delay:${delay}ms` : undefined}>
+  <slot />
+</Tag>

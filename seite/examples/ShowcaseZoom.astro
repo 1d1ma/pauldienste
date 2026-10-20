@@ -1,0 +1,125 @@
+---
+/**
+ * ShowcaseZoom – Showcase-Sektion nach Webflow-Vorbild: zentriertes
+ * Eyebrow-Badge, große Headline mit Wort-Füllung (ScrollFill), darunter
+ * ein großes Bild, das beim Scrollen von ~70 % auf volle Breite wächst.
+ *
+ * VERWENDUNG (ScrollFill.astro mitkopieren):
+ *   <ShowcaseZoom
+ *     eyebrow="So arbeiten wir"
+ *     text="Jede Beratung beginnt mit Zuhören und einem klaren Plan."
+ *     image={showcaseImg}
+ *     imageAlt="…" />
+ *
+ * Bewährte Position: direkt nach der Bewertungs-Sektion.
+ *
+ * TECHNIK
+ *   - Zoom nur mit transform (Compositor), Timeline via view().
+ *     Später Start (entry 25 %), frühes Ende (cover 55 %): das Bild ist
+ *     ausgewachsen, sobald es etwa mittig im Viewport steht.
+ *   - ACHTUNG: overflow: hidden auf der Sektion würde sie zum
+ *     Scroll-Container machen und die view()-Timeline EINFRIEREN.
+ *     Deshalb overflow: clip. (Teuer gelernter Fehler.)
+ *   - Firefox liefert Scroll-Timelines nicht stable → Mini-Fallback
+ *     (~0,4 KB) unten spiegelt exakt dieselbe Kurve.
+ *   - reduced-motion: Bild steht einfach in voller Größe.
+ */
+import { Picture } from 'astro:assets';
+import ScrollFill from './ScrollFill.astro';
+
+interface Props {
+  eyebrow: string;
+  text: string;
+  image: ImageMetadata;
+  imageAlt: string;
+  id?: string;
+}
+const { eyebrow, text, image, imageAlt, id } = Astro.props;
+---
+
+<section class="showcase" id={id}>
+  <div class="container">
+    <p class="showcase__eyebrow reveal">{eyebrow}</p>
+    <ScrollFill centered text={text} />
+    <div class="showcase__media media">
+      <Picture
+        src={image}
+        alt={imageAlt}
+        formats={['avif', 'webp']}
+        fallbackFormat="webp"
+        widths={[720, 1080, 1440]}
+        sizes="(max-width: 74rem) 100vw, 68rem"
+        loading="lazy"
+      />
+    </div>
+  </div>
+</section>
+
+<style>
+  .showcase {
+    padding-block: clamp(3rem, 6vw, 5rem);
+    /* clip statt hidden – hidden friert die view()-Timeline ein! */
+    overflow: clip;
+  }
+
+  .showcase__eyebrow {
+    display: table;
+    margin-inline: auto;
+    margin-bottom: var(--space-4);
+    padding: 0.35rem 0.9rem;
+    border-radius: var(--radius-sm);
+    background: var(--color-bg-alt);
+    font-size: var(--size-small);
+    font-weight: var(--weight-bold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-petrol);
+  }
+
+  .showcase__media {
+    margin-inline: auto;
+    margin-top: var(--space-12);
+  }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .showcase__media {
+        /* Einzel-Properties statt Kurzschreibweise – siehe SKILL.md,
+           "Wiederkehrende Fehler": der Minifier zerlegt eine
+           animation-Shorthand ohne Dauer in leere Longhands. */
+        animation-name: showcase-zoom;
+        animation-duration: 1s; /* egal, die Scroll-Timeline steuert */
+        animation-timing-function: linear;
+        animation-fill-mode: both;
+        animation-timeline: view();
+        animation-range: entry 25% cover 55%;
+      }
+    }
+  }
+
+  @keyframes showcase-zoom {
+    from { transform: scale(0.7); }
+    to { transform: scale(1); }
+  }
+</style>
+
+{/* Fallback NUR für Browser ohne CSS-Scroll-Timelines (Firefox). */}
+<script is:inline>
+  (function () {
+    if (CSS.supports('animation-timeline: view()')) return;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var m = document.querySelector('.showcase__media');
+    if (!m) return;
+    function update() {
+      // Spiegelt animation-range: entry 25% → cover 55%
+      var r = m.getBoundingClientRect();
+      var start = 0.25 * r.height;
+      var end = 0.55 * (innerHeight + r.height);
+      var p = Math.max(0, Math.min(1, (innerHeight - r.top - start) / (end - start)));
+      m.style.transform = 'scale(' + (0.7 + 0.3 * p).toFixed(3) + ')';
+    }
+    addEventListener('scroll', update, { passive: true });
+    addEventListener('resize', update);
+    update();
+  })();
+</script>

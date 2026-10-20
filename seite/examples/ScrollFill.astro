@@ -1,0 +1,97 @@
+---
+/**
+ * ScrollFill – große Textzeile, die sich beim Scrollen wortweise von Grau
+ * in die Überschriftenfarbe füllt (CSS-only, 0 KB JavaScript).
+ *
+ * Umsetzung nur mit opacity: jedes Wort liegt doppelt da, graue Basis
+ * sichtbar, farbige Deckschicht blendet per animation-timeline: view()
+ * gestaffelt ein.
+ *
+ * REGELN
+ *   - Standardzustand ist der FERTIGE Zustand: Browser ohne
+ *     Scroll-Timelines (Firefox) und prefers-reduced-motion sehen einfach
+ *     den Text. Nie umgekehrt bauen.
+ *   - Screenreader lesen den Text genau einmal (Deckschicht in der Basis
+ *     ist aria-hidden).
+ *   - Sparsam einsetzen, idealerweise EINE Stelle pro Seite – sonst ist
+ *     der Effekt keiner mehr.
+ *   - NICHT für die H1 verwenden (LCP muss sofort stehen).
+ */
+interface Props {
+  text: string;
+  /** Mittig gesetzt und eine Stufe größer – für Showcase-Sektionen */
+  centered?: boolean;
+  class?: string;
+}
+const { text, centered = false, class: className = '' } = Astro.props;
+const words = text.split(' ');
+---
+
+<p class={`scroll-fill ${centered ? 'scroll-fill--centered' : ''} ${className}`}>
+  {
+    words.map((word, i) => (
+      <span class="scroll-fill__word" style={`--w:${i}`}>
+        <span class="scroll-fill__base" aria-hidden="true">{word}</span>
+        <span class="scroll-fill__fill">{word}</span>
+      </span>
+    ))
+  }
+</p>
+
+<style>
+  .scroll-fill {
+    font-family: var(--font-heading);
+    font-size: var(--size-h2);
+    font-weight: var(--weight-bold);
+    line-height: var(--leading-heading);
+    text-wrap: balance;
+    max-width: 24ch;
+  }
+
+  .scroll-fill--centered {
+    font-size: var(--size-h1);
+    text-align: center;
+    margin-inline: auto;
+    max-width: 22ch;
+  }
+
+  .scroll-fill__word {
+    position: relative;
+    display: inline-block;
+    margin-right: 0.28em;
+  }
+  .scroll-fill__word:last-child { margin-right: 0; }
+
+  .scroll-fill__base { color: var(--color-border); }
+
+  .scroll-fill__fill {
+    position: absolute;
+    inset: 0;
+    color: var(--color-heading);
+    /* Standardzustand: sichtbar. Animation kommt per @supports obendrauf. */
+    opacity: 1;
+  }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .scroll-fill__fill {
+        /* Einzel-Properties statt Kurzschreibweise: der CSS-Minifier
+           (lightningcss) zerlegt eine animation-Shorthand ohne Dauer
+           bzw. mit var() in kaputte, leere Longhands. Im Dev faellt das
+           nicht auf, im Build ist die Animation tot. */
+        animation-name: scroll-fill-in;
+        animation-duration: 1s; /* egal, die Scroll-Timeline steuert */
+        animation-timing-function: linear;
+        animation-fill-mode: both;
+        animation-timeline: view();
+        /* Wortweise gestaffelt über den Wort-Index --w */
+        animation-range: entry calc(20% + var(--w) * 4%) entry calc(50% + var(--w) * 4%);
+      }
+    }
+  }
+
+  @keyframes scroll-fill-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+</style>

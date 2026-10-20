@@ -1,0 +1,120 @@
+---
+/**
+ * WidthChooser – "Nach Breite wählen": vier Boxen (3/4/5/6 m) auf Petrol.
+ * Preise kommen aus preise.json, Titel und Links aus der Artikel-Datenbank.
+ * Wiederverwendbar auf allen Breiten- und Materialseiten.
+ */
+import Icon from './Icon.astro';
+import { getPrice, formatPrice, WIDTH_LABELS, type WidthKey } from '../data/preise';
+import { pagesByCluster, registry } from '../data/pages';
+
+interface Props {
+  /** Diese Breite auslassen (auf der jeweiligen Seite selbst) */
+  exclude?: string;
+}
+
+const { exclude } = Astro.props;
+
+// Kurzcharakteristik je Breite – erklärt, wofür das Format steht
+const hints: Record<string, string> = {
+  '/3m/': 'Standard-Öffnung',
+  '/4m/': 'Meistgekaufte Breite',
+  '/5m/': 'Für große Terrassen',
+  '/6m/': 'Architektenformat',
+};
+
+const items = pagesByCluster('breite')
+  .filter((p) => p.slug !== exclude)
+  .map((p) => {
+    const width = p.slug.replace(/\//g, '') as WidthKey;
+    return {
+      slug: p.slug,
+      label: `Hebeschiebetür ${WIDTH_LABELS[width]}`,
+      hint: hints[p.slug] ?? '',
+      price: getPrice('kunststoff', width),
+    };
+  });
+---
+
+<ul class="widths stagger">
+  {
+    items.map((item) => (
+      <li class="widths__item reveal">
+        <a href={registry[item.slug].slug} class="widths__link lift">
+          <span class="widths__label">{item.label}</span>
+          {item.price !== null && (
+            <span class="widths__price">ab {formatPrice(item.price)}</span>
+          )}
+          {item.hint && <span class="widths__hint">{item.hint}</span>}
+          <span class="widths__more">
+            Zur Seite <Icon name="pfeil" size={16} />
+          </span>
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .widths {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: var(--space-4);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .widths__item { margin: 0; }
+
+  .widths__link {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    height: 100%;
+    padding: var(--space-6);
+    border-radius: var(--radius);
+    background: rgb(255 255 255 / 0.07);
+    color: #fff;
+    text-decoration: none;
+  }
+  .widths__link:hover {
+    background: rgb(255 255 255 / 0.12);
+    color: #fff;
+  }
+
+  .widths__label {
+    font-family: var(--font-heading);
+    font-weight: var(--weight-bold);
+    font-size: 1.0625rem;
+    line-height: 1.3;
+  }
+  .widths__price {
+    font-variant-numeric: tabular-nums;
+    font-size: 1.375rem;
+    font-weight: var(--weight-bold);
+    color: #fff;
+    margin-top: var(--space-2);
+  }
+  .widths__hint { font-size: var(--size-small); color: #a9cbd7; }
+
+  .widths__more {
+    margin-top: auto;
+    padding-top: var(--space-4);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: var(--size-small);
+    font-weight: var(--weight-bold);
+    color: var(--color-primary-on-dark);
+  }
+  .widths__link:hover .widths__more :global(.icon) {
+    transform: translateX(3px);
+  }
+  .widths__more :global(.icon) {
+    transition: transform var(--duration-fast) var(--ease-out-soft);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .widths__more :global(.icon) { transition: none; }
+    .widths__link:hover .widths__more :global(.icon) { transform: none; }
+  }
+</style>

@@ -1,0 +1,202 @@
+---
+/**
+ * Base – Grundgerüst aller Seiten. Enthält SEO-Head, Canonical, Schema,
+ * Plausible und den globalen Scroll-Reveal-Observer.
+ *
+ * Titles/Descriptions kommen bevorzugt aus der Artikel-Datenbank (pages.ts),
+ * damit Metadaten und interne Verlinkung dieselbe Quelle haben.
+ */
+import '../styles/global.css';
+import { registry } from '../data/pages';
+import { site, schemaTyp } from '../data/site';
+
+interface Props {
+  /** Slug aus pages.ts – zieht Title/Description automatisch */
+  slug?: string;
+  title?: string;
+  description?: string;
+  /** Seite von der Indexierung ausnehmen (z. B. Danke-Seite) */
+  noindex?: boolean;
+  ogImage?: string;
+}
+
+const { slug, title, description, noindex = false, ogImage } = Astro.props;
+
+const page = slug ? registry[slug] : undefined;
+const pageTitle = title ?? page?.title ?? site.name;
+const pageDescription = description ?? page?.description ?? '';
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+// Default-OG-Bild (Marken-Karte, public/og-default.jpg) für alle Seiten; pro
+// Seite via `ogImage`-Prop überschreibbar. Erzeugung: examples/og-card.html →
+// Headless-Chrome-Render, siehe SKILL.md „Favicon + OG-Bild".
+const ogImageUrl = new URL(ogImage ?? '/og-default.jpg', Astro.site).href;
+
+/**
+ * LocalBusiness-Schema. Der `@type` kommt aus site.branche – Suchmaschinen und
+ * KI-Systeme ordnen den Betrieb darueber ein.
+ *
+ * `name` ist die Marke (bleibt), `legalName` die Firmierung (kann wechseln).
+ * Einzugsgebiet und Vor-Ort-Gebiet werden bewusst getrennt ausgewiesen.
+ *
+ * Oeffnungszeiten sind fuer Praxen, Salons und Kanzleien der wichtigste
+ * Baustein ueberhaupt: lokale Suche und KI-Antworten greifen direkt darauf zu.
+ */
+const businessSchema = {
+  '@context': 'https://schema.org',
+  '@type': schemaTyp,
+  name: site.name,
+  legalName: site.legalName,
+  description: site.kurzbeschreibung,
+  url: `${site.url}/`,
+  telephone: site.kontakt.telefon,
+  email: site.kontakt.email,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: site.kontakt.strasse,
+    postalCode: site.kontakt.plz,
+    addressLocality: site.kontakt.ort,
+    addressCountry: site.kontakt.land,
+  },
+  areaServed: site.einzugsgebiet,
+  serviceArea: {
+    '@type': 'GeoCircle',
+    geoMidpoint: {
+      '@type': 'GeoCoordinates',
+      addressCountry: site.kontakt.land,
+      postalCode: site.kontakt.plz,
+    },
+    description: `Vor Ort in ${site.vorOrtGebiet}`,
+  },
+  ...(site.oeffnungszeiten.length > 0 && {
+    openingHoursSpecification: site.oeffnungszeiten.map((z) => ({
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: z.tage,
+      opens: z.von,
+      closes: z.bis,
+    })),
+  }),
+};
+---
+
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    {/* Favicon PFLICHT vor Livegang: public/favicon.svg auf die Marke umfärben
+        (Platzhalter liegt bei). Ohne Favicon zeigt der Browser-Tab nur das
+        leere Standardsymbol, und Google zeigt keins in den Suchergebnissen. */}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <title>{pageTitle}</title>
+    {pageDescription && <meta name="description" content={pageDescription} />}
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    {pageDescription && <meta property="og:description" content={pageDescription} />}
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="de_DE" />
+    {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+    {ogImageUrl && <meta property="og:image:width" content="1200" />}
+    {ogImageUrl && <meta property="og:image:height" content="630" />}
+    <meta name="twitter:card" content="summary_large_image" />
+    {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
+
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Schriften lokal ausliefern (kein Google-Fonts-Request, DSGVO-freundlich).
+         Dateien nach public/fonts/ legen. -->
+    <link rel="preload" href="/fonts/montserrat-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/montserrat-700.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- JS-Flag: ohne JS bleibt aller Inhalt sichtbar (kein versteckter Text) -->
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+
+    {site.plausibleSrc && (
+      <script is:inline defer data-domain={site.plausibleDomain} src={site.plausibleSrc}></script>
+    )}
+    <!-- Custom-Event-Stub: macht window.plausible() sofort aufrufbar (queued,
+         bis das defer-Script geladen ist) – nötig für Conversion-Goals wie
+         den Funnel-Abschluss. -->
+    <script is:inline>
+      window.plausible =
+        window.plausible ||
+        function () {
+          (window.plausible.q = window.plausible.q || []).push(arguments);
+        };
+    </script>
+
+    <script type="application/ld+json" set:html={JSON.stringify(businessSchema)} is:inline />
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">Zum Inhalt springen</a>
+
+    <slot name="header" />
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <slot name="footer" />
+
+    <!--
+      Globaler Scroll-Reveal. Ein einziger Observer für alle .reveal-Elemente.
+      Elemente werden nach dem Eintritt abgemeldet (einmalig, kein Flackern
+      beim Zurückscrollen) und will-change wieder freigegeben.
+    -->
+    <script is:inline>
+      (function () {
+        var els = document.querySelectorAll('.reveal');
+        if (!els.length) return;
+
+        function revealAll() {
+          els.forEach(function (el) { el.classList.add('is-visible', 'is-settled'); });
+        }
+
+        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        // Versteckter Tab: Transitions laufen dort nicht – sonst bliebe der
+        // Inhalt unsichtbar. Gleiches gilt ohne IntersectionObserver.
+        if (reduce || document.visibilityState === 'hidden' || !('IntersectionObserver' in window)) {
+          revealAll();
+          return;
+        }
+
+        // Wechselt der Tab in den Hintergrund, laufen Transitions nicht mehr.
+        // Dann sofort alles aufdecken, statt Inhalt hinter einer nie
+        // startenden Animation zu verstecken.
+        document.addEventListener('visibilitychange', function () {
+          if (document.visibilityState === 'hidden') revealAll();
+        });
+
+        var io = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (!entry.isIntersecting) return;
+              var el = entry.target;
+              el.classList.add('is-visible');
+              io.unobserve(el);
+              el.addEventListener(
+                'transitionend',
+                function () { el.classList.add('is-settled'); },
+                { once: true }
+              );
+            });
+          },
+          // Etwas vor dem Viewport starten, damit die Bewegung fertig ist,
+          // wenn das Element wirklich im Blick liegt.
+          { rootMargin: '0px 0px -10% 0px', threshold: 0.1 }
+        );
+
+        els.forEach(function (el) { io.observe(el); });
+      })();
+    </script>
+  </body>
+</html>

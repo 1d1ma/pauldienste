@@ -1,0 +1,83 @@
+<!doctype html>
+<!--
+  OG-BILD-VORLAGE (1200 × 630). Erzeugt die geteilte Social-Vorschau
+  (public/og-default.jpg), die Base.astro als Default für alle Seiten setzt.
+
+  So wird daraus ein Bild:
+  1. TODOs unten füllen (Logo, Headline, 3 Checkpoints, Badge/Trust bzw. CTA),
+     Farben auf die Marke (Tokens) setzen, ein Hintergrundfoto einsetzen.
+     Für zuverlässiges Rendern Foto, Schrift UND Logo als data:-URI
+     einbetten (base64) – lokale Pfade laden im Headless-Chrome nicht immer.
+     LOGO: Wenn ein Logo existiert, IMMER das echte Logo verwenden, nicht die
+     Text-Wortmarke. Ein dunkles/farbiges Logo auf dunklem Grund gehört auf die
+     weisse `.logo`-Karte (unten), damit es sichtbar bleibt.
+  2. Rendern mit 2x SUPERSAMPLING (macOS-Beispiel, Chrome muss installiert sein).
+     Zwingend `--force-device-scale-factor=2`: bei 1x rendert Chrome Text ohne
+     Subpixel-Reserve, das Ergebnis wirkt in den Vorschauen sichtbar unscharf.
+       "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+         --headless --disable-gpu --hide-scrollbars --force-device-scale-factor=2 \
+         --window-size=1200,630 --screenshot=og2x.png "file://$PWD/og-card.html"
+     (Linux/anderer Pfad: das jeweilige chrome/chromium-Binary verwenden.)
+  3. Auf 1200x630 herunterrechnen (erzeugt die Schaerfe) und als JPG ablegen:
+       sips --resampleWidth 1200 og2x.png --out og1x.png
+       sips -s format jpeg -s formatOptions 92 og1x.png --out ../public/og-default.jpg
+     (ohne macOS: `magick og2x.png -resize 1200x630 -quality 92 public/og-default.jpg`)
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      /* Schrift der Marke hier als @font-face einbetten (base64), sonst rendert
+         Chrome eine System-Schrift. Farben = Tokens (petrol/primary). */
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1200px; height: 630px; overflow: hidden; }
+      .card { position: relative; width: 1200px; height: 630px; font-family: system-ui, sans-serif; }
+      /* TODO: Hintergrundfoto als data:-URI einsetzen. */
+      .bg { position: absolute; inset: 0; background: #0a6079 center/cover; }
+      .ov { position: absolute; inset: 0;
+        background: linear-gradient(102deg, rgba(6,58,74,.95) 0%, rgba(8,76,97,.9) 42%, rgba(8,76,97,.35) 100%); }
+      .c { position: absolute; inset: 0; padding: 60px 70px; color: #fff;
+        display: flex; flex-direction: column; justify-content: space-between; }
+      /* Logo als weisse Karte — macht ein dunkles/farbiges Logo auf dunklem
+         Grund sichtbar. IMMER das echte Logo verwenden, wenn eines existiert. */
+      .logo { display: inline-flex; align-self: flex-start; background: #fff;
+        border-radius: 16px; padding: 16px 22px; box-shadow: 0 8px 30px rgba(0,0,0,.18); }
+      .logo img { height: 64px; width: auto; display: block; }
+      /* Nur-Text-Fallback, falls KEIN Logo vorliegt. */
+      .logo-text { font-weight: 700; font-size: 36px; letter-spacing: -.02em; }
+      .logo-text .d { color: #f39c12; }
+      h1 { font-weight: 700; font-size: 68px; line-height: 1.04; letter-spacing: -.025em; }
+      h1 .a { color: #f5b041; }
+      .ks { margin-top: 28px; display: flex; flex-direction: column; gap: 16px; }
+      .k { display: flex; align-items: center; gap: 16px; font-size: 28px; font-weight: 500; }
+      .k .t { color: #f39c12; font-weight: 700; }
+      .f { display: flex; align-items: center; gap: 18px; font-size: 24px; font-weight: 500; }
+      .badge { background: #f39c12; color: #063a4a; font-weight: 700; padding: 11px 20px; border-radius: 12px; font-size: 26px; }
+      .st { color: #f39c12; letter-spacing: 2px; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="bg"></div>
+      <div class="ov"></div>
+      <div class="c">
+        <!-- Logo IMMER als echtes Logo einbetten, wenn eines existiert (base64). -->
+        <div class="logo"><img src="data:image/png;base64,TODO-LOGO-BASE64" alt="TODO-marke" /></div>
+        <!-- Nur falls KEIN Logo vorliegt, stattdessen die Text-Wortmarke:
+             <div class="logo-text">TODO-marke<span class="d">.</span>de</div> -->
+        <div>
+          <h1>TODO Leistung<br /><span class="a">TODO nach Maß</span></h1>
+          <div class="ks">
+            <div class="k"><span class="t">✓</span> TODO USP eins</div>
+            <div class="k"><span class="t">✓</span> TODO USP zwei</div>
+            <div class="k"><span class="t">✓</span> TODO USP drei</div>
+          </div>
+        </div>
+        <div class="f">
+          <span class="badge">TODO ab X €</span>
+          <span class="st">★★★★★</span><span>TODO 5,0 · XX Bewertungen</span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
