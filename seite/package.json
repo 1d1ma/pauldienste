@@ -26,5 +26,8 @@
   "dependencies": {
     "@astrojs/sitemap": "^3.2.1",
     "astro": "^5.2.5"
+  },
+  "devDependencies": {
+    "@phosphor-icons/core": "^2.1.1"
   }
 }

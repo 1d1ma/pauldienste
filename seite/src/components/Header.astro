@@ -1,18 +1,17 @@
 ---
 /**
- * Header: zwei Aufklapp-Gruppen (Reinigung hell, Handwerk dunkel), Menuepunkte
- * kommen aus pages.ts (Cluster reinigung und handwerk, auch geplante Seiten).
- * Gruppen-Labels haben keine eigene URL, die Bereichsseiten stehen als erster
- * Eintrag im Aufklappmenue.
+ * Header mit Megamenue. Drei Bereiche (Gebaeudereinigung, Handwerk,
+ * Hausmeisterservice), Inhalt aus data/leistungen.ts. Desktop: Panel in voller
+ * Breite unter der Leiste (Hover, Fokus oder Klick). Mobil: Akkordeon.
+ * Ohne JavaScript oeffnet das Panel per Hover und :focus-within.
  */
-import { navByCluster } from '../data/pages';
+import { bereiche, leistung } from '../data/leistungen';
+import { internalLink, registry } from '../data/pages';
 import { site } from '../data/site';
+import Icon from './Icon.astro';
 import InternalLink from './InternalLink.astro';
 
-const bereiche = [
-  { label: 'Gebäudereinigung', start: '/gebaeudereinigung-kassel/', items: navByCluster('reinigung') },
-  { label: 'Handwerk', start: '/handwerker-kassel/', items: navByCluster('handwerk') },
-];
+const href = (slug: string) => internalLink(slug).href;
 ---
 
 <header class="site-header">
@@ -30,27 +29,51 @@ const bereiche = [
       <ul class="site-nav__list">
         {
           bereiche.map((b) => (
-            <li class="site-nav__group">
-              <button type="button" class="site-nav__label transition-colors" aria-expanded="false">
+            <li class={`nav-item nav-item--${b.id}`} data-nav-item>
+              <button type="button" class="nav-item__label transition-colors" aria-expanded="false">
                 {b.label}
-                <svg viewBox="0 0 20 20" width="13" height="13" aria-hidden="true">
-                  <path d="M5 7.5 10 12.5 15 7.5" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
+                <Icon name="caret-down" size={14} />
               </button>
-              <ul class="site-nav__sub">
-                {b.items.map((p) => (
-                  <li class={p.slug === b.start ? 'is-start' : ''}>
-                    <InternalLink to={p.slug}>{p.slug === b.start ? `Alle Leistungen: ${p.label}` : p.label}</InternalLink>
-                  </li>
-                ))}
-              </ul>
+
+              <div class="mega" data-mega>
+                <div class="container mega__inner">
+                  <div class="mega__intro">
+                    <p class="mega__title">{b.label}</p>
+                    <p class="mega__text">{b.intro}</p>
+                    <a class="mega__all" href={href(b.start)}>
+                      Alle Leistungen ansehen <Icon name="arrow-right" size={16} />
+                    </a>
+                  </div>
+                  <div class="mega__groups">
+                    {b.gruppen.map((g) => (
+                      <div class="mega__group">
+                        <p class="mega__group-title">{g.titel}</p>
+                        <ul>
+                          {g.slugs.map((slug) => (
+                            <li>
+                              <a href={href(slug)} class="mega__link">
+                                <span class="mega__icon"><Icon name={leistung[slug].icon} size={22} /></span>
+                                <span class="mega__label">
+                                  <strong>{registry[slug].label}</strong>
+                                  <span>{leistung[slug].kurz}</span>
+                                </span>
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </li>
           ))
         }
-        <li><InternalLink to="/ueber-uns/">Über uns</InternalLink></li>
-        <li><InternalLink to="/kontakt/">Kontakt</InternalLink></li>
-        <li class="site-nav__tel"><a href={`tel:${site.kontakt.telefon}`}>{site.kontakt.telefonAnzeige}</a></li>
+        <li class="plain"><InternalLink to="/ueber-uns/">Über uns</InternalLink></li>
+        <li class="plain"><InternalLink to="/kontakt/">Kontakt</InternalLink></li>
+        <li class="site-nav__tel">
+          <a href={`tel:${site.kontakt.telefon}`}><Icon name="phone" size={18} />{site.kontakt.telefonAnzeige}</a>
+        </li>
         <li class="site-nav__cta">
           <a href={site.angebotUrl}>Besichtigung anfragen</a>
         </li>
@@ -58,6 +81,32 @@ const bereiche = [
     </nav>
   </div>
 </header>
+
+<script is:inline>
+  (function () {
+    var items = document.querySelectorAll('[data-nav-item]');
+    function closeAll(except) {
+      items.forEach(function (li) {
+        if (li === except) return;
+        li.classList.remove('is-open');
+        li.querySelector('button').setAttribute('aria-expanded', 'false');
+      });
+    }
+    items.forEach(function (li) {
+      var btn = li.querySelector('button');
+      btn.addEventListener('click', function () {
+        var open = !li.classList.contains('is-open');
+        closeAll(li);
+        li.classList.toggle('is-open', open);
+        btn.setAttribute('aria-expanded', String(open));
+      });
+    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeAll(); });
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('[data-nav-item]')) closeAll();
+    });
+  })();
+</script>
 
 <style>
   .site-header {
@@ -72,28 +121,25 @@ const bereiche = [
     align-items: center;
     justify-content: space-between;
     gap: var(--space-6);
-    min-height: 4.25rem;
+    min-height: 4rem;
   }
 
   .logo { display: block; line-height: 0; flex: none; }
-  .logo img { height: 3.1rem; width: auto; }
-  @media (max-width: 560px) { .logo img { height: 2.6rem; } }
+  .logo img { height: 2.9rem; width: auto; }
 
   .site-nav__list {
     display: flex;
     align-items: center;
-    gap: clamp(var(--space-4), 1.6vw, var(--space-6));
+    gap: clamp(var(--space-3), 1.4vw, var(--space-6));
     list-style: none;
     margin: 0;
     padding: 0;
   }
-  .site-nav__list li { margin: 0; }
+  .site-nav__list > li { margin: 0; }
 
-  /* :global nötig, weil Links teils von der InternalLink-Komponente gerendert
-     werden und damit NICHT im Scope dieser Datei liegen. Ohne :global bliebe
-     dort die globale Unterstreichung stehen. */
-  .site-nav :global(a),
-  .site-nav__label {
+  .nav-item__label,
+  .site-nav :global(.plain a),
+  .site-nav__tel a {
     color: var(--color-text);
     text-decoration: none;
     font-size: 0.95rem;
@@ -104,119 +150,146 @@ const bereiche = [
     cursor: pointer;
     display: inline-flex;
     align-items: center;
-    gap: 0.3rem;
+    gap: 0.35rem;
+    white-space: nowrap;
+    min-height: 4rem;
+  }
+  .nav-item__label:hover,
+  .site-nav :global(.plain a:hover),
+  .site-nav__tel a:hover { color: var(--color-accent-text); }
+  .nav-item__label :global(.icon) { transition: transform var(--duration-base) var(--ease-out-soft); }
+  .nav-item.is-open .nav-item__label :global(.icon) { transform: rotate(180deg); }
+  .site-nav__tel a { font-weight: var(--weight-bold); }
+
+  .site-nav__cta a {
+    display: inline-flex;
+    align-items: center;
+    background: var(--color-primary);
+    color: var(--color-primary-contrast);
+    padding: 0.6rem 1.15rem;
+    border-radius: var(--radius);
+    font-weight: var(--weight-bold);
+    font-size: 0.9rem;
+    text-decoration: none;
     white-space: nowrap;
   }
-  .site-nav :global(a:hover),
-  .site-nav__label:hover { color: var(--color-accent-text); }
+  .site-nav__cta a:hover { background: var(--color-primary-hover); color: var(--color-primary-contrast); }
 
-  .site-nav__group { position: relative; }
-
-  .site-nav__sub {
+  /* --- Megamenue --- */
+  .mega {
     position: absolute;
-    top: calc(100% + 0.75rem);
-    left: -0.75rem;
-    min-width: 13.5rem;
+    left: 0;
+    right: 0;
+    top: 100%;
     background: #fff;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    box-shadow: 0 8px 24px rgb(28 30 33 / 0.14);
-    padding: var(--space-2);
-    list-style: none;
-    margin: 0;
-
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: 0 24px 40px -24px rgb(28 30 33 / 0.3);
     opacity: 0;
     visibility: hidden;
-    transform: translate3d(0, -4px, 0);
+    transform: translate3d(0, -6px, 0);
     transition:
-      opacity var(--duration-fast) var(--ease-out-soft),
-      transform var(--duration-fast) var(--ease-out-soft),
-      visibility 0s linear var(--duration-fast);
+      opacity var(--duration-base) var(--ease-out-soft),
+      transform var(--duration-base) var(--ease-out-soft),
+      visibility 0s linear var(--duration-base);
   }
-  .site-nav__group:hover .site-nav__sub,
-  .site-nav__group:focus-within .site-nav__sub {
+  .nav-item:hover .mega,
+  .nav-item:focus-within .mega,
+  .nav-item.is-open .mega {
     opacity: 1;
     visibility: visible;
     transform: translate3d(0, 0, 0);
     transition-delay: 0s;
   }
+  .nav-item--handwerk .mega { background: var(--color-petrol); }
+  .nav-item--hausmeister .mega { background: var(--color-bg-alt); }
 
-  .site-nav__sub :global(a) {
-    display: block;
-    padding: var(--space-2) var(--space-3);
-    border-radius: var(--radius-sm);
-    color: var(--color-text);
+  .mega__inner {
+    display: grid;
+    grid-template-columns: minmax(14rem, 0.8fr) 2.4fr;
+    gap: clamp(var(--space-8), 5vw, var(--space-16));
+    padding-block: var(--space-8);
   }
-  .site-nav__sub :global(a:hover) {
-    background: var(--color-bg-alt);
-    color: var(--color-petrol);
+  .mega__intro { display: flex; flex-direction: column; gap: var(--space-3); }
+  .mega__title { font-family: var(--font-heading); font-weight: var(--weight-bold); font-size: 1.4rem; color: var(--color-heading); }
+  .mega__text { font-size: 0.9rem; color: var(--color-text-muted); max-width: 26ch; line-height: 1.55; }
+  .mega__all {
+    margin-top: var(--space-2);
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    font-weight: var(--weight-bold); font-size: 0.9rem;
+    color: var(--color-heading); text-decoration: none;
   }
-  .is-start :global(a) { font-weight: var(--weight-bold); border-bottom: 1px solid var(--color-border); border-radius: 0; margin-bottom: var(--space-1); }
-  .site-nav__tel :global(a) { font-weight: var(--weight-bold); white-space: nowrap; }
+  .mega__all:hover { color: var(--color-accent-text); }
 
-  /* Der einzige farbige Anker in der Leiste – dadurch bleibt er die Aktion */
-  .site-nav__cta :global(a) {
-    background: var(--color-primary);
-    color: var(--color-primary-contrast);
-    padding: 0.55rem 1.1rem;
-    border-radius: var(--radius);
-    font-weight: var(--weight-bold);
-    font-size: 0.9rem;
+  .mega__groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: var(--space-8); align-items: start; }
+  .mega__group ul { list-style: none; padding: 0; display: grid; gap: var(--space-1); }
+  .mega__group li { margin: 0; }
+  .mega__group-title {
+    font-size: 0.8rem; font-weight: var(--weight-bold); letter-spacing: 0.04em;
+    color: var(--color-accent-text); margin-bottom: var(--space-3);
   }
-  .site-nav__cta :global(a:hover) {
-    background: var(--color-primary-hover);
-    color: var(--color-primary-contrast);
+  .mega__link {
+    display: grid; grid-template-columns: auto 1fr; gap: var(--space-3); align-items: start;
+    padding: var(--space-2) var(--space-3); margin-inline: calc(var(--space-3) * -1);
+    border-radius: var(--radius-sm); text-decoration: none; color: var(--color-text);
+    transition: background-color var(--duration-fast) var(--ease-out-soft);
   }
+  .mega__link:hover { background: var(--color-bg-alt); }
+  .mega__icon { color: var(--color-accent-text); padding-top: 2px; }
+  .mega__label { display: grid; gap: 2px; }
+  .mega__label strong { color: var(--color-heading); font-size: 0.95rem; }
+  .mega__label span { font-size: 0.82rem; color: var(--color-text-muted); line-height: 1.4; }
+
+  .nav-item--handwerk .mega__title,
+  .nav-item--handwerk .mega__all,
+  .nav-item--handwerk .mega__label strong { color: #fff; }
+  .nav-item--handwerk .mega__text,
+  .nav-item--handwerk .mega__label span { color: var(--color-on-dark-soft); }
+  .nav-item--handwerk .mega__group-title,
+  .nav-item--handwerk .mega__icon { color: var(--color-primary-on-dark); }
+  .nav-item--handwerk .mega__link { color: var(--color-on-dark-soft); }
+  .nav-item--handwerk .mega__link:hover { background: var(--color-graphit-soft); }
+  .nav-item--handwerk .mega__all:hover { color: var(--color-primary-on-dark); }
+  .nav-item--hausmeister .mega__link:hover { background: #fff; }
 
   /* --- Mobil --- */
   .burger { display: none; }
 
-  @media (max-width: 980px) {
-    .burger {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      cursor: pointer;
-      padding: var(--space-2);
-    }
-    .burger span {
-      display: block;
-      width: 22px;
-      height: 2px;
-      background: var(--color-petrol);
-      border-radius: 2px;
-    }
+  @media (max-width: 1080px) {
+    .burger { display: flex; flex-direction: column; gap: 4px; cursor: pointer; padding: var(--space-2); }
+    .burger span { display: block; width: 22px; height: 2px; background: var(--color-petrol); border-radius: 2px; }
 
     .site-nav {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
+      position: absolute; top: 100%; left: 0; right: 0;
       background: var(--color-bg-alt);
       border-bottom: 1px solid var(--color-border);
       display: none;
-      max-height: calc(100vh - 4.25rem);
+      max-height: calc(100dvh - 4rem);
       overflow-y: auto;
-      padding: var(--space-4) var(--container-padding) var(--space-6);
+      padding: var(--space-2) var(--container-padding) var(--space-6);
     }
-    /* Die Checkbox ist unsichtbar, traegt aber den Tastaturfokus: Der Ring
-       muss deshalb am sichtbaren Burger erscheinen. */
-    #nav-toggle:focus-visible + .burger {
-      outline: 2px solid var(--color-primary);
-      outline-offset: 4px;
-      border-radius: var(--radius-sm);
-    }
+    #nav-toggle:focus-visible + .burger { outline: 2px solid var(--color-primary); outline-offset: 4px; border-radius: var(--radius-sm); }
     #nav-toggle:checked ~ .site-nav { display: block; }
 
-    .site-nav__list { flex-direction: column; align-items: flex-start; gap: var(--space-4); }
-    .site-nav__sub {
-      position: static;
-      opacity: 1;
-      visibility: visible;
-      transform: none;
-      border: 0;
-      box-shadow: none;
-      padding: var(--space-2) 0 0 var(--space-4);
+    .site-nav__list { flex-direction: column; align-items: stretch; gap: 0; }
+    .site-nav__list > li { border-bottom: 1px solid var(--color-border); }
+    .nav-item__label, .site-nav :global(.plain a), .site-nav__tel a { min-height: 3rem; width: 100%; justify-content: space-between; }
+    .site-nav__tel a { justify-content: flex-start; }
+    .site-nav__cta { border-bottom: 0 !important; padding-top: var(--space-4); }
+    .site-nav__cta a { width: 100%; justify-content: center; min-height: 3rem; }
+
+    .mega {
+      position: static; opacity: 1; visibility: visible; transform: none; box-shadow: none; border: 0;
+      display: none; background: transparent !important;
     }
+    .nav-item:hover .mega, .nav-item:focus-within .mega { display: none; }
+    .nav-item.is-open .mega { display: block; }
+    .mega__inner { grid-template-columns: 1fr; padding-block: var(--space-2) var(--space-4); gap: var(--space-4); padding-inline: 0; }
+    .mega__intro { display: none; }
+    .mega__label span { display: none; }
+    .mega__groups { gap: var(--space-4); }
+    .mega__link { padding-block: var(--space-2); }
+    .nav-item--handwerk .mega__title, .nav-item--handwerk .mega__label strong { color: var(--color-heading); }
+    .nav-item--handwerk .mega__group-title, .nav-item--handwerk .mega__icon { color: var(--color-accent-text); }
+    .nav-item--handwerk .mega__link:hover { background: #fff; }
   }
 </style>

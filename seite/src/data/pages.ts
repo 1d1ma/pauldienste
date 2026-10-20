@@ -21,6 +21,7 @@
 export type Cluster =
   | 'startseite'
   | 'reinigung'
+  | 'hausmeister'
   | 'handwerk'
   | 'leistung'
   | 'produkt'
@@ -61,7 +62,7 @@ export const pages: Record<string, Page> = {
     cluster: 'startseite',
     primaryKeyword: 'gebäudeservice kassel',
     secondaryKeywords: ['gebäudedienste kassel', 'hausmeisterservice kassel'],
-    linksTo: ['/gebaeudereinigung-kassel/', '/handwerker-kassel/', '/kontakt/'],
+    linksTo: ['/gebaeudereinigung-kassel/', '/handwerker-kassel/', '/hausmeisterservice-kassel/', '/kontakt/'],
     status: 'live',
   },
 
@@ -101,10 +102,11 @@ export const plannedPages: Record<string, Page> = Object.fromEntries([
   geplant('/fassadenreinigung-kassel/', 'Fassadenreinigung', 'reinigung', 'fassadenreinigung kassel'),
   geplant('/steinreinigung-kassel/', 'Steinreinigung', 'reinigung', 'steinreinigung kassel'),
   geplant('/reinigungsroboter-gewerbe/', 'Reinigungsroboter', 'reinigung', 'reinigungsroboter gewerbe'),
-  geplant('/winterdienst-kassel/', 'Winterdienst', 'reinigung', 'winterdienst kassel'),
-  geplant('/entruempelung-kassel/', 'Entrümpelung', 'reinigung', 'entrümpelung kassel'),
-  geplant('/gartenpflege-kassel/', 'Gartenpflege', 'reinigung', 'gartenpflege kassel'),
+  geplant('/winterdienst-kassel/', 'Winterdienst', 'hausmeister', 'winterdienst kassel'),
+  geplant('/entruempelung-kassel/', 'Entrümpelung', 'hausmeister', 'entrümpelung kassel'),
+  geplant('/gartenpflege-kassel/', 'Gartenpflege', 'hausmeister', 'gartenpflege kassel'),
 
+  geplant('/hausmeisterservice-kassel/', 'Hausmeisterservice', 'hausmeister', 'hausmeisterservice kassel'),
   geplant('/handwerker-kassel/', 'Handwerk', 'handwerk', 'handwerker kassel'),
   geplant('/boden-verlegen-kassel/', 'Boden verlegen', 'handwerk', 'boden verlegen lassen kassel'),
   geplant('/streichen-tapezieren-kassel/', 'Streichen und Tapezieren', 'handwerk', 'wohnung streichen lassen kassel'),

@@ -7,8 +7,12 @@ Auftrag: Die Startseite (`src/pages/index.astro`) ist fertig gebaut und gestalte
 - Markenzeichen ist der **Nagel mit Gewinde** (`/logo/zeichen-*.svg`, Logo `/logo/quer-*.svg`). Gute Anker: Nagel, der sich in die Seite "einschlägt" oder dreht; Glanz, der über Gold wischt; Wischer, der eine Fläche sauber macht.
 - Hell und dunkel sollen sich spürbar unterscheiden: Reinigung = klar, frisch, gleitend (Streifen, Glanz). Handwerk = kraftvoll, präzise (Einrasten, Maßlinien, Gewinde).
 
-## Haken im Markup (`data-anim="…"`)
-`hero`, `hero-title`, `bereiche`, `bereich` (2x, hell und dunkel), `trust`, `tiles`, `tile` (11 hell, 6 dunkel), `kette`, `kette-schritt`, `ablauf`, `ablauf-schritt`, `radius` (SVG mit Kreisen `.radius--30`, `.radius--50`). Weitere Haken dürfen ergänzt werden.
+## Haken im Markup (`data-anim="…"`) und Signatur
+Signatur der Startseite ist der **Aufmaß-Grundriss** (`src/components/Aufmass.astro`): gezeichneter Hausplan, links hell (Reinigung), rechts dunkel (Handwerk), Leistungen als Link-Chips an den Bauteilen. Der Plan ist ein SVG `#plan-g`, zweimal per `<use>` mit Clip eingesetzt (Graphit links, Gold rechts). Zonen `#z-*` leuchten per `:has()` beim Hover der Chips.
+
+Haken: `aufmass` (Wrapper), `chip` (13 Chips), `hero`, `hero-title`, `areas`, `area` (3 Bereichskarten), `vorteile`, `kette`, `kette-schritt`, `ablauf`, `ablauf-schritt`, `radius`.
+
+Ideen: Plan zeichnet sich (stroke-dashoffset) von der Trennlinie aus, Chips fahren gestaffelt ein, Schraffur (Boden) wird beim Scrollen gezogen, Bereichskarten heben sich. Megamenü (`Header.astro`) hat bereits Hover und Fokus, nur dezente Feinheiten.
 
 ## Regeln (hart)
 1. Nur `transform` und `opacity` (Ausnahme: SVG `stroke-dashoffset`, `clip-path`). Kein Layout-Reflow.

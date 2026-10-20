@@ -6,3 +6,4 @@ dist/
 config.php
 .DS_Store
 *.log
+.shots/
