@@ -36,6 +36,9 @@
   --color-border: #E3E2DD;
   --color-border-dark: #34383D;
 
+  /* Foto-Slot der Hero-Kacheln, per Inline-Style gesetzt */
+  --foto: none;
+
   /* --- Feedback --- */
   --color-success: #15803d;
   --color-error: #b91c1c;

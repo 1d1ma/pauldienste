@@ -1,114 +1,123 @@
 ---
 /**
- * Startseite: Dach ueber beide Bereiche (Gebaeudereinigung hell, Handwerk
- * dunkel). Dramaturgie nach PLAN-website.md Abschnitt 4 und der Skill-Referenz
- * startseite.md. Bewertungen fehlen bewusst, bis echte Rezensionen vorliegen.
- *
- * Animations-Haken fuer die Bewegungsschicht stehen als data-anim="…" im
- * Markup und sind in ANIMATIONEN.md beschrieben.
+ * Startseite nach der Stilrichtung "Dunkel" (stilvarianten.html): Hero mit drei
+ * Bereichsflaechen in Farbe, drei Bereiche als ruhige Liste, Bodenbelaege,
+ * Wandfarben, Ablauf, FAQ, Abschluss. Bewertungen fehlen bis echte vorliegen.
+ * Die Farbflaechen im Hero sind Platzhalter fuer Fotos (siehe --foto).
  */
 import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Section from '../components/Section.astro';
 import Faq from '../components/Faq.astro';
-import CtaInline from '../components/CtaInline.astro';
-import Cta from '../components/Cta.astro';
 import Icon from '../components/Icon.astro';
-import InternalLink from '../components/InternalLink.astro';
-import Aufmass from '../components/Aufmass.astro';
-import { bereiche, leistung } from '../data/leistungen';
-import { internalLink } from '../data/pages';
+import FloorPlanks from '../components/FloorPlanks.astro';
+import { bereiche } from '../data/leistungen';
+import { internalLink, registry } from '../data/pages';
 import { site } from '../data/site';
 
 const href = (slug: string) => internalLink(slug).href;
 
-const auszug = [
-  ['Entrümpeln', '/entruempelung-kassel/', 'trash'],
-  ['Streichen', '/streichen-tapezieren-kassel/', 'paint-roller'],
-  ['Boden erneuern', '/boden-verlegen-kassel/', 'rows'],
-  ['Bauendreinigung', '/bauendreinigung-kassel/', 'sparkle'],
+const kacheln = [
+  { bereich: 'reinigung', titel: 'Gebäudereinigung', text: 'Fenster, Büro, Fassade', icon: 'sparkle', klasse: 'gross' },
+  { bereich: 'handwerk', titel: 'Handwerk', text: 'Boden, Wand, Montage', icon: 'paint-roller', klasse: '' },
+  { bereich: 'hausmeister', titel: 'Hausmeisterservice', text: 'Winterdienst, Garten', icon: 'key', klasse: '' },
+] as const;
+
+const liste: Record<string, Array<[string, string]>> = {
+  reinigung: [
+    ['/fensterreinigung-kassel/', 'innen und außen'],
+    ['/bueroreinigung-kassel/', 'Büros, Praxen, Läden'],
+    ['/grundreinigung-kassel/', 'Einzug und Auszug'],
+    ['/bauendreinigung-kassel/', 'nach Umbau'],
+    ['/fassadenreinigung-kassel/', 'Putz und Klinker'],
+  ],
+  handwerk: [
+    ['/boden-verlegen-kassel/', 'Vinyl, Parkett, Laminat'],
+    ['/streichen-tapezieren-kassel/', 'sauber abgeklebt'],
+    ['/kuechenmontage-moebelmontage-kassel/', 'Aufbau'],
+    ['/fliegengitter-kassel/', 'nach Maß'],
+    ['/plissees-kassel/', 'nach Maß'],
+  ],
+  hausmeister: [
+    ['/winterdienst-kassel/', 'Räumen und Streuen'],
+    ['/gartenpflege-kassel/', 'einmalig oder regelmäßig'],
+    ['/entruempelung-kassel/', 'Wohnung, Keller, Garage'],
+  ],
+};
+const notiz: Record<string, string> = {
+  reinigung: 'für Haushalte, Verwaltungen und Gewerbe',
+  handwerk: 'Renovierung und Innenausbau',
+  hausmeister: 'für Privat und Vermieter',
+};
+
+const farben = [
+  ['Kalkweiß', '#ECEAE5', '#1C1E21'],
+  ['Greige', '#CFC7BA', '#1C1E21'],
+  ['Salbei', '#9DA894', '#1C1E21'],
+  ['Taupe', '#8C8076', '#fff'],
+  ['Taubenblau', '#6D7D8A', '#fff'],
+  ['Anthrazit', '#3A3D41', '#fff'],
 ] as const;
 
 const ablauf = [
-  ['Anfrage', 'Sie rufen an oder schreiben uns, worum es geht. Ein Foto hilft, ist aber keine Pflicht.'],
-  ['Besichtigung', 'Paul sieht sich vor Ort an, was zu tun ist, und misst bei Bedarf auf. Das kostet nichts.'],
-  ['Festpreis', 'Sie bekommen ein schriftliches Angebot mit festem Preis. Was darin steht, kommt so auf die Rechnung.'],
-  ['Ausführung', 'Wir arbeiten zum vereinbarten Termin und übergeben das Ergebnis sauber.'],
-] as const;
-
-const vorteile = [
-  ['ruler', 'Besichtigung kostenlos', 'Paul sieht sich Ihr Objekt vor Ort an.'],
-  ['shield-check', 'Festpreis nach Besichtigung', 'Was im Angebot steht, kommt so auf die Rechnung.'],
-  ['map-pin', 'Seit 2013 in Kassel', 'Ihr fester Ansprechpartner ist Paul selbst.'],
-  ['handshake', 'Privat und Gewerbe', 'Jede Leistung für Haushalte, Büros und Hausverwaltungen.'],
+  ['Anfrage', 'Sie rufen an oder schreiben uns, worum es geht.'],
+  ['Besichtigung', 'Wir sehen uns vor Ort an, was zu tun ist. Das kostet nichts.'],
+  ['Festpreis', 'Sie erhalten ein schriftliches Angebot mit festem Preis.'],
+  ['Ausführung', 'Wir arbeiten zum vereinbarten Termin und übergeben sauber.'],
 ] as const;
 
 const faq = [
   {
     q: 'Was kostet die Besichtigung?',
-    a: 'Nichts. Paul kommt zu Ihnen, sieht sich Fläche und Zustand an und nennt Ihnen danach einen Festpreis. Sie gehen damit keine Verpflichtung ein und entscheiden in Ruhe.',
+    a: 'Nichts. Wir sehen uns Fläche und Zustand vor Ort an und nennen Ihnen danach einen Festpreis. Sie gehen damit keine Verpflichtung ein und entscheiden in Ruhe.',
   },
   {
     q: 'Wie kommt der Preis zustande?',
-    a: 'Der Festpreis richtet sich nach Fläche, Zustand, Material, Zugang und Höhe. Weil wir vorher vor Ort waren, steht er fest und ändert sich nicht während der Arbeit. Pauschale Preise ohne Besichtigung nennen wir deshalb nicht.',
+    a: 'Der Festpreis richtet sich nach Fläche, Zustand, Material, Zugang und Höhe. Weil wir vorher vor Ort waren, steht er fest und ändert sich nicht während der Arbeit.',
   },
   {
     q: 'Arbeiten Sie für Privatkunden und für Gewerbe?',
     a: 'Für beide. Jede Leistung gibt es für Haushalte, Büros, Praxen, Hausverwaltungen und Handel. Für Gewerbe planen wir Termine früh, abends oder am Wochenende, damit Ihr Betrieb nicht unterbrochen wird.',
   },
   {
-    q: 'In welchem Gebiet sind Sie unterwegs?',
-    a: 'Im Umkreis von 30 Kilometern um Kassel. Größere Aufträge übernehmen wir auch bis etwa 50 Kilometer, zum Beispiel Gewerbe, Fassaden oder Bodenverlegung. Fragen Sie einfach nach, wenn Sie knapp außerhalb liegen.',
-  },
-  {
     q: 'Kann ich Reinigung und Handwerk zusammen beauftragen?',
-    a: 'Ja, und das ist oft sinnvoll. Bei einem Auszug entrümpeln, streichen, den Boden erneuern und zum Schluss reinigen wir in einem Auftrag. Sie haben einen Ansprechpartner und einen Festpreis statt vier Angebote.',
+    a: 'Ja, und das ist oft sinnvoll. Bei einem Auszug entrümpeln, streichen, den Boden erneuern und reinigen wir in einem Auftrag. Sie haben einen Ansprechpartner und einen Festpreis statt mehrerer Angebote.',
   },
   {
-    q: 'Wie erreiche ich Paul?',
-    a: `Telefonisch unter ${site.kontakt.telefonAnzeige} von Montag bis Freitag zwischen 8 und 17 Uhr, per E-Mail an ${site.kontakt.email} oder über das Anfrageformular. Außerhalb der Zeiten melden wir uns am nächsten Werktag.`,
+    q: 'Wie erreiche ich Sie?',
+    a: `Telefonisch unter ${site.kontakt.telefonAnzeige} von Montag bis Freitag zwischen 8 und 17 Uhr, per E-Mail an ${site.kontakt.email} oder über das Anfrageformular.`,
   },
 ];
-
-const orte30 = ['Baunatal', 'Vellmar', 'Kaufungen', 'Lohfelden', 'Niestetal', 'Fuldatal', 'Fuldabrück', 'Ahnatal', 'Calden', 'Schauenburg', 'Espenau', 'Söhrewald', 'Hann. Münden', 'Hofgeismar'];
-const orte50 = ['Melsungen', 'Wolfhagen', 'Fritzlar', 'Witzenhausen', 'Göttingen'];
 ---
 
 <Base slug="/">
   <Header slot="header" />
 
-  <!-- Hero: Text, Aufmass, drei Bereichskarten -->
+  <!-- Hero -->
   <section class="hero" data-anim="hero">
-    <div class="container hero__text">
-      <h1 data-anim="hero-title">Reinigung und Handwerk aus einer Hand in Kassel</h1>
-      <div class="hero__side">
+    <div class="container hero__inner">
+      <div class="hero__text">
+        <h1 data-anim="hero-title">Reinigung und Handwerk aus einer Hand in Kassel</h1>
         <p class="hero__intro">
-          Fenster putzen, Wohnung renovieren, Garten pflegen, sauber übergeben. Paul besichtigt kostenlos und nennt danach einen Festpreis.
+          Gebäudereinigung, Renovierung und Hausmeisterservice für Privat und Gewerbe. Ein Ansprechpartner, ein Festpreis.
         </p>
         <div class="hero__actions">
-          <Cta align="start" />
-          <a class="hero__tel transition-colors" href={`tel:${site.kontakt.telefon}`}>
-            <Icon name="phone" size={18} />{site.kontakt.telefonAnzeige}
-          </a>
+          <a class="btn btn--gold lift" href={site.angebotUrl}>Besichtigung anfragen</a>
+          <a class="btn btn--ghost lift" href="#bereiche">Leistungen ansehen</a>
         </div>
       </div>
-    </div>
 
-    <Aufmass />
-
-    <div class="container hero__areas">
-      <ul class="areas" data-anim="areas">
+      <ul class="mosaik" data-anim="mosaik">
         {
-          bereiche.map((b) => (
-            <li>
-              <a href={href(b.start)} class={`area area--${b.id} lift`} data-anim="area">
-                <span class="area__icon"><Icon name={b.icon} size={26} /></span>
-                <span class="area__text">
-                  <strong>{b.label}</strong>
-                  <span>{b.kurz}</span>
+          kacheln.map((k) => (
+            <li class={`mosaik__item ${k.klasse}`}>
+              <a href={href(bereiche.find((b) => b.id === k.bereich)!.start)} class={`kachel kachel--${k.bereich} lift`} data-anim="kachel">
+                <span class="kachel__icon"><Icon name={k.icon} size={64} /></span>
+                <span class="kachel__text">
+                  <strong>{k.titel}</strong>
+                  <span>{k.text}</span>
                 </span>
-                <span class="area__more">mehr erfahren <Icon name="arrow-right" size={16} /></span>
               </a>
             </li>
           ))
@@ -117,48 +126,63 @@ const orte50 = ['Melsungen', 'Wolfhagen', 'Fritzlar', 'Witzenhausen', 'Göttinge
     </div>
   </section>
 
-  <!-- Vorteile -->
-  <Section id="vorteile" variant="default" space="tight" class="vorteile-sec">
-    <ul class="vorteile" data-anim="vorteile">
+  <!-- Drei Bereiche -->
+  <Section id="bereiche" variant="alt" title="Drei Bereiche, ein Ansprechpartner">
+    <div class="bereiche reveal" data-anim="bereiche">
       {
-        vorteile.map(([icon, titel, text]) => (
-          <li class="vorteil reveal">
-            <Icon name={icon} size={30} />
-            <div>
-              <h2 class="vorteil__title">{titel}</h2>
-              <p>{text}</p>
-            </div>
-          </li>
+        bereiche.map((b) => (
+          <section class="bereich" aria-labelledby={`b-${b.id}`}>
+            <header>
+              <h3 id={`b-${b.id}`}>{b.label}</h3>
+              <p>{notiz[b.id]}</p>
+            </header>
+            <ul>
+              {liste[b.id].map(([slug, text]) => (
+                <li>
+                  <a href={href(slug)}>
+                    <span>{registry[slug].label}</span>
+                    <small>{text}</small>
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <a class="bereich__alle" href={href(b.start)}>
+              Alle Leistungen <Icon name="arrow-right" size={16} />
+            </a>
+          </section>
+        ))
+      }
+    </div>
+  </Section>
+
+  <!-- Bodenbelaege -->
+  <section class="split split--boden" data-anim="boden">
+    <div class="split__bild"><FloorPlanks /></div>
+    <div class="split__text">
+      <h2>Premium-Bodenbeläge</h2>
+      <p>Vinyl, Parkett und Designböden zum Anfassen. Wir beraten Sie in unserer Ausstellung in Kassel nach Terminvereinbarung und verlegen den Boden.</p>
+      <a class="btn btn--ghost lift" href={href('/bodenbelaege-farben-kassel/')}>Bodenbeläge ansehen</a>
+    </div>
+  </section>
+
+  <!-- Wandfarben -->
+  <section class="split split--farben" data-anim="farben">
+    <div class="split__text">
+      <h2>Wandfarben in Profiqualität</h2>
+      <p>Farbton aussuchen, Muster an der Wand prüfen, streichen lassen. Alles aus einer Hand.</p>
+      <a class="btn btn--ghost lift" href={href('/bodenbelaege-farben-kassel/')}>Farben ansehen</a>
+    </div>
+    <ul class="farben" aria-label="Beispiel-Farbtöne">
+      {
+        farben.map(([name, hex, ink]) => (
+          <li style={`--c:${hex}; --ink:${ink}`}><span>{name}</span></li>
         ))
       }
     </ul>
-  </Section>
-
-  <!-- Alles aus einer Hand -->
-  <Section id="aus-einer-hand" variant="alt" space="default">
-    <div class="auszug">
-      <div class="auszug__text reveal">
-        <h2>Ein Auszug, ein Auftrag</h2>
-        <p>Entrümpeln, streichen, Boden erneuern und sauber übergeben. Paul koordiniert alles, Sie bekommen einen Festpreis statt vier Angebote.</p>
-      </div>
-      <ol class="kette" data-anim="kette">
-        {
-          auszug.map(([titel, slug, icon]) => (
-            <li class="kette__schritt reveal" data-anim="kette-schritt">
-              <a href={href(slug)}>
-                <span class="kette__icon"><Icon name={icon} size={26} /></span>
-                <span>{titel}</span>
-              </a>
-            </li>
-          ))
-        }
-      </ol>
-    </div>
-    <CtaInline text="Sie ziehen aus oder renovieren? Paul schaut es sich kostenlos an." />
-  </Section>
+  </section>
 
   <!-- Ablauf -->
-  <Section id="ablauf" variant="petrol" title="So läuft es ab">
+  <Section id="ablauf" variant="default" title="So läuft es ab">
     <ol class="ablauf stagger" data-anim="ablauf">
       {
         ablauf.map(([titel, text], i) => (
@@ -172,179 +196,124 @@ const orte50 = ['Melsungen', 'Wolfhagen', 'Fritzlar', 'Witzenhausen', 'Göttinge
     </ol>
   </Section>
 
-  <!-- Einsatzgebiet und FAQ -->
-  <Section id="gebiet-faq" variant="alt">
-    <div class="gebiet-faq">
-      <div class="gebiet reveal">
-        <h2>Einsatzgebiet</h2>
-        <figure class="gebiet__karte" data-anim="radius">
-          <svg viewBox="0 0 400 400" role="img" aria-labelledby="radius-titel">
-            <title id="radius-titel">Einsatzgebiet: 30 Kilometer um Kassel, größere Aufträge bis 50 Kilometer</title>
-            <circle class="radius radius--50" cx="200" cy="200" r="190" />
-            <circle class="radius radius--30" cx="200" cy="200" r="114" />
-            <circle class="radius__punkt" cx="200" cy="200" r="7" />
-            <text x="200" y="228" text-anchor="middle" class="radius__label radius__label--stadt">Kassel</text>
-            <text x="200" y="130" text-anchor="middle" class="radius__label">30 km</text>
-            <text x="200" y="46" text-anchor="middle" class="radius__label">bis 50 km</text>
-          </svg>
-        </figure>
-        <p>
-          Im Umkreis von 30 Kilometern, zum Beispiel in {orte30.join(', ')}.
-          Größere Aufträge übernehmen wir bis etwa 50 Kilometer, etwa in {orte50.slice(0, -1).join(', ')} und {orte50.at(-1)}.
-        </p>
-      </div>
-      <div class="faq-wrap reveal">
-        <h2>Häufige Fragen</h2>
-        <Faq items={faq} />
-      </div>
+  <!-- FAQ -->
+  <Section id="faq" variant="alt">
+    <div class="faq-grid">
+      <h2 class="reveal">Häufige Fragen</h2>
+      <div class="faq-wrap reveal"><Faq items={faq} /></div>
     </div>
   </Section>
 
   <!-- Abschluss -->
-  <Section id="anfrage" variant="petrol-dark" space="default" centered title="Kostenlose Besichtigung anfragen">
-    <p class="abschluss__text">
-      Sagen Sie uns, was ansteht. Paul meldet sich werktags zwischen 8 und 17 Uhr und vereinbart einen Termin.
-    </p>
-    <div class="abschluss__aktionen">
-      <Cta />
-      <a class="abschluss__tel transition-colors" href={`tel:${site.kontakt.telefon}`}>{site.kontakt.telefonAnzeige}</a>
+  <section class="abschluss">
+    <div class="container abschluss__inner">
+      <h2>Reinigung oder Reparatur? Wir kümmern uns.</h2>
+      <a class="btn btn--gold lift" href={site.angebotUrl}>Besichtigung anfragen</a>
     </div>
-  </Section>
+  </section>
 
   <Footer slot="footer" />
 </Base>
 
 <style>
+  /* --- Buttons (ein Stil: Gold, daneben Kontur) --- */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 3rem; padding: 0 1.5rem; border-radius: var(--radius);
+    font-weight: var(--weight-bold); font-size: 0.95rem; text-decoration: none; white-space: nowrap;
+  }
+  .btn--gold { background: var(--color-primary); color: var(--color-primary-contrast); }
+  .btn--gold:hover { background: var(--color-primary-hover); color: var(--color-primary-contrast); }
+  .btn--ghost { border: 1px solid var(--color-primary); color: var(--color-primary-on-dark); }
+  .btn--ghost:hover { background: rgb(185 155 99 / 0.12); color: #fff; }
+
   /* --- Hero --- */
-  .hero { background: var(--color-bg-alt); padding-top: clamp(1.75rem, 3.5vw, 2.75rem); }
-  .hero__text {
-    display: grid;
-    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
-    gap: clamp(1.5rem, 5vw, 4rem);
-    align-items: end;
-    padding-bottom: clamp(1.25rem, 2.5vw, 2rem);
-  }
-  @media (max-width: 860px) { .hero__text { grid-template-columns: 1fr; } }
-  .hero h1 { font-size: clamp(2rem, 1.1rem + 2.2vw, 2.85rem); letter-spacing: -0.02em; max-width: 22ch; }
-  .hero__intro { font-size: 1.05rem; max-width: 46ch; }
-  .hero__actions { margin-top: var(--space-6); display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-6); }
-  .hero__tel { font-weight: var(--weight-bold); color: var(--color-heading); text-decoration: none; min-height: 44px; display: inline-flex; align-items: center; gap: var(--space-2); }
-  .hero__tel:hover { color: var(--color-accent-text); }
+  .hero { background: var(--color-petrol); padding-block: clamp(2.5rem, 6vw, 5rem); }
+  .hero__inner { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 6vw, 5rem); align-items: center; }
+  @media (max-width: 900px) { .hero__inner { grid-template-columns: 1fr; } }
+  .hero h1 { color: #fff; font-size: clamp(2rem, 1.2rem + 2.4vw, 2.9rem); letter-spacing: -0.02em; max-width: 19ch; }
+  .hero__intro { margin-top: var(--space-4); color: var(--color-on-dark-soft); font-size: 1.05rem; max-width: 40ch; }
+  .hero__actions { margin-top: var(--space-8); display: flex; flex-wrap: wrap; gap: var(--space-3); }
 
-  /* --- Drei Bereichskarten, ragen ueber den Planrand --- */
-  .hero__areas { position: relative; margin-top: clamp(-4.25rem, -5vw, -2.5rem); padding-bottom: var(--space-8); z-index: 2; }
-  @media (max-width: 860px) { .hero__areas { margin-top: var(--space-6); } }
-  .areas { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); }
-  @media (max-width: 860px) { .areas { grid-template-columns: 1fr; } }
-  .areas li { margin: 0; }
-  .area {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    grid-template-areas: 'icon text' 'more more';
-    gap: var(--space-2) var(--space-4);
-    align-items: center;
-    height: 100%;
-    padding: var(--space-4) var(--space-6);
-    border-radius: var(--radius-lg);
-    text-decoration: none;
-    box-shadow: 0 18px 34px -18px rgb(28 30 33 / 0.45);
+  .mosaik {
+    list-style: none; padding: 0; margin: 0; position: relative;
+    display: grid; grid-template-columns: 1.1fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px;
+    aspect-ratio: 1 / 0.92;
   }
-  .area__icon {
-    grid-area: icon;
-    display: grid; place-items: center;
-    width: 3.25rem; height: 3.25rem; border-radius: 50%;
+  /* goldener Rahmen versetzt dahinter */
+  .mosaik::before {
+    content: ''; position: absolute; inset: 0; transform: translate3d(14px, -14px, 0);
+    border: 1px solid var(--color-primary); opacity: 0.55; pointer-events: none;
   }
-  .area__text { grid-area: text; display: grid; gap: 2px; }
-  .area__text strong { font-family: var(--font-heading); font-size: 1.15rem; line-height: 1.2; }
-  .area__text span { font-size: 0.85rem; line-height: 1.4; }
-  .area__more {
-    grid-area: more; display: inline-flex; align-items: center; gap: var(--space-2);
-    font-size: 0.85rem; font-weight: var(--weight-bold);
+  .mosaik__item { margin: 0; position: relative; }
+  .mosaik__item.gross { grid-row: span 2; }
+  .kachel {
+    position: relative; display: flex; flex-direction: column; justify-content: flex-end;
+    height: 100%; min-height: 9rem; padding: var(--space-4);
+    background: var(--kachel); color: var(--kachel-ink);
+    background-image: var(--foto, none); background-size: cover; background-position: center;
+    text-decoration: none; overflow: clip;
   }
-  .area__more :global(.icon) { transition: transform var(--duration-base) var(--ease-out-soft); }
-  .area:hover .area__more :global(.icon) { transform: translate3d(4px, 0, 0); }
+  .kachel--reinigung { --kachel: #4E5A63; --kachel-ink: #F2F3F2; }
+  .kachel--handwerk { --kachel: #6F5A45; --kachel-ink: #F5EFE6; }
+  .kachel--hausmeister { --kachel: #56604F; --kachel-ink: #F1F3EE; }
+  .kachel__icon { position: absolute; top: var(--space-4); right: var(--space-4); opacity: 0.22; }
+  .kachel__text { position: relative; display: grid; gap: 2px; }
+  .kachel__text strong { font-family: var(--font-heading); font-size: 1.05rem; line-height: 1.2; }
+  .kachel__text span { font-size: 0.85rem; opacity: 0.8; }
+  .kachel:hover { filter: brightness(1.08); }
 
-  .area--reinigung { background: #fff; border: 1px solid var(--color-border); }
-  .area--reinigung .area__icon { background: var(--color-bg-alt); color: var(--color-accent-text); }
-  .area--reinigung strong { color: var(--color-heading); }
-  .area--reinigung .area__text span { color: var(--color-text-muted); }
-  .area--reinigung .area__more { color: var(--color-accent-text); }
-
-  .area--handwerk { background: var(--color-petrol); border: 1px solid var(--color-border-dark); }
-  .area--handwerk .area__icon { background: var(--color-graphit-soft); color: var(--color-primary-on-dark); }
-  .area--handwerk strong { color: #fff; }
-  .area--handwerk .area__text span { color: var(--color-on-dark-soft); }
-  .area--handwerk .area__more { color: var(--color-primary-on-dark); }
-
-  .area--hausmeister { background: var(--color-primary); border: 1px solid var(--color-primary); }
-  .area--hausmeister .area__icon { background: rgb(28 30 33 / 0.1); color: var(--color-primary-contrast); }
-  .area--hausmeister strong, .area--hausmeister .area__text span, .area--hausmeister .area__more { color: var(--color-primary-contrast); }
-
-  /* --- Vorteile --- */
-  .vorteile { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); }
-  @media (max-width: 980px) { .vorteile { grid-template-columns: repeat(2, 1fr); row-gap: var(--space-6); } }
-  @media (max-width: 560px) { .vorteile { grid-template-columns: 1fr; } }
-  .vorteil {
-    display: grid; grid-template-columns: auto 1fr; gap: var(--space-4); align-items: start;
-    padding-inline: var(--space-6);
-    margin: 0;
+  /* --- Drei Bereiche --- */
+  .bereiche { display: grid; grid-template-columns: repeat(3, 1fr); background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-lg); }
+  @media (max-width: 900px) { .bereiche { grid-template-columns: 1fr; } }
+  .bereich { padding: var(--space-6); display: flex; flex-direction: column; }
+  .bereich + .bereich { border-left: 1px solid var(--color-border); }
+  @media (max-width: 900px) { .bereich + .bereich { border-left: 0; border-top: 1px solid var(--color-border); } }
+  .bereich header h3 { font-size: 1.15rem; color: var(--color-heading); }
+  .bereich header p { font-size: 0.85rem; color: var(--color-accent-text); margin-top: 2px; }
+  .bereich ul { list-style: none; padding: 0; margin: var(--space-4) 0; flex: 1; }
+  .bereich li { margin: 0; }
+  .bereich li a {
+    display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-4);
+    padding: 0.7rem 0; border-top: 1px solid var(--color-border);
+    text-decoration: none; color: var(--color-heading); font-weight: var(--weight-medium); font-size: 0.95rem;
   }
-  .vorteil + .vorteil { border-left: 1px solid var(--color-border); }
-  .vorteil:first-child { padding-left: 0; }
-  .vorteil :global(.icon) { color: var(--color-accent-text); margin-top: 2px; }
-  .vorteil__title { font-size: 1.02rem; line-height: 1.3; }
-  .vorteil p { margin-top: var(--space-1); font-size: 0.9rem; line-height: 1.5; color: var(--color-text-muted); }
-  @media (max-width: 980px) {
-    .vorteil { padding-inline: 0; }
-    .vorteil + .vorteil { border-left: 0; }
-  }
+  .bereich li a small { color: var(--color-text-muted); font-size: 0.8rem; font-weight: var(--weight-normal); text-align: right; }
+  .bereich li a:hover span { color: var(--color-accent-text); }
+  .bereich__alle { display: inline-flex; align-items: center; gap: var(--space-2); font-weight: var(--weight-bold); font-size: 0.9rem; color: var(--color-accent-text); text-decoration: none; }
+  .bereich__alle:hover { color: var(--color-heading); }
 
-  /* --- Auszug --- */
-  .auszug { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr); gap: clamp(2rem, 6vw, 5rem); align-items: center; }
-  @media (max-width: 860px) { .auszug { grid-template-columns: 1fr; } }
-  .auszug__text p { margin-top: var(--space-3); max-width: 44ch; }
-  .kette { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-3); position: relative; counter-reset: none; }
-  @media (max-width: 560px) { .kette { grid-template-columns: repeat(2, 1fr); } }
-  .kette__schritt { margin: 0; position: relative; }
-  .kette__schritt:not(:last-child)::after {
-    content: ''; position: absolute; top: 1.9rem; left: calc(50% + 2rem); width: calc(100% - 4rem + var(--space-3)); height: 0;
-    border-top: 1px dashed var(--color-accent-text); opacity: 0.6;
-  }
-  @media (max-width: 560px) { .kette__schritt::after { display: none; } }
-  .kette__schritt a { display: grid; justify-items: center; gap: var(--space-3); text-align: center; text-decoration: none; color: var(--color-heading); font-weight: var(--weight-bold); font-size: 0.92rem; }
-  .kette__icon {
-    display: grid; place-items: center; width: 3.8rem; height: 3.8rem; border-radius: 50%;
-    background: #fff; border: 1px solid var(--color-border); color: var(--color-accent-text);
-    transition: border-color var(--duration-fast) var(--ease-out-soft), transform var(--duration-fast) var(--ease-out-soft);
-  }
-  .kette__schritt a:hover .kette__icon { border-color: var(--color-primary); transform: translate3d(0, -2px, 0); }
+  /* --- Split: Boden und Farben --- */
+  .split { display: grid; grid-template-columns: 1fr 1fr; min-height: 26rem; }
+  @media (max-width: 800px) { .split { grid-template-columns: 1fr; } }
+  .split__bild { position: relative; min-height: 16rem; overflow: clip; }
+  .split__text { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: var(--space-4); padding: clamp(2rem, 6vw, 5rem); }
+  .split__text h2 { color: #fff; font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.2rem); }
+  .split__text p { color: var(--color-on-dark-soft); max-width: 42ch; }
+  .split--boden { background: var(--color-petrol); }
+  .split--farben { background: var(--color-graphit-soft); }
+  @media (max-width: 800px) { .split--farben .split__text { order: 1; } }
+
+  .farben { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(6, 1fr); min-height: 22rem; }
+  .farben li { margin: 0; background: var(--c); color: var(--ink); padding: var(--space-4) 0; display: flex; justify-content: center; }
+  .farben span { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 0.8rem; font-weight: var(--weight-medium); letter-spacing: 0.04em; }
+  @media (max-width: 800px) { .farben { min-height: 14rem; } }
 
   /* --- Ablauf --- */
-  .ablauf { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-6); }
+  .ablauf { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-8) var(--space-6); }
   @media (max-width: 900px) { .ablauf { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 560px) { .ablauf { grid-template-columns: 1fr; } }
   .ablauf__schritt { margin: 0; padding-top: var(--space-4); border-top: 1px solid var(--color-primary); }
-  .ablauf__nr { font-family: var(--font-heading); font-weight: var(--weight-bold); font-size: 1.9rem; line-height: 1; color: var(--color-primary-on-dark); display: block; margin-bottom: var(--space-3); }
-  .ablauf__schritt h3 { color: #fff; font-size: 1.1rem; }
-  .ablauf__schritt p { margin-top: var(--space-2); font-size: 0.92rem; line-height: 1.55; color: var(--color-on-dark-soft); }
+  .ablauf__nr { font-family: var(--font-heading); font-weight: var(--weight-bold); font-size: 1.8rem; line-height: 1; color: var(--color-accent-text); display: block; margin-bottom: var(--space-3); }
+  .ablauf__schritt h3 { font-size: 1.1rem; }
+  .ablauf__schritt p { margin-top: var(--space-2); font-size: 0.92rem; line-height: 1.55; color: var(--color-text-muted); }
 
-  /* --- Einsatzgebiet + FAQ --- */
-  .gebiet-faq { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: clamp(2rem, 6vw, 5rem); align-items: start; }
-  @media (max-width: 900px) { .gebiet-faq { grid-template-columns: 1fr; } }
-  .gebiet { display: grid; gap: var(--space-4); }
-  .gebiet__karte { max-width: 18rem; margin: 0; }
-  .gebiet > p { font-size: 0.92rem; max-width: 46ch; }
-  .radius { fill: none; stroke: var(--color-primary); stroke-width: 2; }
-  .radius--50 { stroke-dasharray: 6 8; stroke: var(--color-accent-text); opacity: 0.6; }
-  .radius--30 { fill: rgb(185 155 99 / 0.16); }
-  .radius__punkt { fill: var(--color-petrol); }
-  .radius__label { font: 600 14px var(--font-body); fill: var(--color-accent-text); }
-  .radius__label--stadt { fill: var(--color-heading); font-size: 16px; }
-  .faq-wrap > h2 { margin-bottom: var(--space-4); }
+  /* --- FAQ --- */
+  .faq-grid { display: grid; grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr); gap: clamp(2rem, 6vw, 5rem); align-items: start; }
+  @media (max-width: 900px) { .faq-grid { grid-template-columns: 1fr; gap: var(--space-4); } }
 
   /* --- Abschluss --- */
-  .abschluss__text { max-width: 40rem; margin: 0 auto var(--space-6); color: var(--color-on-dark-soft); }
-  .abschluss__aktionen { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: var(--space-6); }
-  .abschluss__tel { color: #fff; font-weight: var(--weight-bold); text-decoration: none; min-height: 44px; display: inline-flex; align-items: center; }
-  .abschluss__tel:hover { color: var(--color-primary-on-dark); }
+  .abschluss { background: var(--color-petrol-dark); padding-block: clamp(2.5rem, 5vw, 3.5rem); }
+  .abschluss__inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-6); }
+  .abschluss h2 { color: #fff; font-size: clamp(1.4rem, 1.1rem + 1vw, 1.9rem); max-width: 28ch; }
 </style>
