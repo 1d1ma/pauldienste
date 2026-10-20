@@ -12,9 +12,11 @@ import Section from '../components/Section.astro';
 import Faq from '../components/Faq.astro';
 import Icon from '../components/Icon.astro';
 import FloorPlanks from '../components/FloorPlanks.astro';
+import RatingBadge from '../components/RatingBadge.astro';
+import ReviewsStatic from '../components/ReviewsStatic.astro';
 import { bereiche } from '../data/leistungen';
 import { internalLink, registry } from '../data/pages';
-import { site } from '../data/site';
+import { bewertungen, site } from '../data/site';
 
 const href = (slug: string) => internalLink(slug).href;
 
@@ -106,6 +108,7 @@ const faq = [
           <a class="btn btn--gold lift" href={site.angebotUrl}>Besichtigung anfragen</a>
           <a class="btn btn--ghost lift" href="#bereiche">Leistungen ansehen</a>
         </div>
+        <div class="hero__rating"><RatingBadge /></div>
       </div>
 
       <ul class="mosaik" data-anim="mosaik">
@@ -125,6 +128,15 @@ const faq = [
       </ul>
     </div>
   </section>
+
+  <!-- Bewertungen -->
+  {
+    bewertungen.echt && (
+      <Section id="bewertungen" variant="default" space="tight">
+        <ReviewsStatic />
+      </Section>
+    )
+  }
 
   <!-- Drei Bereiche -->
   <Section id="bereiche" variant="alt" title="Drei Bereiche, ein Ansprechpartner">
@@ -233,6 +245,7 @@ const faq = [
   @media (max-width: 900px) { .hero__inner { grid-template-columns: 1fr; } }
   .hero h1 { color: #fff; font-size: clamp(2rem, 1.2rem + 2.4vw, 2.9rem); letter-spacing: -0.02em; max-width: 19ch; }
   .hero__intro { margin-top: var(--space-4); color: var(--color-on-dark-soft); font-size: 1.05rem; max-width: 40ch; }
+  .hero__rating { margin-top: var(--space-6); }
   .hero__actions { margin-top: var(--space-8); display: flex; flex-wrap: wrap; gap: var(--space-3); }
 
   .mosaik {
@@ -278,7 +291,7 @@ const faq = [
     padding: 0.7rem 0; border-top: 1px solid var(--color-border);
     text-decoration: none; color: var(--color-heading); font-weight: var(--weight-medium); font-size: 0.95rem;
   }
-  .bereich li a small { color: var(--color-text-muted); font-size: 0.8rem; font-weight: var(--weight-normal); text-align: right; }
+  .bereich li a small { color: var(--color-text-muted); font-size: 0.85rem; font-weight: var(--weight-normal); text-align: right; }
   .bereich li a:hover span { color: var(--color-accent-text); }
   .bereich__alle { display: inline-flex; align-items: center; gap: var(--space-2); font-weight: var(--weight-bold); font-size: 0.9rem; color: var(--color-accent-text); text-decoration: none; }
   .bereich__alle:hover { color: var(--color-heading); }
@@ -296,7 +309,7 @@ const faq = [
 
   .farben { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(6, 1fr); min-height: 22rem; }
   .farben li { margin: 0; background: var(--c); color: var(--ink); padding: var(--space-4) 0; display: flex; justify-content: center; }
-  .farben span { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 0.8rem; font-weight: var(--weight-medium); letter-spacing: 0.04em; }
+  .farben span { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 0.85rem; font-weight: var(--weight-medium); letter-spacing: 0.04em; }
   @media (max-width: 800px) { .farben { min-height: 14rem; } }
 
   /* --- Ablauf --- */
@@ -306,7 +319,7 @@ const faq = [
   .ablauf__schritt { margin: 0; padding-top: var(--space-4); border-top: 1px solid var(--color-primary); }
   .ablauf__nr { font-family: var(--font-heading); font-weight: var(--weight-bold); font-size: 1.8rem; line-height: 1; color: var(--color-accent-text); display: block; margin-bottom: var(--space-3); }
   .ablauf__schritt h3 { font-size: 1.1rem; }
-  .ablauf__schritt p { margin-top: var(--space-2); font-size: 0.92rem; line-height: 1.55; color: var(--color-text-muted); }
+  .ablauf__schritt p { margin-top: var(--space-2); font-size: 0.9rem; line-height: 1.55; color: var(--color-text-muted); }
 
   /* --- FAQ --- */
   .faq-grid { display: grid; grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr); gap: clamp(2rem, 6vw, 5rem); align-items: start; }

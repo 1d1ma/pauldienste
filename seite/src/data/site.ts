@@ -84,13 +84,27 @@ export const site = {
 export const schemaTyp = BRANCHEN_SCHEMA[site.branche];
 
 /**
- * Bewertungs-Widget (optional, z. B. BewertungsFlow, Provenexpert, Trustindex).
- * Laedt ein Script eines Drittanbieters und uebertraegt damit die Besucher-IP
- * → gehoert in die Datenschutzerklaerung.
- * Leer lassen = Reviews.astro zeigt eine statische Rueckfallebene.
+ * Google-Bewertungen, woertlich aus dem Google-Unternehmensprofil uebernommen
+ * (Stand 20.10.2026: 22 Bewertungen, 4,9 von 5). Namen gekuerzt (Vorname und
+ * Initial). Einzelne Sterne stehen nicht dabei, weil sie nicht vorliegen.
+ * `echt: false` nimmt Leiste und Badge aus dem Build.
+ * profilUrl: Link zum Google-Profil, sobald bekannt.
  */
 export const bewertungen = {
-  scriptUrl: '',
-  token: '',
-  theme: 'light',
-} as const;
+  echt: true,
+  schnitt: 4.9,
+  anzahl: 22,
+  profilUrl: '',
+  liste: [
+    { name: 'Pauline B.', text: 'Herr Nagel hat bei uns im Haus heute die Fenster geputzt. Wir sind mit seiner Arbeit sehr zufrieden. Er war pünktlich, hat alles sauber hinterlassen und war preislich super fair. Die Fenster sehen wieder perfekt aus, und all das super flink ausgeführt.' },
+    { name: 'Bettina S.', text: 'Sehr zuverlässig, sympathisch und gründlich. Wintergarten, Fenster und Vordach funkeln. Wir sind sehr zufrieden.' },
+    { name: 'Steffanie R.', text: 'Alles immer super ordentlich, sauber, absolut zuverlässig und wirklich nett. Immer wieder gern :)' },
+    { name: 'Alex', text: 'Tolle Arbeit, super Preise. Die Termine wurden eingehalten. Herr Nagel ist sehr kompetent und freundlich. Nochmal vielen Dank.' },
+    { name: 'Agnes M.', text: 'Von der ersten Kontaktaufnahme über die Erstellung des Kostenvoranschlags bis zum ersten Termin zur Grundreinigung: Ich bin sehr zufrieden mit Paul Gebäudedienste. Die Reinigung von Fenstern und Balkontüren geschah gründlich und flink. Glänzend saubere Fenster waren das Resultat.' },
+    { name: 'Sabine F.', text: 'Wir waren und sind immer sehr zufrieden mit dem Service von Paul! Zuverlässig, pünktlich, und immer sehr freundlich!' },
+    { name: 'Heike S.', text: 'Sehr zuverlässig, schnell und vor allem sauber und ordentlich- perfekt!' },
+    { name: 'Buffy B.', text: 'Sehr gute Leistung, endlich wieder klare Sicht! Wird in Zukunft wieder gerne beauftragt.' },
+    { name: 'Gudrun S.', text: 'Die Mitarbeiter waren pünktlich, sehr freundlich und haben sehr gute Arbeit abgeliefert.' },
+    { name: 'Michael H.', text: 'Sehr gute Arbeit ein sehr zuverlässiger und super Service, kann ich nur empfehlen. Top / Danke' },
+  ],
+};
