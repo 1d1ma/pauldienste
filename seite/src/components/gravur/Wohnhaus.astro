@@ -1,0 +1,109 @@
+---
+/**
+ * Grafik Hausmeisterservice im Stil A: modernes Mehrfamilienhaus mit
+ * Balkonen als Gold-Silhouette, links Baum und Hecke, rechts im Hof ein
+ * Hausmeister mit Schneeschieber. Schnee auf Dach und Hecke, beim Erscheinen
+ * und beim Ueberfahren fallen Flocken.
+ */
+import { n, zufall } from '../../lib/gravur';
+
+interface Props { id?: string; }
+const { id = 'gr-haus' } = Astro.props;
+const r = zufall(5);
+const W = 400, H = 250, B = 214;
+
+// Haus
+const h = { x: 96, w: 196, top: 42 };
+const geschosse = [h.top + 18, 92, 132, 172];
+const fenster: string[] = [];
+const balkone: string[] = [];
+for (const y of geschosse.slice(0, 3)) {
+  for (let i = 0; i < 4; i++) {
+    const x = h.x + 14 + i * 46;
+    fenster.push(`M${x} ${y + 6}h28v26h-28Z`);
+  }
+  balkone.push(`M${h.x + 6} ${y + 32}h${h.w / 2 - 12}v8h${-(h.w / 2 - 12)}Z`, `M${h.x + h.w / 2 + 6} ${y + 32}h${h.w / 2 - 12}v8h${-(h.w / 2 - 12)}Z`);
+}
+const gelaender: string[] = [];
+for (const y of geschosse.slice(0, 3)) for (let x = h.x + 10; x < h.x + h.w - 6; x += 6) gelaender.push(`M${x} ${y + 33}v6`);
+
+// Nebenbauten hinten
+const hinten: string[] = [];
+for (let x = 0; x < W; ) {
+  const w = 34 + r() * 30;
+  const hh = 50 + r() * 60;
+  if (x + w < h.x - 4 || x > h.x + h.w + 4) hinten.push(`M${n(x)} ${B}V${n(B - hh)}H${n(x + w)}V${B}Z`);
+  x += w - 4;
+}
+
+// Hecke: Reihe runder Bueschel
+const hecke: string[] = [];
+const schneeHecke: string[] = [];
+for (let x = 4; x < 92; x += 12) {
+  hecke.push(`M${x - 8} ${B}v-12a8 8 0 0 1 16 0v12Z`);
+  schneeHecke.push(`M${x - 7} ${B - 16}a7 3.5 0 0 1 14 0Z`);
+}
+
+// Flocken
+const flocken = Array.from({ length: 34 }, () => ({
+  x: n(r() * W), y: n(-20 - r() * 120), r: n(1 + r() * 1.8), d: n(r() * 1.6), s: n(2.6 + r() * 1.6),
+}));
+---
+
+<svg class="gravur grafik-haus" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+  <path class="grafik__hinten" d={hinten.join('')} />
+
+  <!-- Baum links hinter der Hecke -->
+  <path class="grafik__gold" d="M44 150a30 32 0 1 1 1 0ZM42 150h4V214h-4Z" opacity="0.7" />
+
+  <!-- Haus -->
+  <path class="grafik__gold" d={`M${h.x} ${h.top}h${h.w}V${B}h${-h.w}Z`} />
+  <path d={`M${h.x + h.w - 16} ${h.top}h16V${B}h-16Z`} fill="#A68D5E" />
+  <path class="grafik__gold" d={`M${h.x - 6} ${h.top - 8}h${h.w + 12}v10h${-h.w - 12}Z`} />
+  <path class="grafik__hell" d={`M${h.x - 6} ${h.top - 8}q${(h.w + 12) / 2} -9 ${h.w + 12} 0Z`} />
+  <path class="grafik__grund" d={fenster.join('')} />
+  <path class="grafik__hell" d={fenster.filter((_, i) => i % 3 === 1).join('')} />
+  <path class="grafik__gold" d={balkone.join('')} />
+  <path class="grafik__schnitt" d={gelaender.join('')} stroke-width="1.2" />
+  <!-- Eingang mit Vordach -->
+  <path class="grafik__grund" d={`M${h.x + h.w / 2 - 16} ${B}V${B - 34}h32V${B}Z`} />
+  <path class="grafik__hell" d={`M${h.x + h.w / 2 - 26} ${B - 38}h52v4h-52Z`} />
+  <path class="grafik__gold" d={`M${h.x + h.w / 2 - 1} ${B - 34}h2V${B}h-2Z`} />
+
+  <!-- Hecke mit Schnee -->
+  <path class="grafik__gold" d={hecke.join('')} />
+  <path class="grafik__hell" d={schneeHecke.join('')} />
+
+  <!-- Hausmeister mit Schneeschieber -->
+  <g transform="translate(330 214)">
+    <path class="grafik__grund" d="M-14 -2h44v2h-44Z" />
+    <circle class="grafik__gold" cx="0" cy="-40" r="4.2" />
+    <path class="grafik__gold" d="M-5 -34q5 -4 10 0l2 16h-14Z" />
+    <path class="grafik__strich" d="M-3 -18l-4 18M3 -18l3 18" stroke-width="3.4" />
+    <path class="grafik__strich" d="M3 -30l9 10M-4 -30l6 6" stroke-width="2.6" />
+    <path class="grafik__strich" d="M-2 -38L22 -2" stroke-width="2" />
+    <path class="grafik__gold" d="M16 -4h16v4h-16Z" />
+    <path class="grafik__hell" d="M30 0a10 5 0 0 1 18 0Z" />
+  </g>
+
+  <!-- Boden -->
+  <path class="grafik__hell" d={`M0 ${B}H${W}v3H0Z`} />
+  <path class="grafik__gold" d={`M${h.x} ${B + 8}h${h.w}v3h${-h.w}ZM${h.x + 14} ${B + 15}h${h.w - 28}v2h${-h.w + 28}Z`} opacity="0.28" />
+
+  <!-- Flocken -->
+  <g class="grafik-haus__flocken">
+    {flocken.map((f) => (
+      <circle class="grafik-haus__flocke" cx={f.x} cy={f.y} r={f.r} fill="#F3E9D2" style={`animation-delay:${f.d}s;animation-duration:${f.s}s`} />
+    ))}
+  </g>
+</svg>
+
+<style>
+  .grafik-haus__flocke { animation: fallen 3s linear 1 both; }
+  :global(.karte:hover) .grafik-haus__flocke { animation-name: fallen-wieder; }
+  @keyframes fallen { 0% { transform: translate(0, 0); opacity: 0; } 10% { opacity: 1; } 85% { opacity: 1; } 100% { transform: translate(-14px, 340px); opacity: 0; } }
+  @keyframes fallen-wieder { 0% { transform: translate(0, 0); opacity: 0; } 10% { opacity: 1; } 85% { opacity: 1; } 100% { transform: translate(-14px, 340px); opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) {
+    .grafik-haus__flocken { display: none; }
+  }
+</style>

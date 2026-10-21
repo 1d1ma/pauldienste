@@ -1,0 +1,114 @@
+---
+/**
+ * Grafik Innenausbau im Stil A: moderner Wohnraum als Gold-Silhouette.
+ * Links Kuechenzeile mit Haengelampen, rechts Fenster mit Plissee, Dielen in
+ * Perspektive. In der Mitte wird die Wand gestrichen: der helle Streifen
+ * waechst beim Erscheinen und beim Ueberfahren mit der Rolle nach unten.
+ */
+import { n } from '../../lib/gravur';
+
+interface Props { id?: string; }
+const { id = 'gr-raum' } = Astro.props;
+const W = 400, H = 250;
+const BODEN = 188;
+const VP = { x: 214, y: 120 };
+const strahl = (xf: number, y: number) => VP.x + (xf - VP.x) * ((y - VP.y) / (H - VP.y));
+
+// Dielen
+const dielen: string[] = [];
+for (let xf = -400; xf < 820; xf += 38) dielen.push(`M${n(strahl(xf, BODEN))} ${BODEN}L${n(xf)} ${H}`);
+const stoesse: string[] = [];
+let versatz = 0;
+for (const t of [0.18, 0.42, 0.72]) {
+  const y = BODEN + (H - BODEN) * t;
+  for (let xf = -400 + versatz; xf < 820; xf += 76) stoesse.push(`M${n(strahl(xf, y))} ${n(y)}L${n(strahl(xf + 38, y))} ${n(y)}`);
+  versatz += 38;
+}
+
+// Kueche
+const k = { x: 24, w: 150 };
+const unten = { y: 140, h: BODEN - 140 };
+const fronten: string[] = [];
+for (let x = k.x + 30; x < k.x + k.w; x += 30) {
+  fronten.push(`M${x} ${unten.y + 6}V${BODEN - 4}`);
+}
+const griffe: string[] = [];
+for (let x = k.x + 15; x < k.x + k.w; x += 30) griffe.push(`M${x - 6} ${unten.y + 12}h12`);
+
+// Fenster mit Plissee
+const f = { x: 286, y: 46, w: 84, h: 112 };
+const plissee: string[] = [];
+for (let y = f.y + 8; y < f.y + 58; y += 5) plissee.push(`M${f.x + 6} ${y}h${f.w - 12}`);
+
+// Streichflaeche
+const wand = { x: 190, w: 72, top: 30 };
+---
+
+<svg class="gravur grafik-raum" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+  <defs>
+    <clipPath id={`${id}-boden`}><path d={`M-1 ${BODEN}H${W + 1}V${H}H-1Z`} /></clipPath>
+  </defs>
+
+  <!-- Rueckwand: unbehandelt dunkler, gestrichener Streifen hell -->
+  <path class="grafik__hinten" d={`M${wand.x} ${wand.top}h${wand.w}V${BODEN}h${-wand.w}Z`} />
+  <path class="grafik__hell grafik-raum__farbe" d={`M${wand.x} ${wand.top}h${wand.w}V${BODEN}h${-wand.w}Z`} />
+
+  <!-- Boden -->
+  <path d={`M-1 ${BODEN}H${W + 1}V${H}H-1Z`} fill="#A68D5E" />
+  <g clip-path={`url(#${id}-boden)`}>
+    <path class="grafik__schnitt" d={dielen.join('')} stroke-width="1.6" />
+    <path class="grafik__schnitt" d={stoesse.join('')} stroke-width="1.4" />
+  </g>
+  <path class="grafik__gold" d={`M0 ${BODEN - 4}H${W}v4H0Z`} />
+
+  <!-- Kueche -->
+  <path class="grafik__gold" d={`M${k.x} ${unten.y}h${k.w}V${BODEN - 4}h${-k.w}Z`} />
+  <path class="grafik__hell" d={`M${k.x - 4} ${unten.y - 5}h${k.w + 8}v6h${-k.w - 8}Z`} />
+  <path class="grafik__schnitt" d={fronten.join('')} stroke-width="1.6" />
+  <path class="grafik__schnitt" d={griffe.join('')} stroke-width="2" />
+  <!-- Wasserhahn -->
+  <path class="grafik__strich" d={`M${k.x + 96} ${unten.y - 5}v-14q0 -6 7 -6t7 6v3`} stroke-width="2.2" />
+  <!-- Haengelampen mit Lichtkegel -->
+  {[k.x + 46, k.x + 108].map((x) => (
+    <g>
+      <path d={`M${x - 22} ${unten.y - 6}L${x - 7} 124h14L${x + 22} ${unten.y - 6}Z`} fill="#E3CFA3" opacity="0.14" />
+      <path class="grafik__strich" d={`M${x} 0V112`} stroke-width="1.2" />
+      <path class="grafik__gold" d={`M${x - 10} 124a10 12 0 0 1 20 0Z`} />
+      <path class="grafik__hell" d={`M${x - 5} 124h10v2h-10Z`} />
+    </g>
+  ))}
+
+  <!-- Fenster mit Plissee -->
+  <path class="grafik__gold" d={`M${f.x - 4} ${f.y - 4}h${f.w + 8}v${f.h + 8}h${-f.w - 8}Z`} />
+  <path class="grafik__grund" d={`M${f.x + 2} ${f.y + 2}h${f.w - 4}v${f.h - 4}h${-f.w + 4}Z`} />
+  <path d={`M${f.x + 2} ${f.y + 62}L${f.x + 30} ${f.y + 62}L${f.x + 2} ${f.y + 100}Z`} fill="#E3CFA3" opacity="0.18" />
+  <path class="grafik__gold" d={`M${f.x + 4} ${f.y + 4}h${f.w - 8}v58h${-f.w + 8}Z`} />
+  <path class="grafik__schnitt" d={plissee.join('')} stroke-width="1.2" />
+  <path class="grafik__gold" d={`M${f.x + f.w / 2 - 1} ${f.y + 62}h2v${f.h - 64}h-2Z`} />
+  <path class="grafik__hell" d={`M${f.x - 8} ${f.y + f.h + 4}h${f.w + 16}v5h${-f.w - 16}Z`} />
+
+  <!-- Pflanze -->
+  <path class="grafik__gold" d={`M${f.x + 20} ${BODEN - 4}l4 -22h18l4 22Z`} />
+  <path class="grafik__strich" d={`M${f.x + 33} ${BODEN - 26}q-14 -16 -20 -40M${f.x + 33} ${BODEN - 26}q2 -22 10 -44M${f.x + 33} ${BODEN - 26}q14 -12 24 -30`} stroke-width="2" />
+
+  <!-- Farbrolle an der Kante des Streifens -->
+  <g class="grafik-raum__rolle">
+    <path class="grafik__gold" d={`M${wand.x + 4} ${wand.top - 10}h${wand.w - 8}v14h${-wand.w + 8}Z`} />
+    <path class="grafik__schnitt" d={`M${wand.x + 4} ${wand.top - 6}h${wand.w - 8}M${wand.x + 4} ${wand.top - 1}h${wand.w - 8}`} stroke-width="1" />
+    <path class="grafik__strich" d={`M${wand.x + wand.w / 2} ${wand.top + 4}v6l10 8V${BODEN + 40}`} stroke-width="2.4" />
+  </g>
+</svg>
+
+<style>
+  .grafik-raum__farbe { transform-box: fill-box; transform-origin: top; animation: streichen 2.2s cubic-bezier(0.4, 0, 0.2, 1) 0.5s 1 both; }
+  .grafik-raum__rolle { animation: rollen 2.2s cubic-bezier(0.4, 0, 0.2, 1) 0.5s 1 both; }
+  :global(.karte:hover) .grafik-raum__farbe { animation-name: streichen-wieder; animation-delay: 0s; }
+  :global(.karte:hover) .grafik-raum__rolle { animation-name: rollen-wieder; animation-delay: 0s; }
+  @keyframes streichen { from { transform: scaleY(0); } to { transform: scaleY(0.68); } }
+  @keyframes streichen-wieder { from { transform: scaleY(0); } to { transform: scaleY(0.68); } }
+  @keyframes rollen { from { transform: translateY(0); } to { transform: translateY(107px); } }
+  @keyframes rollen-wieder { from { transform: translateY(0); } to { transform: translateY(107px); } }
+  @media (prefers-reduced-motion: reduce) {
+    .grafik-raum__farbe, .grafik-raum__rolle, :global(.karte:hover) .grafik-raum__farbe, :global(.karte:hover) .grafik-raum__rolle { animation: none; }
+  }
+</style>

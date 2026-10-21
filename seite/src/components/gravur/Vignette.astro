@@ -1,14 +1,14 @@
 ---
-/** Waehlt die gravierte Vignette zum Bereich. */
+/** Waehlt die Grafik zum Bereich (Stil A, Gold-Silhouetten). */
 import type { Bereich } from '../../data/leistungen';
 import Buero from './Buero.astro';
-import Haus from './Haus.astro';
-import Raum from './Raum.astro';
+import Wohnhaus from './Wohnhaus.astro';
+import Wohnraum from './Wohnraum.astro';
 
 interface Props { bereich: Bereich['id']; id?: string; }
 const { bereich, id } = Astro.props;
 ---
 
 {bereich === 'reinigung' && <Buero id={id} />}
-{bereich === 'handwerk' && <Raum id={id} />}
-{bereich === 'hausmeister' && <Haus id={id} />}
+{bereich === 'handwerk' && <Wohnraum id={id} />}
+{bereich === 'hausmeister' && <Wohnhaus id={id} />}

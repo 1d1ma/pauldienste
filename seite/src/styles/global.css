@@ -152,6 +152,14 @@ li + li { margin-top: var(--space-2); }
 .gravur__grund { fill: var(--gravur-grund, var(--color-petrol)); stroke: none; }
 .gravur__voll { fill: currentColor; stroke: none; }
 
+/* --- Grafik Stil A: Gold-Silhouetten (gravur/Buero, Wohnraum, Wohnhaus) --- */
+.grafik__gold { fill: currentColor; }
+.grafik__grund { fill: var(--gravur-grund, var(--color-petrol)); }
+.grafik__hinten { fill: #554F41; }
+.grafik__hell { fill: #E3CFA3; }
+.grafik__schnitt { fill: none; stroke: var(--gravur-grund, var(--color-petrol)); stroke-linecap: square; }
+.grafik__strich { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
+
 /* --- Buttons (ein Stil: Gold, daneben Kontur) --- */
 .btn {
   display: inline-flex; align-items: center; justify-content: center;
