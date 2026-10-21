@@ -13,6 +13,10 @@ import CtaGruppe from './CtaGruppe.astro';
 import AnfrageBand from './AnfrageBand.astro';
 import BereichKarte from './BereichKarte.astro';
 import Vignette from './gravur/Vignette.astro';
+import RatingBadge from './RatingBadge.astro';
+import ReinigungTexte from './ReinigungTexte.astro';
+import { Image } from 'astro:assets';
+import reinigungFoto from '../assets/images/architecture-2256489_1920.jpg';
 import { bereiche, leistung, type Bereich } from '../data/leistungen';
 import { getPage, internalLink, registry } from '../data/pages';
 
@@ -21,12 +25,20 @@ const { id } = Astro.props;
 const b = bereiche.find((x) => x.id === id)!;
 const seite = getPage(b.start);
 const andere = bereiche.filter((x) => x.id !== id);
+const foto = id === 'reinigung' ? reinigungFoto : undefined;
 ---
 
 <Base slug={b.start}>
   <Header slot="header" />
 
-  <section class={`kopf kopf--${id}`}>
+  <section class={`kopf kopf--${id} ${foto ? 'kopf--foto' : ''}`}>
+    {
+      foto && (
+        <div class="kopf__foto" aria-hidden="true">
+          <Image src={foto} alt="" widths={[900, 1400, 1920]} sizes="100vw" loading="eager" fetchpriority="high" />
+        </div>
+      )
+    }
     <div class="container kopf__inner">
       <div class="kopf__text">
         <nav class="kopf__pfad" aria-label="Brotkrumen">
@@ -36,10 +48,15 @@ const andere = bereiche.filter((x) => x.id !== id);
         <p class="kopf__intro">{b.intro}</p>
         <p class="kopf__intro">Für Privat und Gewerbe, in Kassel und Umgebung.</p>
         <div class="kopf__actions"><CtaGruppe /></div>
+        <div class="kopf__rating"><RatingBadge /></div>
       </div>
-      <div class="kopf__bild">
-        <Vignette bereich={id} id={`kopf-${id}`} />
-      </div>
+      {
+        !foto && (
+          <div class="kopf__bild">
+            <Vignette bereich={id} id={`kopf-${id}`} />
+          </div>
+        )
+      }
     </div>
   </section>
 
@@ -66,6 +83,8 @@ const andere = bereiche.filter((x) => x.id !== id);
       }
     </div>
   </section>
+
+  {id === 'reinigung' && <ReinigungTexte />}
 
   <section class="mehr">
     <div class="container">
@@ -96,6 +115,21 @@ const andere = bereiche.filter((x) => x.id !== id);
   .kopf h1 { overflow-wrap: normal; word-break: normal; hyphens: auto; color: #fff; font-size: clamp(1.9rem, 1rem + 2.6vw, 3.1rem); line-height: 1.08; letter-spacing: -0.02em; max-width: 18ch; }
   .kopf__intro { margin-top: var(--space-4); color: var(--color-on-dark-soft); max-width: 44ch; }
   .kopf__actions { margin-top: var(--space-8); }
+  .kopf__rating { margin-top: var(--space-6); }
+
+  /* Foto-Kopf: Graustufen, Gold-Duoton, Petrol-Verlauf von links fuer die Lesbarkeit */
+  .kopf--foto { min-height: clamp(26rem, 52vw, 34rem); display: flex; align-items: center; }
+  .kopf--foto .kopf__inner { grid-template-columns: minmax(0, 46rem); width: 100%; }
+  .kopf--foto h1 { max-width: 22ch; }
+  .kopf--foto .kopf__intro { max-width: 52ch; }
+  .kopf__foto { position: absolute; inset: 0; z-index: -1; overflow: hidden; background: var(--color-petrol); }
+  .kopf__foto :global(img) { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.1) brightness(1.35); }
+  .kopf__foto::before { content: ''; position: absolute; inset: 0; background: #C9AD78; mix-blend-mode: multiply; opacity: 0.95; }
+  .kopf__foto::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(90deg, rgb(20 22 24 / 0.93) 0%, rgb(20 22 24 / 0.78) 40%, rgb(20 22 24 / 0.2) 100%);
+  }
+  @media (max-width: 900px) { .kopf__foto::after { background: rgb(20 22 24 / 0.84); } }
 
   .kopf__bild { position: relative; aspect-ratio: 8 / 5; background: var(--gravur-grund); color: var(--gravur-tinte); }
   /* versetzter Goldrahmen wie ein Passepartout */

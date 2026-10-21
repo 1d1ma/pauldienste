@@ -69,13 +69,14 @@ export const pages: Record<string, Page> = {
   /* Bereichsseiten: Kopf, Raster aller Leistungen, die anderen Bereiche */
   '/gebaeudereinigung-kassel/': {
     slug: '/gebaeudereinigung-kassel/',
-    title: 'Gebäudereinigung Kassel | Paul Gebäudedienste',
+    title: 'Gebäudereinigung Kassel | Reinigungsfirma Paul Gebäudedienste',
     label: 'Gebäudereinigung',
     description:
-      'Gebäudereinigung in Kassel: Fenster, Büro, Grund- und Bauendreinigung, Fassade und Stein. Kostenlose Besichtigung, danach Festpreis.',
-    h1: 'Gebäudereinigung in Kassel',
+      'Gebäudereinigung in Kassel: Reinigungsfirma für Büro, Fenster, Grund- und Bauendreinigung, Fassade und Stein. Kostenlose Besichtigung, dann Festpreis.',
+    h1: 'Gebäudereinigung in Kassel: Ihre Reinigungsfirma für Privat und Gewerbe',
     cluster: 'reinigung',
     primaryKeyword: 'gebäudereinigung kassel',
+    secondaryKeywords: ['reinigungsfirma kassel', 'reinigungsunternehmen kassel', 'reinigungsservice kassel', 'putzfirma kassel', 'gebäudereiniger kassel'],
     linksTo: ['/fensterreinigung-kassel/', '/bueroreinigung-kassel/', '/grundreinigung-kassel/', '/handwerker-kassel/', '/hausmeisterservice-kassel/'],
     status: 'live',
   },
