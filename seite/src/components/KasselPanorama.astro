@@ -67,9 +67,13 @@ for (let i = 0; i < 9; i++) {
 }
 const pyB = 46, pyH = 48, py = oy - 6;
 herk.push(`M${herkulesX - 30} ${oy}V${py}H${herkulesX + 30}V${oy}`);
-herk.push(`M${herkulesX - pyB / 2} ${py}L${herkulesX} ${py - pyH}L${herkulesX + pyB / 2} ${py}Z`);
+// Pyramide oben abgeflacht wie das Original, darauf ein gefuellter Sockel:
+// So steht die Figur sichtbar auf dem Bau, statt ueber der Spitze zu schweben.
+const pyT = 5;
+const pyramide = `M${herkulesX - pyB / 2} ${py}L${herkulesX - pyT} ${py - pyH}H${herkulesX + pyT}L${herkulesX + pyB / 2} ${py}Z`;
+herk.push(pyramide);
 const sy = py - pyH;
-herk.push(`M${herkulesX - 4} ${sy}V${sy - 5}H${herkulesX + 4}V${sy}`);
+const sockel = `M${herkulesX - 4} ${sy}V${sy - 5}H${herkulesX + 4}V${sy}Z`;
 const figur = `M${herkulesX - 2.6} ${sy - 5}L${herkulesX - 2} ${sy - 15}L${herkulesX - 3.4} ${sy - 20}L${herkulesX} ${sy - 24}L${herkulesX + 3.2} ${sy - 20}L${herkulesX + 2.2} ${sy - 15}L${herkulesX + 2.8} ${sy - 5}Z`;
 
 const kTop = hb + 2;
@@ -221,10 +225,12 @@ for (let x = 520; x < W; ) {
     <path class="panorama__gold" d={kaskadeFlaeche} />
     <path class="panorama__schnitt" d={kaskade.join('')} stroke-width="0.8" />
     <path class="panorama__gold" d={`M${ox} ${hb}V${oy}H${ox + ow}V${hb}Z`} />
-    <path class="panorama__gold" d={`M${herkulesX - 30} ${oy}V${py}L${herkulesX} ${py - pyH}L${herkulesX + 30} ${py}V${oy}Z`} />
+    <path class="panorama__gold" d={`M${herkulesX - 30} ${oy}V${py}H${herkulesX + 30}V${oy}Z`} />
+    <path class="panorama__gold" d={pyramide} />
     <path class="panorama__schnitt" d={herk.slice(1).join('')} stroke-width="1" />
+    <path class="panorama__gold" d={sockel} />
     <path class="panorama__gold" d={figur} />
-    <circle class="panorama__gold" cx={herkulesX} cy={sy - 26} r="2" />
+    <circle class="panorama__gold" cx={herkulesX} cy={sy - 25.4} r="2.2" />
     <path class="panorama__gold" d={schlossFlaeche} />
     <path class="panorama__schnitt" d={schlossLinien.slice(1).join('')} stroke-width="0.9" />
   </g>
