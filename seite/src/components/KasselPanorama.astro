@@ -74,8 +74,6 @@ const pyramide = `M${herkulesX - pyB / 2} ${py}L${herkulesX - pyT} ${py - pyH}H$
 herk.push(pyramide);
 const sy = py - pyH;
 const sockel = `M${herkulesX - 4} ${sy}V${sy - 5}H${herkulesX + 4}V${sy}Z`;
-// Keule, auf die sich Herkules rechts stuetzt
-const keule = `M${herkulesX + 2.6} ${sy - 14}L${herkulesX + 3.8} ${sy - 14.4}L${herkulesX + 5.4} ${sy - 5}H${herkulesX + 3.6}Z`;
 const figur = `M${herkulesX - 2.6} ${sy - 5}L${herkulesX - 2} ${sy - 15}L${herkulesX - 3.4} ${sy - 20}L${herkulesX} ${sy - 24}L${herkulesX + 3.2} ${sy - 20}L${herkulesX + 2.2} ${sy - 15}L${herkulesX + 2.8} ${sy - 5}Z`;
 
 const kTop = hb + 2;
@@ -232,7 +230,6 @@ for (let x = 520; x < W; ) {
     <path class="panorama__schnitt" d={herk.slice(1).join('')} stroke-width="1" />
     <path class="panorama__gold" d={sockel} />
     <path class="panorama__gold" d={figur} />
-    <path class="panorama__gold" d={keule} />
     <circle class="panorama__gold" cx={herkulesX} cy={sy - 25.4} r="2.2" />
     <path class="panorama__gold" d={schlossFlaeche} />
     <path class="panorama__schnitt" d={schlossLinien.slice(1).join('')} stroke-width="0.9" />
