@@ -62,7 +62,7 @@ const stern = ([x, y, s]: number[]) =>
     <clipPath id={`${id}-glas`}><rect x={hb.x} y={hb.top + 12} width={hb.w} height={B - 30 - hb.top - 12} /></clipPath>
     <linearGradient id={`${id}-glanz`} x1="0" x2="1">
       <stop offset="0" stop-color="#fff" stop-opacity="0" />
-      <stop offset="0.5" stop-color="#fff" stop-opacity="0.6" />
+      <stop offset="0.5" stop-color="#fff" stop-opacity="0.85" />
       <stop offset="1" stop-color="#fff" stop-opacity="0" />
     </linearGradient>
   </defs>
@@ -85,12 +85,13 @@ const stern = ([x, y, s]: number[]) =>
 
   <!-- Glanz ueber die Fassade -->
   <g clip-path={`url(#${id}-glas)`}>
-    <rect class="grafik-buero__glanz" x={hb.x - 90} y={hb.top - 20} width="70" height={B} fill={`url(#${id}-glanz)`} transform="skewX(-18)" />
+    <rect class="grafik-buero__glanz" x={hb.x - 90} y={hb.top - 20} width="90" height={B} fill={`url(#${id}-glanz)`} transform="skewX(-18)" />
   </g>
 
-  <!-- Arbeitsbuehne -->
-  <path class="grafik__schnitt" d={`M${bu.x + 6} ${hb.top + 12}V${bu.y}M${bu.x + bu.w - 6} ${hb.top + 12}V${bu.y}`} stroke-width="1.2" />
+  <!-- Arbeitsbuehne: faehrt beim Ueberfahren eine Etage tiefer -->
   <path class="grafik__strich" d={`M${hb.x + 30} ${hb.top + 2}h-6v10M${hb.x + hb.w - 30} ${hb.top + 2}h6v10`} stroke-width="1" />
+  <path class="grafik__schnitt grafik-buero__seil" d={`M${bu.x + 6} ${hb.top + 12}V${bu.y}M${bu.x + bu.w - 6} ${hb.top + 12}V${bu.y}`} stroke-width="1.2" />
+  <g class="grafik-buero__buehne">
   <path class="grafik__grund" d={`M${bu.x - 2} ${bu.y}h${bu.w + 4}v14h${-bu.w - 4}Z`} />
   <path class="grafik__gold" d={`M${bu.x} ${bu.y + 2}h${bu.w}v10h${-bu.w}Z`} />
   <path class="grafik__schnitt" d={`M${bu.x + 2} ${bu.y + 7}h${bu.w - 4}`} stroke-width="1" />
@@ -102,6 +103,7 @@ const stern = ([x, y, s]: number[]) =>
   <path class="grafik__schnitt" d={`M${bu.x + 25} ${bu.y - 8}l7 -10l6 -2`} stroke-width="2" style="stroke-linecap: round" />
   <path class="grafik__schnitt" d={`M${bu.x + 34} ${bu.y - 25}l8 6`} stroke-width="2.6" style="stroke-linecap: round" />
 
+  </g>
   {sterne.map((s) => <path class="grafik-buero__stern" fill="#FFF6DF" d={stern(s)} />)}
 
   <!-- Nebenbau rechts -->
@@ -115,13 +117,23 @@ const stern = ([x, y, s]: number[]) =>
 </svg>
 
 <style>
-
   .grafik-buero__glanz { animation: glanz 2.4s cubic-bezier(0.4, 0, 0.2, 1) 0.6s 1 both; }
   .grafik-buero__stern { transform-box: fill-box; transform-origin: center; animation: funkeln 2.4s ease-out 1.6s 1 both; }
-  :global(.karte:hover) .grafik-buero__glanz { animation: glanz 1.6s cubic-bezier(0.4, 0, 0.2, 1) 1 both; }
-  @keyframes glanz { from { transform: skewX(-18deg) translateX(0); } to { transform: skewX(-18deg) translateX(320px); } }
-  @keyframes funkeln { 0% { transform: scale(0); opacity: 0; } 40% { transform: scale(1.3); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+  .grafik-buero__buehne { transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1); }
+  /* Eigene Namen fuer das Ueberfahren, sonst startet der Browser die Animation nicht neu */
+  :global(.karte:hover) .grafik-buero__glanz { animation: glanz-wieder 1.4s cubic-bezier(0.4, 0, 0.2, 1) 0.2s 1 both; }
+  :global(.karte:hover) .grafik-buero__stern { animation: funkeln-wieder 1.6s ease-out 0.9s 1 both; }
+  :global(.karte:hover) .grafik-buero__buehne { transform: translateY(20px); }
+  /* Seile werden mit der Buehne laenger: (118 + 20 - 48) / (118 - 48) */
+  .grafik-buero__seil { transform-box: view-box; transform-origin: 0 48px; transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1); }
+  :global(.karte:hover) .grafik-buero__seil { transform: scaleY(1.2857); }
+  @keyframes glanz { from { transform: skewX(-18deg) translateX(0); } to { transform: skewX(-18deg) translateX(340px); } }
+  @keyframes glanz-wieder { from { transform: skewX(-18deg) translateX(0); } to { transform: skewX(-18deg) translateX(340px); } }
+  @keyframes funkeln { 0% { transform: scale(0); opacity: 0; } 40% { transform: scale(1.4); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+  @keyframes funkeln-wieder { 0% { transform: scale(0); opacity: 0; } 40% { transform: scale(1.4); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
   @media (prefers-reduced-motion: reduce) {
-    .grafik-buero__glanz, .grafik-buero__stern, :global(.karte:hover) .grafik-buero__glanz { animation: none; }
+    .grafik-buero__glanz, .grafik-buero__stern, :global(.karte:hover) .grafik-buero__glanz, :global(.karte:hover) .grafik-buero__stern { animation: none; }
+    .grafik-buero__buehne, :global(.karte:hover) .grafik-buero__buehne, .grafik-buero__seil, :global(.karte:hover) .grafik-buero__seil { transition: none; transform: none; }
   }
 </style>
+
