@@ -9,11 +9,12 @@ import Base from '../layouts/Base.astro';
 import Header from './Header.astro';
 import Footer from './Footer.astro';
 import Icon from './Icon.astro';
+import CtaGruppe from './CtaGruppe.astro';
+import AnfrageBand from './AnfrageBand.astro';
 import BereichKarte from './BereichKarte.astro';
 import Vignette from './gravur/Vignette.astro';
 import { bereiche, leistung, type Bereich } from '../data/leistungen';
 import { getPage, internalLink, registry } from '../data/pages';
-import { site } from '../data/site';
 
 interface Props { id: Bereich['id']; }
 const { id } = Astro.props;
@@ -33,11 +34,8 @@ const andere = bereiche.filter((x) => x.id !== id);
         </nav>
         <h1>{seite.h1}</h1>
         <p class="kopf__intro">{b.intro}</p>
-        <p class="kopf__intro">Für Privat und Gewerbe. Wir sehen uns alles kostenlos vor Ort an, danach erhalten Sie einen Festpreis.</p>
-        <div class="kopf__actions">
-          <a class="btn btn--gold lift" href={site.angebotUrl}>Besichtigung anfragen</a>
-          <a class="btn btn--ghost lift" href={`tel:${site.kontakt.telefon}`}>{site.kontakt.telefonAnzeige}</a>
-        </div>
+        <p class="kopf__intro">Für Privat und Gewerbe, in Kassel und Umgebung.</p>
+        <div class="kopf__actions"><CtaGruppe /></div>
       </div>
       <div class="kopf__bild">
         <Vignette bereich={id} id={`kopf-${id}`} />
@@ -79,12 +77,7 @@ const andere = bereiche.filter((x) => x.id !== id);
     </div>
   </section>
 
-  <section class="abschluss">
-    <div class="container abschluss__inner">
-      <h2>Ein Ansprechpartner, ein Festpreis. Wir kümmern uns.</h2>
-      <a class="btn btn--gold lift" href={site.angebotUrl}>Besichtigung anfragen</a>
-    </div>
-  </section>
+  <AnfrageBand />
 
   <Footer slot="footer" />
 </Base>
@@ -102,7 +95,7 @@ const andere = bereiche.filter((x) => x.id !== id);
   .kopf__pfad a { color: var(--color-primary-on-dark); text-decoration: none; }
   .kopf h1 { overflow-wrap: normal; word-break: normal; hyphens: auto; color: #fff; font-size: clamp(1.9rem, 1rem + 2.6vw, 3.1rem); line-height: 1.08; letter-spacing: -0.02em; max-width: 18ch; }
   .kopf__intro { margin-top: var(--space-4); color: var(--color-on-dark-soft); max-width: 44ch; }
-  .kopf__actions { margin-top: var(--space-8); display: flex; flex-wrap: wrap; gap: var(--space-3); }
+  .kopf__actions { margin-top: var(--space-8); }
 
   .kopf__bild { position: relative; aspect-ratio: 8 / 5; background: var(--gravur-grund); color: var(--gravur-tinte); }
   /* versetzter Goldrahmen wie ein Passepartout */
@@ -144,8 +137,4 @@ const andere = bereiche.filter((x) => x.id !== id);
   .mehr__karten { margin-top: var(--space-8); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6); }
   @media (max-width: 760px) { .mehr__karten { grid-template-columns: 1fr; } }
 
-  /* --- Abschluss --- */
-  .abschluss { background: var(--color-petrol-dark); padding-block: clamp(2.5rem, 5vw, 3.5rem); }
-  .abschluss__inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-6); }
-  .abschluss h2 { color: #fff; font-size: clamp(1.4rem, 1.1rem + 1vw, 1.9rem); max-width: 28ch; }
 </style>

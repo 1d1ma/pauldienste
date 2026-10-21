@@ -1,0 +1,50 @@
+---
+/**
+ * Vertrauensleiste: vier belegbare Kennzahlen mit kurzer Erklaerung.
+ * Nur Fakten aus PRODUCT.md und site.ts, nichts erfinden.
+ */
+import { bewertungen } from '../data/site';
+
+const note = bewertungen.schnitt.toLocaleString('de-DE', { minimumFractionDigits: 1 });
+const punkte = [
+  ['2013', 'seit diesem Jahr', 'reinigen und renovieren wir für Haushalte, Vermieter und Betriebe in Kassel und Umgebung.'],
+  ['1', 'Ansprechpartner', 'für Reinigung, Innenausbau und Hausmeisterservice. Sie stimmen alles mit einer Person ab.'],
+  ['0 €', 'für die Besichtigung', 'Wir sehen uns alles vor Ort an. Danach steht der Preis fest, bevor wir anfangen.'],
+  [note, `bei ${bewertungen.anzahl} Google-Bewertungen`, 'Kundinnen und Kunden loben vor allem Pünktlichkeit, Sauberkeit und faire Preise.'],
+] as const;
+---
+
+<section class="vertrauen" aria-labelledby="vertrauen-titel">
+  <div class="container">
+    <h2 id="vertrauen-titel">Darauf können Sie sich verlassen</h2>
+    <ul class="vertrauen__liste">
+      {
+        punkte.map(([zahl, label, text]) => (
+          <li class="reveal">
+            <p class="vertrauen__zahl">{zahl}</p>
+            <p class="vertrauen__label">{label}</p>
+            <p class="vertrauen__text">{text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .vertrauen { background: var(--color-bg); padding-block: clamp(3.5rem, 7vw, 6rem); }
+  .vertrauen h2 { max-width: 20ch; }
+  .vertrauen__liste {
+    list-style: none; padding: 0; margin: clamp(2rem, 4vw, 3rem) 0 0;
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-8) var(--space-6);
+  }
+  @media (max-width: 900px) { .vertrauen__liste { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 480px) { .vertrauen__liste { grid-template-columns: 1fr; } }
+  .vertrauen__liste li { margin: 0; padding-top: var(--space-4); border-top: 1px solid var(--color-primary); }
+  .vertrauen__zahl {
+    font-family: var(--font-heading); font-weight: var(--weight-bold); line-height: 1;
+    font-size: clamp(2.6rem, 2rem + 2vw, 3.6rem); letter-spacing: -0.03em; color: var(--color-heading);
+  }
+  .vertrauen__label { margin-top: var(--space-2); font-weight: var(--weight-bold); color: var(--color-accent-text); font-size: 0.95rem; }
+  .vertrauen__text { margin-top: var(--space-2); font-size: 0.9rem; line-height: 1.55; color: var(--color-text-muted); }
+</style>

@@ -1,0 +1,39 @@
+---
+/**
+ * CTA-Gruppe: Haupt-Button (Festpreis-Angebot), Anruf als zweiter Weg und
+ * darunter der Hinweis, der die Huerde nimmt (kostenlos, unverbindlich).
+ * Ueberall gleich, Texte aus site.ts. Fuer dunkle Flaechen gebaut.
+ */
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+
+interface Props { hinweis?: boolean; }
+const { hinweis = true } = Astro.props;
+---
+
+<div class="cta-gruppe">
+  <div class="cta-gruppe__knoepfe">
+    <a class="btn btn--gold lift" href={site.angebotUrl}>{site.ctaLabel}</a>
+    <a class="btn btn--ghost lift" href={`tel:${site.kontakt.telefon}`}>
+      <Icon name="phone" size={18} /><span>{site.kontakt.telefonAnzeige}</span>
+    </a>
+  </div>
+  {
+    hinweis && (
+      <p class="cta-gruppe__hinweis">
+        <Icon name="check" size={16} />{site.ctaHinweis}
+      </p>
+    )
+  }
+</div>
+
+<style>
+  .cta-gruppe__knoepfe { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+  .cta-gruppe__knoepfe .btn--ghost { gap: var(--space-2); }
+  .cta-gruppe__hinweis {
+    margin-top: var(--space-3);
+    display: flex; align-items: center; gap: var(--space-2);
+    font-size: var(--size-small); color: var(--color-on-dark-soft);
+  }
+  .cta-gruppe__hinweis :global(.icon) { color: var(--color-primary); }
+</style>

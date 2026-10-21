@@ -1,40 +1,23 @@
 ---
 /**
- * Startseite nach der Stilrichtung "Dunkel" (stilvarianten.html): Hero mit drei
- * Bereichsflaechen in Farbe, drei Bereiche als ruhige Liste, Bodenbelaege,
- * Wandfarben, Ablauf, FAQ, Abschluss. Bewertungen fehlen bis echte vorliegen.
- * Die Farbflaechen im Hero sind Platzhalter fuer Fotos (siehe --foto).
+ * Startseite: Hero mit den drei Bereichen als gravierte Karten, Bewertungen,
+ * Vertrauensleiste, FAQ, Anfrage. Boden und Farben gehoeren auf ihre
+ * Unterseite (/bodenbelaege-farben-kassel/), nicht hierher.
  */
 import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Section from '../components/Section.astro';
 import Faq from '../components/Faq.astro';
-import FloorPlanks from '../components/FloorPlanks.astro';
+import CtaGruppe from '../components/CtaGruppe.astro';
+import AnfrageBand from '../components/AnfrageBand.astro';
+import Vertrauen from '../components/Vertrauen.astro';
 import RatingBadge from '../components/RatingBadge.astro';
 import ReviewsStatic from '../components/ReviewsStatic.astro';
 import BereichKarte from '../components/BereichKarte.astro';
 import { bereiche } from '../data/leistungen';
-import { internalLink } from '../data/pages';
 import { bewertungen, site } from '../data/site';
 
-const href = (slug: string) => internalLink(slug).href;
-
-const farben = [
-  ['Kalkweiß', '#ECEAE5', '#1C1E21'],
-  ['Greige', '#CFC7BA', '#1C1E21'],
-  ['Salbei', '#9DA894', '#1C1E21'],
-  ['Taupe', '#8C8076', '#fff'],
-  ['Taubenblau', '#6D7D8A', '#fff'],
-  ['Anthrazit', '#3A3D41', '#fff'],
-] as const;
-
-const ablauf = [
-  ['Anfrage', 'Sie rufen an oder schreiben uns, worum es geht.'],
-  ['Besichtigung', 'Wir sehen uns vor Ort an, was zu tun ist. Das kostet nichts.'],
-  ['Festpreis', 'Sie erhalten ein schriftliches Angebot mit festem Preis.'],
-  ['Ausführung', 'Wir arbeiten zum vereinbarten Termin und übergeben sauber.'],
-] as const;
 
 const faq = [
   {
@@ -74,10 +57,7 @@ const faq = [
         <p class="hero__intro">
           Gebäudereinigung, Renovierung und Hausmeisterservice für Privat und Gewerbe. Ein Ansprechpartner, ein Festpreis.
         </p>
-        <div class="hero__actions">
-          <a class="btn btn--gold lift" href={site.angebotUrl}>Besichtigung anfragen</a>
-          <a class="btn btn--ghost lift" href={`tel:${site.kontakt.telefon}`}>{site.kontakt.telefonAnzeige}</a>
-        </div>
+        <div class="hero__actions"><CtaGruppe /></div>
         <div class="hero__rating"><RatingBadge /></div>
       </div>
     </div>
@@ -91,52 +71,13 @@ const faq = [
   <!-- Bewertungen -->
   {
     bewertungen.echt && (
-      <section class="nach-hero">
+      <section class="nach-hero" id="bewertungen">
         <div class="container"><ReviewsStatic /></div>
       </section>
     )
   }
 
-  <!-- Bodenbelaege -->
-  <section class="split split--boden" data-anim="boden">
-    <div class="split__bild"><FloorPlanks /></div>
-    <div class="split__text">
-      <h2>Premium-Bodenbeläge</h2>
-      <p>Vinyl, Parkett und Designböden zum Anfassen. Wir beraten Sie in unserer Ausstellung in Kassel nach Terminvereinbarung und verlegen den Boden.</p>
-      <a class="btn btn--ghost lift" href={href('/bodenbelaege-farben-kassel/')}>Bodenbeläge ansehen</a>
-    </div>
-  </section>
-
-  <!-- Wandfarben -->
-  <section class="split split--farben" data-anim="farben">
-    <div class="split__text">
-      <h2>Wandfarben in Profiqualität</h2>
-      <p>Farbton aussuchen, Muster an der Wand prüfen, streichen lassen. Alles aus einer Hand.</p>
-      <a class="btn btn--ghost lift" href={href('/bodenbelaege-farben-kassel/')}>Farben ansehen</a>
-    </div>
-    <ul class="farben" aria-label="Beispiel-Farbtöne">
-      {
-        farben.map(([name, hex, ink]) => (
-          <li style={`--c:${hex}; --ink:${ink}`}><span>{name}</span></li>
-        ))
-      }
-    </ul>
-  </section>
-
-  <!-- Ablauf -->
-  <Section id="ablauf" variant="default" title="So läuft es ab">
-    <ol class="ablauf stagger" data-anim="ablauf">
-      {
-        ablauf.map(([titel, text], i) => (
-          <li class="ablauf__schritt reveal" data-anim="ablauf-schritt">
-            <span class="ablauf__nr" aria-hidden="true">{i + 1}</span>
-            <h3>{titel}</h3>
-            <p>{text}</p>
-          </li>
-        ))
-      }
-    </ol>
-  </Section>
+  <Vertrauen />
 
   <!-- FAQ -->
   <Section id="faq" variant="alt">
@@ -146,13 +87,7 @@ const faq = [
     </div>
   </Section>
 
-  <!-- Abschluss -->
-  <section class="abschluss">
-    <div class="container abschluss__inner">
-      <h2>Reinigung oder Reparatur? Wir kümmern uns.</h2>
-      <a class="btn btn--gold lift" href={site.angebotUrl}>Besichtigung anfragen</a>
-    </div>
-  </section>
+  <AnfrageBand />
 
   <Footer slot="footer" />
 </Base>
@@ -187,7 +122,7 @@ const faq = [
   .hero__marke::before { content: ''; width: 2rem; height: 1px; background: currentColor; }
   .hero h1 { color: #fff; font-size: clamp(2.2rem, 1.2rem + 3.4vw, 3.9rem); line-height: 1.06; letter-spacing: -0.025em; max-width: 15ch; }
   .hero__intro { color: var(--color-on-dark-soft); font-size: 1.05rem; max-width: 40ch; }
-  .hero__actions { margin-top: var(--space-6); display: flex; flex-wrap: wrap; gap: var(--space-3); }
+  .hero__actions { margin-top: var(--space-6); }
   .hero__rating { margin-top: var(--space-6); }
 
   .karten {
@@ -198,37 +133,8 @@ const faq = [
 
   .nach-hero { background: var(--color-bg-alt); padding-block: clamp(2.5rem, 5vw, 4rem) clamp(3rem, 6vw, 5rem); }
 
-  /* --- Split: Boden und Farben --- */
-  .split { display: grid; grid-template-columns: 1fr 1fr; min-height: 26rem; }
-  @media (max-width: 800px) { .split { grid-template-columns: 1fr; } }
-  .split__bild { position: relative; min-height: 16rem; overflow: clip; }
-  .split__text { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: var(--space-4); padding: clamp(2rem, 6vw, 5rem); }
-  .split__text h2 { color: #fff; font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.2rem); }
-  .split__text p { color: var(--color-on-dark-soft); max-width: 42ch; }
-  .split--boden { background: var(--color-petrol); }
-  .split--farben { background: var(--color-graphit-soft); }
-  @media (max-width: 800px) { .split--farben .split__text { order: 1; } }
-
-  .farben { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(6, 1fr); min-height: 22rem; }
-  .farben li { margin: 0; background: var(--c); color: var(--ink); padding: var(--space-4) 0; display: flex; justify-content: center; }
-  .farben span { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 0.85rem; font-weight: var(--weight-medium); letter-spacing: 0.04em; }
-  @media (max-width: 800px) { .farben { min-height: 14rem; } }
-
-  /* --- Ablauf --- */
-  .ablauf { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-8) var(--space-6); }
-  @media (max-width: 900px) { .ablauf { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 560px) { .ablauf { grid-template-columns: 1fr; } }
-  .ablauf__schritt { margin: 0; padding-top: var(--space-4); border-top: 1px solid var(--color-primary); }
-  .ablauf__nr { font-family: var(--font-heading); font-weight: var(--weight-bold); font-size: 1.8rem; line-height: 1; color: var(--color-accent-text); display: block; margin-bottom: var(--space-3); }
-  .ablauf__schritt h3 { font-size: 1.1rem; }
-  .ablauf__schritt p { margin-top: var(--space-2); font-size: 0.9rem; line-height: 1.55; color: var(--color-text-muted); }
-
   /* --- FAQ --- */
   .faq-grid { display: grid; grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr); gap: clamp(2rem, 6vw, 5rem); align-items: start; }
   @media (max-width: 900px) { .faq-grid { grid-template-columns: 1fr; gap: var(--space-4); } }
 
-  /* --- Abschluss --- */
-  .abschluss { background: var(--color-petrol-dark); padding-block: clamp(2.5rem, 5vw, 3.5rem); }
-  .abschluss__inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-6); }
-  .abschluss h2 { color: #fff; font-size: clamp(1.4rem, 1.1rem + 1vw, 1.9rem); max-width: 28ch; }
 </style>

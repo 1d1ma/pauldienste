@@ -54,7 +54,10 @@ export const site = {
     'Paul Gebäudedienste in Kassel: Gebäudereinigung, Hausmeisterservice und Handwerk aus einer Hand, für Privat und Gewerbe.',
 
   angebotUrl: '/kontakt/',
-  ctaLabel: 'Kostenlose Besichtigung anfragen',
+  /** Haupt-CTA ueberall gleich: Nutzen (Festpreis) statt Arbeitsschritt (Besichtigung). */
+  ctaLabel: 'Festpreis-Angebot anfordern',
+  ctaKurz: 'Angebot anfordern',
+  ctaHinweis: 'Kostenlose Besichtigung vor Ort, danach ein fester Preis. Unverbindlich.',
 
   /** Slogan: noch nicht freigegeben, eine Variable. */
   slogan: 'Reinigung und Handwerk aus einer Hand',

@@ -75,7 +75,7 @@ const href = (slug: string) => internalLink(slug).href;
           <a href={`tel:${site.kontakt.telefon}`}><Icon name="phone" size={18} />{site.kontakt.telefonAnzeige}</a>
         </li>
         <li class="site-nav__cta">
-          <a href={site.angebotUrl}>Besichtigung anfragen</a>
+          <a href={site.angebotUrl}>{site.ctaKurz}</a>
         </li>
       </ul>
     </nav>

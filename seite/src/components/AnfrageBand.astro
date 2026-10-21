@@ -1,0 +1,38 @@
+---
+/**
+ * Abschluss vor dem Footer, auf jeder Seite gleich: eine offene Frage statt
+ * Werbespruch, darunter die drei Schritte bis zum Festpreis und die CTA-Gruppe.
+ */
+import CtaGruppe from './CtaGruppe.astro';
+
+const schritte = ['Sie schildern kurz Ihr Vorhaben', 'Wir sehen es uns kostenlos vor Ort an', 'Sie erhalten einen schriftlichen Festpreis'];
+---
+
+<section class="anfrage">
+  <div class="container anfrage__inner">
+    <div>
+      <h2>Was steht bei Ihnen an?</h2>
+      <ol class="anfrage__schritte">
+        {schritte.map((s) => <li>{s}</li>)}
+      </ol>
+    </div>
+    <CtaGruppe />
+  </div>
+</section>
+
+<style>
+  .anfrage { background: var(--color-petrol-dark); padding-block: clamp(3rem, 6vw, 4.5rem); border-bottom: 1px solid var(--color-border-dark); }
+  .anfrage__inner { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-8) clamp(2rem, 6vw, 5rem); align-items: center; }
+  @media (max-width: 900px) { .anfrage__inner { grid-template-columns: 1fr; } }
+  .anfrage h2 { color: #fff; font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.3rem); }
+  .anfrage__schritte {
+    list-style: none; padding: 0; margin: var(--space-4) 0 0;
+    display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6);
+    counter-reset: schritt; color: var(--color-on-dark-soft); font-size: 0.95rem;
+  }
+  .anfrage__schritte li { margin: 0; counter-increment: schritt; display: flex; align-items: baseline; gap: var(--space-2); }
+  .anfrage__schritte li::before {
+    content: counter(schritt); font-family: var(--font-heading); font-weight: var(--weight-bold);
+    color: var(--color-primary-on-dark);
+  }
+</style>

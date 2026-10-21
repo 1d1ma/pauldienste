@@ -155,14 +155,18 @@ block(1408, 24, 54, 2);
 block(1436, 46, 30, 5);
 block(1488, 30, 18);
 
-// Himmelsstuermer: schraeger Stab, oben der Mann im Schritt
-const hs = { x0: 1302, y0: B, x1: 1236, y1: 150 };
-const winkel = Math.atan2(hs.y1 - hs.y0, hs.x1 - hs.x0);
-const mann = (() => {
-  const t = 0.93;
-  const x = hs.x0 + (hs.x1 - hs.x0) * t, y = hs.y0 + (hs.y1 - hs.y0) * t;
-  return { x, y, rot: (winkel * 180) / Math.PI + 90 };
-})();
+// Himmelsstuermer: schraeger Stab, der Mann laeuft aufrecht darauf nach oben
+const hs = { x0: 1326, y0: B, x1: 1214, y1: 156 };
+const aufStab = (t: number): [number, number] => [hs.x0 + (hs.x1 - hs.x0) * t, hs.y0 + (hs.y1 - hs.y0) * t];
+const [hfx, hfy] = aufStab(0.75); // vorderer Fuss
+const [hbx, hby] = aufStab(0.6); // hinterer Fuss
+const hx = (hfx + hbx) / 2 + 3, hy = (hfy + hby) / 2 - 16; // Huefte
+const mann = {
+  beine: `M${n(hbx)} ${n(hby)}L${n(hx + 3)} ${n(hy + 8)}L${n(hx)} ${n(hy)}L${n(hx - 4)} ${n(hfy - 9)}L${n(hfx)} ${n(hfy)}`,
+  rumpf: `M${n(hx)} ${n(hy)}L${n(hx - 2.5)} ${n(hy - 12)}`,
+  arme: `M${n(hx - 2.2)} ${n(hy - 10)}L${n(hx - 8)} ${n(hy - 4)}M${n(hx - 2.2)} ${n(hy - 10)}L${n(hx + 4)} ${n(hy - 5)}`,
+  kopf: [n(hx - 3.4), n(hy - 15.5)] as const,
+};
 
 /* --- Ebene: wenige gerade Linien, nach vorn weiter --- */
 const boden: string[] = [];
@@ -197,14 +201,12 @@ for (let k = 1; k <= 9; k++) {
     <path class="panorama__flaeche" d={schlossFlaeche} />
     <path d={schlossLinien.join('')} stroke-width="0.8" />
 
+    <path d={`M${hs.x0} ${hs.y0}L${hs.x1} ${hs.y1}`} stroke-width="2" />
     {bauten.map((b) => <path class="panorama__flaeche" d={b.flaeche} />)}
     <path d={bauten.flatMap((b) => b.linien).join('')} stroke-width="0.8" />
 
-    <path d={`M${hs.x0} ${hs.y0}L${hs.x1} ${hs.y1}`} stroke-width="1.6" />
-    <g transform={`translate(${n(mann.x)} ${n(mann.y)}) rotate(${n(mann.rot)})`}>
-      <circle class="panorama__voll" cx="0" cy="-15" r="2.4" />
-      <path d="M0 -12.5V-5M0 -5L-3.5 0M0 -5L3.5 0M0 -11L-3.5 -7M0 -11L3.5 -8" stroke-width="1.5" />
-    </g>
+    <path d={`${mann.beine}${mann.rumpf}${mann.arme}`} stroke-width="1.6" />
+    <circle class="panorama__voll" cx={mann.kopf[0]} cy={mann.kopf[1]} r="2.6" />
   </g>
 </svg>
 
