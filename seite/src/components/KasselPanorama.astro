@@ -1,300 +1,216 @@
 ---
 /**
- * Kassel als Kupferstich fuer den Footer: Habichtswald mit Herkules und
- * Kaskaden links, Stadt mit den Tuermen der Martinskirche am Horizont rechts,
- * davor Feld und Gras. Ein Fensterputzer mit Leiter und Eimer laeuft Richtung
- * Stadt. Die Linien werden beim Build erzeugt (src/lib/gravur.ts).
- * Rein dekorativ, deshalb aria-hidden.
+ * Kassel als klare Linienzeichnung fuer den Footer: links der Bergpark mit
+ * Herkules, Kaskaden und Schloss Wilhelmshoehe, Hoehenlinien wie auf einer
+ * Karte. Rechts die Stadt: Rathaus, Martinskirche, Fridericianum mit
+ * Zwehrenturm, dazwischen moderne Bloecke und der Himmelsstuermer.
+ * Die Linien werden beim Build erzeugt. Rein dekorativ, deshalb aria-hidden.
  */
-import { linie, n, welle, zufall } from '../lib/gravur';
+import { linie, n } from '../lib/gravur';
 
 const W = 1600;
 const H = 440;
-const HORIZONT = 318;
-const r = zufall(1913);
+const HORIZONT = 332;
 
 type Gipfel = [x: number, y: number, breite: number, form?: number];
 
-/** Hoehenlinie einer Bergkette: hoechster Gipfel gewinnt, dazu leichtes Zittern. */
-function kette(gipfel: Gipfel[], basis: number, amp: number) {
-  const w = welle(r, amp);
+/** Hoehenprofil: hoechster Gipfel gewinnt, glatt ohne Zittern. */
+function kette(gipfel: Gipfel[]) {
   return (x: number) => {
     let h = 0;
-    for (const [px, py, b, f = 2] of gipfel) h = Math.max(h, (basis - py) * Math.exp(-(Math.abs((x - px) / b) ** f)));
-    return basis - h + (h > 2 ? w(x) : 0);
+    for (const [px, py, b, f = 2] of gipfel) h = Math.max(h, (HORIZONT - py) * Math.exp(-(Math.abs((x - px) / b) ** f)));
+    return HORIZONT - h;
   };
 }
 
-interface Ebene { kamm: (x: number) => number; basis: number; linien: number; }
-
-const herkulesX = 380;
-const ebenen: Ebene[] = [
-  {
-    // ferne Kette, nur angedeutet
-    kamm: kette([[150, 222, 120], [560, 236, 160], [760, 214, 110], [1040, 226, 150], [1260, 206, 120], [1520, 220, 140]], HORIZONT, 3),
-    basis: HORIZONT,
-    linien: 16,
-  },
-  {
-    // Habichtswald, Herkules auf dem Karlsberg
-    kamm: kette([[herkulesX, 150, 200, 3], [90, 246, 130], [640, 232, 110], [930, 240, 170], [1250, 222, 200], [1560, 250, 120]], HORIZONT, 2.6),
-    basis: HORIZONT,
-    linien: 38,
-  },
-  {
-    // vordere Huegel
-    kamm: kette([[230, 286, 190], [800, 284, 230], [1450, 288, 200]], HORIZONT, 1.4),
-    basis: HORIZONT,
-    linien: 10,
-  },
+const herkulesX = 300;
+const ebenen = [
+  { kamm: kette([[120, 250, 160], [620, 262, 220], [1050, 270, 260], [1450, 258, 220]]), abstand: 9, deckung: 0.4 },
+  { kamm: kette([[herkulesX, 150, 210, 3], [700, 250, 170]]), abstand: 7, deckung: 0.65 },
 ];
-const HERKULES_EBENE = 1;
-const flaechen: string[] = [];
-const kaemme: string[] = [];
-const schraffenJe: string[] = [];
-const schattenJe: string[] = [];
 
-for (const e of ebenen) {
-  const schraffen: string[] = [];
-  const schatten: string[] = [];
-  const kammPts: Array<[number, number]> = [];
-  for (let x = 0; x <= W; x += 4) kammPts.push([x, e.kamm(x)]);
-  flaechen.push(linie(kammPts) + `L${W} ${H}L0 ${H}Z`);
-  kaemme.push(linie(kammPts));
-
-  // Hoehenlinien: folgen dem Kamm und laufen zur Basis hin flach aus.
-  for (let k = 1; k <= e.linien; k++) {
-    const t = (k / (e.linien + 1)) ** 1.35;
-    const w = welle(r, 0.8);
+/** Hoehenlinien: gleichmaessige Abstaende nach unten, laufen an der Basis aus. */
+function hoehenlinien(kamm: (x: number) => number, abstand: number) {
+  const out: string[] = [];
+  for (let y0 = HORIZONT - abstand; y0 > 120; y0 -= abstand) {
     let seg: Array<[number, number]> = [];
-    let rest = 20 + r() * 140;
-    for (let x = 0; x <= W; x += 5) {
-      const kamm = e.kamm(x);
-      const hoehe = e.basis - kamm;
-      const y = kamm + hoehe * t + w(x) * t;
-      rest -= 5;
-      const sichtbar = hoehe > 6 && y < e.basis - 1;
-      if (!sichtbar || rest < 0) {
-        if (seg.length > 1) schraffen.push(linie(seg));
+    for (let x = 0; x <= W; x += 4) {
+      const k = kamm(x);
+      if (k < y0 - 1.5) {
+        // Linie folgt dem Gelaende leicht
+        seg.push([x, y0 + (y0 - k) * 0.08]);
+      } else if (seg.length) {
+        if (seg.length > 1) out.push(linie(seg));
         seg = [];
-        if (rest < 0) rest = 30 + r() * 160;
-        if (!sichtbar) continue;
-        // kleine Luecke im Strich
-        x += r() < 0.5 ? 5 : 0;
-        continue;
       }
-      seg.push([x, y]);
     }
-    if (seg.length > 1) schraffen.push(linie(seg));
+    if (seg.length > 1) out.push(linie(seg));
   }
-
-  // Schattenseite (Licht von links): kurze Zusatzstriche, wo der Hang nach rechts abfaellt.
-  for (let x = 6; x < W; x += 7 + r() * 4) {
-    const kamm = e.kamm(x);
-    const steig = (e.kamm(x + 4) - e.kamm(x - 4)) / 8;
-    const hoehe = e.basis - kamm;
-    if (steig < 0.12 || hoehe < 14) continue;
-    const len = Math.min(hoehe * 0.75, 10 + steig * 70);
-    const y0 = kamm + 3 + r() * 4;
-    schatten.push(`M${n(x)} ${n(y0)}L${n(x - 3 - steig * 4)} ${n(y0 + len)}`);
-  }
-  schraffenJe.push(schraffen.join(''));
-  schattenJe.push(schatten.join(''));
+  return out.join('');
 }
 
-/* --- Herkules: Oktogon, Pyramide, Figur, darunter die Kaskaden --- */
-const hb = ebenen[HERKULES_EBENE].kamm(herkulesX) + 2; // Fuss des Oktogons
-const ok = { w: 74, h: 24 };
+const flaechen = ebenen.map((e) => {
+  const pts: Array<[number, number]> = [];
+  for (let x = 0; x <= W; x += 4) pts.push([x, e.kamm(x)]);
+  return { flaeche: linie(pts) + `L${W} ${H}L0 ${H}Z`, kamm: linie(pts), linien: hoehenlinien(e.kamm, e.abstand), deckung: e.deckung };
+});
+
+/* --- Bergpark: Herkules (Oktogon, Pyramide, Figur), Kaskaden, Schloss --- */
+const hb = ebenen[1].kamm(herkulesX) + 1;
+const ow = 120, oh = 40;
+const ox = herkulesX - ow / 2, oy = hb - oh;
 const herk: string[] = [];
-const herkFlaeche: string[] = [];
-const ox = herkulesX - ok.w / 2;
-const oy = hb - ok.h;
-herkFlaeche.push(`M${n(ox)} ${n(hb)}L${n(ox)} ${n(oy)}L${n(ox + ok.w)} ${n(oy)}L${n(ox + ok.w)} ${n(hb)}Z`);
-herk.push(`M${n(ox - 3)} ${n(oy)}L${n(ox + ok.w + 3)} ${n(oy)}`); // Gesims
-herk.push(`M${n(ox - 1)} ${n(oy + 4)}L${n(ox + ok.w + 1)} ${n(oy + 4)}`);
-herk.push(`M${n(ox)} ${n(oy)}L${n(ox)} ${n(hb)}M${n(ox + ok.w)} ${n(oy)}L${n(ox + ok.w)} ${n(hb)}`);
-// Bogenreihe
-for (let i = 0; i < 7; i++) {
-  const bx = ox + 5 + i * 9.6;
-  herk.push(`M${n(bx)} ${n(hb)}L${n(bx)} ${n(oy + 12)}A3.4 3.4 0 0 1 ${n(bx + 6.8)} ${n(oy + 12)}L${n(bx + 6.8)} ${n(hb)}`);
+herk.push(`M${ox} ${hb}V${oy}H${ox + ow}V${hb}`, `M${ox - 4} ${oy}H${ox + ow + 4}M${ox} ${oy + 6}H${ox + ow}`);
+for (let i = 0; i < 9; i++) {
+  const bx = ox + 7 + i * 12.2;
+  herk.push(`M${n(bx)} ${hb}V${oy + 20}A4 4 0 0 1 ${n(bx + 8)} ${oy + 20}V${hb}`);
 }
-// Schatten rechts am Oktogon
-for (let x = ox + ok.w * 0.62; x < ox + ok.w; x += 2.2) herk.push(`M${n(x)} ${n(oy + 5)}L${n(x)} ${n(hb)}`);
-// Pyramide und Sockel
-const py = oy - 3;
-herkFlaeche.push(`M${n(herkulesX - 15)} ${n(py)}L${n(herkulesX)} ${n(py - 30)}L${n(herkulesX + 15)} ${n(py)}Z`);
-herk.push(`M${n(ox + 18)} ${n(oy)}L${n(ox + 18)} ${n(py)}L${n(ox + ok.w - 18)} ${n(py)}L${n(ox + ok.w - 18)} ${n(oy)}`);
-herk.push(`M${n(herkulesX - 15)} ${n(py)}L${n(herkulesX)} ${n(py - 30)}L${n(herkulesX + 15)} ${n(py)}`);
-for (let i = 1; i < 9; i++) {
-  const t = i / 9;
-  const yy = py - 30 * (1 - t);
-  herk.push(`M${n(herkulesX + 1)} ${n(yy)}L${n(herkulesX + 15 * t)} ${n(yy)}`);
-}
-const sy = py - 30;
-herk.push(`M${n(herkulesX - 2.5)} ${n(sy)}L${n(herkulesX - 2.5)} ${n(sy - 3)}L${n(herkulesX + 2.5)} ${n(sy - 3)}L${n(herkulesX + 2.5)} ${n(sy)}`);
-// Herkules: Figur mit Keule
-const herkFigur = `M${n(herkulesX - 1.6)} ${n(sy - 3)}L${n(herkulesX - 1.2)} ${n(sy - 9)}L${n(herkulesX - 2.2)} ${n(sy - 12)}L${n(herkulesX)} ${n(sy - 14.5)}L${n(herkulesX + 2)} ${n(sy - 12)}L${n(herkulesX + 1.4)} ${n(sy - 9)}L${n(herkulesX + 1.8)} ${n(sy - 3)}Z`;
-const herkKopf = { x: herkulesX, y: sy - 15.6 };
-herk.push(`M${n(herkulesX + 1.8)} ${n(sy - 11)}L${n(herkulesX + 4)} ${n(sy - 5)}`);
+const pyB = 46, pyH = 48, py = oy - 6;
+herk.push(`M${herkulesX - 30} ${oy}V${py}H${herkulesX + 30}V${oy}`);
+herk.push(`M${herkulesX - pyB / 2} ${py}L${herkulesX} ${py - pyH}L${herkulesX + pyB / 2} ${py}Z`);
+const sy = py - pyH;
+herk.push(`M${herkulesX - 4} ${sy}V${sy - 5}H${herkulesX + 4}V${sy}`);
+const figur = `M${herkulesX - 2.6} ${sy - 5}L${herkulesX - 2} ${sy - 15}L${herkulesX - 3.4} ${sy - 20}L${herkulesX} ${sy - 24}L${herkulesX + 3.2} ${sy - 20}L${herkulesX + 2.2} ${sy - 15}L${herkulesX + 2.8} ${sy - 5}Z`;
 
-// Kaskaden: Treppe den Hang hinunter, unten breiter
-const kaskadeTop = hb + 3;
-const kaskadeBot = ebenen[HERKULES_EBENE + 1].kamm(herkulesX + 30) - 2;
-const kaskade: string[] = [];
-const stufen = 26;
-for (let i = 0; i <= stufen; i++) {
-  const t = i / stufen;
-  const y = kaskadeTop + (kaskadeBot - kaskadeTop) * t ** 1.15;
-  const b = 4 + 9 * t;
-  kaskade.push(`M${n(herkulesX - b)} ${n(y)}L${n(herkulesX + b)} ${n(y)}`);
+const kTop = hb + 2;
+const kBot = HORIZONT - 22;
+const kaskade: string[] = [`M${herkulesX - 5} ${kTop}L${herkulesX - 16} ${kBot}M${herkulesX + 5} ${kTop}L${herkulesX + 16} ${kBot}`];
+for (let y = kTop + 5; y < kBot; y += 5) {
+  const t = (y - kTop) / (kBot - kTop);
+  const b = 5 + 11 * t;
+  kaskade.push(`M${n(herkulesX - b)} ${y}H${n(herkulesX + b)}`);
 }
-kaskade.push(`M${n(herkulesX - 4)} ${n(kaskadeTop)}L${n(herkulesX - 13)} ${n(kaskadeBot)}M${n(herkulesX + 4)} ${n(kaskadeTop)}L${n(herkulesX + 13)} ${n(kaskadeBot)}`);
-const kaskadeFlaeche = `M${n(herkulesX - 4)} ${n(kaskadeTop)}L${n(herkulesX + 4)} ${n(kaskadeTop)}L${n(herkulesX + 13)} ${n(kaskadeBot)}L${n(herkulesX - 13)} ${n(kaskadeBot)}Z`;
+const kaskadeFlaeche = `M${herkulesX - 5} ${kTop}H${herkulesX + 5}L${herkulesX + 16} ${kBot}H${herkulesX - 16}Z`;
 
-/* --- Stadt am Horizont mit den zwei Tuermen der Martinskirche --- */
-const stadt: string[] = [];
-const stadtFlaeche: string[] = [];
-let sx = 1010;
-while (sx < 1330) {
-  const b = 9 + r() * 14;
-  const h = 6 + r() * 9;
-  const dach = 3 + r() * 6;
-  const y0 = HORIZONT + 1;
-  const umriss = `M${n(sx)} ${n(y0)}L${n(sx)} ${n(y0 - h)}L${n(sx + b / 2)} ${n(y0 - h - dach)}L${n(sx + b)} ${n(y0 - h)}L${n(sx + b)} ${n(y0)}`;
-  stadtFlaeche.push(umriss + 'Z');
-  stadt.push(umriss);
-  if (b > 13 && r() < 0.6) stadt.push(`M${n(sx + b * 0.3)} ${n(y0 - h + 3)}l0 2M${n(sx + b * 0.65)} ${n(y0 - h + 3)}l0 2`);
-  sx += b + (r() < 0.3 ? 2 : 0);
+// Schloss Wilhelmshoehe am Fuss der Kaskaden: Mittelbau mit Kuppel, zwei Fluegel
+const sx = herkulesX, sb = HORIZONT;
+const schlossFlaeche = `M${sx - 70} ${sb}V${sb - 16}H${sx - 24}V${sb - 24}H${sx + 24}V${sb - 16}H${sx + 70}V${sb}Z`;
+const schlossLinien = [
+  `M${sx - 70} ${sb}V${sb - 16}H${sx - 24}V${sb - 24}H${sx + 24}V${sb - 16}H${sx + 70}V${sb}`,
+  `M${sx - 12} ${sb - 24}A12 9 0 0 1 ${sx + 12} ${sb - 24}M${sx} ${sb - 33}V${sb - 37}`,
+];
+for (let x = sx - 64; x < sx + 66; x += 6) {
+  if (Math.abs(x - sx) < 22) continue;
+  schlossLinien.push(`M${x} ${sb - 12}v6`);
 }
-for (const tx of [1152, 1168]) {
-  const y0 = HORIZONT + 1;
-  const turm = `M${n(tx - 4)} ${n(y0)}L${n(tx - 4)} ${n(y0 - 30)}L${n(tx)} ${n(y0 - 44)}L${n(tx + 4)} ${n(y0 - 30)}L${n(tx + 4)} ${n(y0)}`;
-  stadtFlaeche.push(turm + 'Z');
-  stadt.push(turm, `M${n(tx - 4)} ${n(y0 - 30)}L${n(tx + 4)} ${n(y0 - 30)}`, `M${n(tx - 1.2)} ${n(y0 - 26)}l0 4M${n(tx + 1.2)} ${n(y0 - 26)}l0 4`);
-  for (let x = tx + 0.8; x < tx + 4; x += 1.4) stadt.push(`M${n(x)} ${n(y0 - 29)}L${n(x)} ${n(y0)}`);
-}
-stadtFlaeche.push(`M${n(1159)} ${n(HORIZONT + 1)}L${n(1159)} ${n(HORIZONT - 20)}L${n(1161)} ${n(HORIZONT - 20)}L${n(1161)} ${n(HORIZONT + 1)}Z`);
+for (let x = sx - 20; x <= sx + 20; x += 5) schlossLinien.push(`M${x} ${sb - 20}V${sb - 2}`);
 
-/* --- Feld: waagerechte Linien, nach vorn weiter auseinander --- */
-const feld: string[] = [];
-const FELD_LINIEN = 30;
-for (let k = 0; k < FELD_LINIEN; k++) {
-  const t = k / FELD_LINIEN;
-  const y = HORIZONT + 1 + (H - HORIZONT) * t ** 1.7;
-  const w = welle(r, 0.4 + t * 1.6);
-  let seg: Array<[number, number]> = [];
-  let rest = 30 + r() * 200;
-  let luecke = 0;
-  for (let x = -10; x <= W + 10; x += 6) {
-    if (luecke > 0) { luecke -= 6; continue; }
-    seg.push([x, y + w(x)]);
-    rest -= 6;
-    if (rest < 0) {
-      if (seg.length > 1) feld.push(linie(seg));
-      seg = [];
-      rest = 40 + r() * (220 - t * 120);
-      luecke = 6 + r() * (60 - t * 40);
-    }
+/* --- Stadt --- */
+interface Bau { flaeche: string; linien: string[]; }
+const bauten: Bau[] = [];
+const B = HORIZONT;
+
+/** Moderner Block: Flachdach, Geschosslinien, ab und zu Fensterachsen. */
+function block(x: number, w: number, h: number, achsen = 0) {
+  const linien = [`M${x} ${B}V${B - h}H${x + w}V${B}`];
+  for (let y = B - h + 6; y < B - 2; y += 6) linien.push(`M${x + 2} ${y}H${x + w - 2}`);
+  for (let i = 1; i < achsen; i++) linien.push(`M${n(x + (w / achsen) * i)} ${B - h + 3}V${B - 2}`);
+  bauten.push({ flaeche: `M${x} ${B}V${B - h}H${x + w}V${B}Z`, linien });
+}
+
+block(820, 34, 22, 3);
+block(856, 22, 34);
+// Rathaus: breiter Bau mit Mittelturm
+{
+  const x = 884, w = 112, h = 36;
+  const linien = [`M${x} ${B}V${B - h}H${x + w}V${B}`, `M${x - 2} ${B - h}H${x + w + 2}`];
+  for (let y = B - h + 8; y < B - 2; y += 8) linien.push(`M${x + 3} ${y}H${x + w - 3}`);
+  for (let xx = x + 8; xx < x + w - 4; xx += 8) linien.push(`M${xx} ${B - h + 4}V${B - 3}`);
+  const tx = x + w / 2;
+  linien.push(`M${tx - 9} ${B - h}V${B - h - 34}H${tx + 9}V${B - h}`, `M${tx - 6} ${B - h - 34}V${B - h - 42}H${tx + 6}V${B - h - 34}`, `M${tx - 4} ${B - h - 42}Q${tx} ${B - h - 52} ${tx + 4} ${B - h - 42}M${tx} ${B - h - 49}V${B - h - 55}`);
+  linien.push(`M${tx - 4} ${B - h - 26}h8v8h-8Z`);
+  bauten.push({ flaeche: `M${x} ${B}V${B - h}H${tx - 9}V${B - h - 42}H${tx + 9}V${B - h}H${x + w}V${B}Z`, linien });
+}
+block(1000, 26, 48, 2);
+// Martinskirche: Schiff mit Satteldach, zwei schlanke Tuerme mit Spitzhelm
+{
+  const x = 1032, w = 64;
+  const linien = [`M${x} ${B}V${B - 26}L${x + w / 2} ${B - 44}L${x + w} ${B - 26}V${B}`];
+  for (const tx of [x + 4, x + w - 16]) {
+    linien.push(`M${tx} ${B}V${B - 70}H${tx + 12}V${B}`, `M${tx} ${B - 70}L${tx + 6} ${B - 104}L${tx + 12} ${B - 70}`, `M${tx + 4} ${B - 60}v8M${tx + 8} ${B - 60}v8`);
   }
-  if (seg.length > 1) feld.push(linie(seg));
+  linien.push(`M${x + 26} ${B}V${B - 14}Q${x + 32} ${B - 22} ${x + 38} ${B - 14}V${B}`);
+  bauten.push({
+    flaeche: `M${x} ${B}V${B - 26}L${x + 4} ${B - 28}V${B - 70}L${x + 10} ${B - 104}L${x + 16} ${B - 70}V${B - 36}L${x + w - 16} ${B - 36}V${B - 70}L${x + w - 10} ${B - 104}L${x + w - 4} ${B - 70}V${B - 28}L${x + w} ${B - 26}V${B}Z`,
+    linien,
+  });
 }
-
-/* --- Gras: Bueschel, vorn groesser und dichter --- */
-const gras: string[] = [];
-const grasDunkel: string[] = [];
-for (let i = 0; i < 240; i++) {
-  const t = r() ** 0.55;
-  const y = HORIZONT + 12 + (H - HORIZONT - 6) * t;
-  const x = r() * W;
-  // Freiraum um den Fensterputzer
-  if (Math.abs(x - 660) < 46 && y > 360 && y < 420) continue;
-  const s = 0.35 + t * 1.5;
-  const halme = 4 + Math.floor(r() * 6);
-  const ziel = t > 0.7 && r() < 0.5 ? grasDunkel : gras;
-  for (let h = 0; h < halme; h++) {
-    const fx = x + (r() - 0.5) * 8 * s;
-    const lean = (r() - 0.5) * 14 * s;
-    const len = (6 + r() * 11) * s;
-    ziel.push(`M${n(fx)} ${n(y)}Q${n(fx + lean * 0.2)} ${n(y - len * 0.6)} ${n(fx + lean)} ${n(y - len)}`);
-  }
+block(1102, 40, 28, 4);
+// Fridericianum mit Saeulenportikus und Giebel, daneben der runde Zwehrenturm
+{
+  const x = 1150, w = 130, h = 30;
+  const mx = x + w / 2;
+  const linien = [`M${x} ${B}V${B - h}H${x + w}V${B}`, `M${x - 2} ${B - h}H${x + w + 2}M${x} ${B - h + 4}H${x + w}`];
+  linien.push(`M${mx - 26} ${B - h}L${mx} ${B - h - 14}L${mx + 26} ${B - h}`);
+  for (let i = 0; i < 6; i++) linien.push(`M${mx - 22 + i * 8.8} ${B - h + 5}V${B}`);
+  for (let xx = x + 6; xx < mx - 28; xx += 9) linien.push(`M${xx} ${B - h + 10}v8`);
+  for (let xx = mx + 32; xx < x + w - 4; xx += 9) linien.push(`M${xx} ${B - h + 10}v8`);
+  const zx = x + w + 6;
+  linien.push(`M${zx} ${B}V${B - 56}H${zx + 18}V${B}`, `M${zx - 2} ${B - 56}H${zx + 20}V${B - 60}H${zx - 2}Z`, `M${zx + 4} ${B - 45}h10M${zx + 4} ${B - 30}h10`);
+  bauten.push({ flaeche: `M${x} ${B}V${B - h}H${mx - 26}L${mx} ${B - h - 14}L${mx + 26} ${B - h}H${x + w}V${B - h}H${zx}V${B - 60}H${zx + 20}V${B}Z`, linien });
 }
+block(1312, 30, 40, 3);
+block(1346, 56, 24, 7);
+block(1408, 24, 54, 2);
+block(1436, 46, 30, 5);
+block(1488, 30, 18);
 
-/* --- Fensterputzer mit Leiter und Eimer, laeuft nach rechts --- */
-const fp = { x: 660, y: 398, s: 1.15 };
-const leiter: string[] = [];
-const lA: [number, number] = [-32, -33];
-const lB: [number, number] = [30, -45];
-const lN = (() => {
-  const dx = lB[0] - lA[0], dy = lB[1] - lA[1];
-  const l = Math.hypot(dx, dy);
-  return [(-dy / l) * 3.4, (dx / l) * 3.4];
+// Himmelsstuermer: schraeger Stab, oben der Mann im Schritt
+const hs = { x0: 1302, y0: B, x1: 1236, y1: 150 };
+const winkel = Math.atan2(hs.y1 - hs.y0, hs.x1 - hs.x0);
+const mann = (() => {
+  const t = 0.93;
+  const x = hs.x0 + (hs.x1 - hs.x0) * t, y = hs.y0 + (hs.y1 - hs.y0) * t;
+  return { x, y, rot: (winkel * 180) / Math.PI + 90 };
 })();
-leiter.push(`M${lA[0]} ${lA[1]}L${lB[0]} ${lB[1]}`);
-leiter.push(`M${n(lA[0] + lN[0])} ${n(lA[1] + lN[1])}L${n(lB[0] + lN[0])} ${n(lB[1] + lN[1])}`);
-for (let i = 1; i < 10; i++) {
-  const t = i / 10;
-  const x = lA[0] + (lB[0] - lA[0]) * t;
-  const y = lA[1] + (lB[1] - lA[1]) * t;
-  leiter.push(`M${n(x)} ${n(y)}l${n(lN[0])} ${n(lN[1])}`);
+
+/* --- Ebene: wenige gerade Linien, nach vorn weiter --- */
+const boden: string[] = [];
+for (let k = 1; k <= 9; k++) {
+  const y = HORIZONT + (H - HORIZONT) * (k / 9) ** 1.6;
+  boden.push(`M0 ${n(y)}H${W}`);
 }
 ---
 
 <svg class="panorama" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMinYMax slice" aria-hidden="true" focusable="false">
   <g class="panorama__linie">
-    {ebenen.map((_, i) => (
+    {flaechen.map((f, i) => (
       <g>
-        <path class="panorama__flaeche" d={flaechen[i]} />
-        <path class="panorama__kamm" d={kaemme[i]} opacity={i === 0 ? 0.55 : 1} />
-        <path d={schraffenJe[i]} stroke-width="0.75" opacity={i === 0 ? 0.45 : 0.9} />
-        <path d={schattenJe[i]} stroke-width="0.6" opacity={i === 0 ? 0.4 : 0.75} />
-        {i === HERKULES_EBENE && (
-          <g>
-            <path class="panorama__flaeche" d={kaskadeFlaeche} />
-            <path d={kaskade.join('')} stroke-width="0.7" />
-            <g transform={`translate(${herkulesX} ${hb}) scale(1.7) translate(${-herkulesX} ${-hb})`}>
-              {herkFlaeche.map((d) => <path class="panorama__flaeche" d={d} />)}
-              <path d={herk.join('')} stroke-width="0.6" />
-              <path class="panorama__voll" d={herkFigur} />
-              <circle class="panorama__voll" cx={herkKopf.x} cy={herkKopf.y} r="1.3" />
-            </g>
-          </g>
-        )}
+        <path class="panorama__flaeche" d={f.flaeche} />
+        <path d={f.linien} stroke-width="0.6" opacity={f.deckung} />
+        <path d={f.kamm} stroke-width="1.1" opacity={i === 0 ? 0.6 : 1} />
       </g>
     ))}
 
-    <!-- Feld deckt die Fuesse der Huegel ab -->
-    <path class="panorama__flaeche" d={`M0 ${HORIZONT}L${W} ${HORIZONT}L${W} ${H}L0 ${H}Z`} />
-    {stadtFlaeche.map((d) => <path class="panorama__flaeche" d={d} />)}
-    <path d={stadt.join('')} stroke-width="0.7" />
-    <path d={feld.join('')} stroke-width="0.7" opacity="0.75" />
-    <path d={gras.join('')} stroke-width="0.8" opacity="0.8" />
-    <path d={grasDunkel.join('')} stroke-width="1.1" />
+    <path class="panorama__flaeche" d={kaskadeFlaeche} />
+    <path d={kaskade.join('')} stroke-width="0.7" />
+    <path class="panorama__flaeche" d={`M${ox} ${hb}V${oy}H${ox + ow}V${hb}Z`} />
+    <path class="panorama__flaeche" d={`M${herkulesX - 30} ${oy}V${py}L${herkulesX} ${py - pyH}L${herkulesX + 30} ${py}V${oy}Z`} />
+    <path d={herk.join('')} stroke-width="0.9" />
+    <path class="panorama__voll" d={figur} />
+    <circle class="panorama__voll" cx={herkulesX} cy={sy - 26} r="2" />
 
-    <g transform={`translate(${fp.x} ${fp.y}) scale(${fp.s})`}>
-      <path d="M-14 0.5Q0 3 16 0.5" stroke-width="0.6" opacity="0.7" />
-      <path d={leiter.join('')} stroke-width="1.1" />
-      <!-- Beine im Schritt -->
-      <path d="M1 -20L-6 -9L-9 0M3 -20L6 -10L11 -1" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
-      <!-- Koerper -->
-      <path class="panorama__voll" d="M-4 -36Q0 -38 5 -36L5.5 -20L-2.5 -20Z" />
-      <circle class="panorama__voll" cx="1.5" cy="-41.5" r="4" />
-      <!-- Muetze -->
-      <path class="panorama__voll" d="M-2.6 -42.5Q1.5 -48 5.6 -42.5Z" />
-      <path d="M5.6 -42.5L8 -42.2" stroke-width="1.2" stroke-linecap="round" />
-      <!-- Arm an der Leiter -->
-      <path d="M4 -34L10 -38.5L13 -42" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
-      <!-- Arm mit Eimer -->
-      <path d="M-2 -34L-4.5 -27L-5 -22" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
-      <path class="panorama__voll" d="M-9.2 -19L-0.8 -19L-2 -11L-8 -11Z" />
-      <path d="M-9 -19Q-5 -25 -1 -19" stroke-width="0.8" />
+    <path class="panorama__flaeche" d={`M0 ${HORIZONT}H${W}V${H}H0Z`} />
+    <path d={boden.join('')} stroke-width="0.6" opacity="0.45" />
+    <path d={`M0 ${HORIZONT}H${W}`} stroke-width="1.1" />
+
+    <path class="panorama__flaeche" d={schlossFlaeche} />
+    <path d={schlossLinien.join('')} stroke-width="0.8" />
+
+    {bauten.map((b) => <path class="panorama__flaeche" d={b.flaeche} />)}
+    <path d={bauten.flatMap((b) => b.linien).join('')} stroke-width="0.8" />
+
+    <path d={`M${hs.x0} ${hs.y0}L${hs.x1} ${hs.y1}`} stroke-width="1.6" />
+    <g transform={`translate(${n(mann.x)} ${n(mann.y)}) rotate(${n(mann.rot)})`}>
+      <circle class="panorama__voll" cx="0" cy="-15" r="2.4" />
+      <path d="M0 -12.5V-5M0 -5L-3.5 0M0 -5L3.5 0M0 -11L-3.5 -7M0 -11L3.5 -8" stroke-width="1.5" />
     </g>
   </g>
 </svg>
 
 <style>
   .panorama { color: var(--color-primary); display: block; width: 100%; height: clamp(12rem, 27.5vw, 26rem); }
-  .panorama__linie { fill: none; stroke: currentColor; stroke-linecap: round; }
-  .panorama__flaeche { fill: var(--gravur-grund, var(--color-petrol)); stroke: none; }
-  .panorama__kamm { stroke-width: 1.3; }
+  .panorama__linie { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
+  .panorama__flaeche { fill: var(--color-petrol); stroke: none; }
   .panorama__voll { fill: currentColor; stroke: none; }
 </style>
