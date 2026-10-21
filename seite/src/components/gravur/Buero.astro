@@ -1,0 +1,132 @@
+---
+/**
+ * Grafik Gebaeudereinigung im Stil des Footers: modernes Buerohaus als
+ * Gold-Silhouette, Fenster und Kanten ausgespart, davor eine Arbeitsbuehne
+ * an Seilen. Ein Lichtreflex laeuft beim Erscheinen und beim Ueberfahren
+ * ueber die Glasfassade. Farben: currentColor (Gold), --gravur-grund.
+ */
+import { n, zufall } from '../../lib/gravur';
+
+interface Props { id?: string; }
+const { id = 'gr-buero' } = Astro.props;
+const r = zufall(7);
+const W = 400, H = 250, B = 214;
+
+// Hauptbau
+const hb = { x: 128, w: 150, top: 36 };
+const raster: string[] = [];
+for (let y = hb.top + 22; y < B - 30; y += 20) raster.push(`M${hb.x} ${y}H${hb.x + hb.w}`);
+for (let x = hb.x + 18.75; x < hb.x + hb.w - 1; x += 18.75) raster.push(`M${n(x)} ${hb.top + 12}V${B - 30}`);
+// Spiegelungen: eine schraege Bahn hellerer Scheiben, wie Himmel im Glas
+const hell: string[] = [];
+const zeilen = Math.floor((B - 30 - hb.top - 12) / 20) + 1;
+for (let zr = 0; zr < zeilen; zr++) {
+  for (let sp = 0; sp < 8; sp++) {
+    const d = sp + zr * 0.9;
+    if (d < 4 || d > 6.6) continue;
+    const y0 = hb.top + 12 + zr * 20;
+    hell.push(`M${n(hb.x + sp * 18.75)} ${y0}h18.75v${Math.min(20, B - 30 - y0)}h-18.75Z`);
+  }
+}
+// Sockel mit Eingang
+const sockel = `M${hb.x} ${B - 30}H${hb.x + hb.w}`;
+
+// Nebenbauten hinten
+const hinten: string[] = [];
+for (let x = 0; x < W; ) {
+  const w = 30 + r() * 40;
+  const h = 40 + r() * 70;
+  if (x + w < hb.x - 6 || x > hb.x + hb.w + 6) hinten.push(`M${n(x)} ${B}V${n(B - h)}H${n(x + w)}V${B}Z`);
+  x += w - 4;
+}
+// Nebenbau rechts vorn
+const rechts = { x: 296, w: 62, h: 92 };
+const rechtsRaster: string[] = [];
+for (let y = B - rechts.h + 14; y < B - 6; y += 14) rechtsRaster.push(`M${rechts.x + 6} ${y}h${rechts.w - 12}`);
+
+// Baeume
+const baeume: string[] = [];
+for (const [x, s] of [[40, 18], [74, 13], [104, 15], [372, 14]] as const) {
+  baeume.push(`M${x - s} ${B - s - 10}a${s} ${s * 0.95} 0 1 0 ${s * 2} 0a${s} ${s * 0.95} 0 1 0 ${-s * 2} 0Z`, `M${x - 1.5} ${B - 12}h3V${B}h-3Z`);
+}
+
+// Arbeitsbuehne an zwei Seilen, auf Hoehe der dritten Fensterreihe
+const bu = { x: 172, y: 118, w: 64 };
+const sterne = [[150, 72, 5], [256, 96, 4], [196, 150, 3.5]];
+const stern = ([x, y, s]: number[]) =>
+  `M${x} ${y - s}Q${x} ${y} ${x + s} ${y}Q${x} ${y} ${x} ${y + s}Q${x} ${y} ${x - s} ${y}Q${x} ${y} ${x} ${y - s}Z`;
+---
+
+<svg class="gravur grafik-buero" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+  <defs>
+    <clipPath id={`${id}-glas`}><rect x={hb.x} y={hb.top + 12} width={hb.w} height={B - 30 - hb.top - 12} /></clipPath>
+    <linearGradient id={`${id}-glanz`} x1="0" x2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0" />
+      <stop offset="0.5" stop-color="#fff" stop-opacity="0.6" />
+      <stop offset="1" stop-color="#fff" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  <path d={hinten.join('')} class="grafik__hinten" />
+  <path d={baeume.join('')} class="grafik__gold" opacity="0.6" />
+
+  <!-- Hauptbau -->
+  <path class="grafik__gold" d={`M${hb.x - 6} ${hb.top}h${hb.w + 12}v12h${-hb.w - 12}Z`} />
+  <path class="grafik__gold" d={`M${hb.x} ${hb.top + 12}h${hb.w}V${B}h${-hb.w}Z`} />
+  <path class="grafik__gold" d={`M${hb.x + 30} ${hb.top}v-10h26v10Z`} />
+  <path d={hell.join('')} fill="#E3CFA3" />
+  <path d={`M${hb.x + hb.w - 14} ${hb.top + 12}h14V${B}h-14Z`} fill="#A68D5E" />
+  <path class="grafik__schnitt" d={raster.join('')} stroke-width="1.6" />
+  <path class="grafik__schnitt" d={sockel} stroke-width="2.4" />
+  <path class="grafik__schnitt" d={`M${hb.x - 6} ${hb.top + 12}h${hb.w + 12}`} stroke-width="1.4" />
+  <path class="grafik__grund" d={`M${hb.x + hb.w / 2 - 16} ${B}V${B - 22}h32V${B}Z`} />
+  <path class="grafik__gold" d={`M${hb.x + hb.w / 2 - 1} ${B}V${B - 22}h2V${B}Z`} />
+  <path class="grafik__gold" d={`M${hb.x + hb.w / 2 - 24} ${B - 26}h48v-3h-48Z`} />
+
+  <!-- Glanz ueber die Fassade -->
+  <g clip-path={`url(#${id}-glas)`}>
+    <rect class="grafik-buero__glanz" x={hb.x - 90} y={hb.top - 20} width="70" height={B} fill={`url(#${id}-glanz)`} transform="skewX(-18)" />
+  </g>
+
+  <!-- Arbeitsbuehne -->
+  <path class="grafik__schnitt" d={`M${bu.x + 6} ${hb.top + 12}V${bu.y}M${bu.x + bu.w - 6} ${hb.top + 12}V${bu.y}`} stroke-width="1.2" />
+  <path class="grafik__strich" d={`M${hb.x + 30} ${hb.top + 2}h-6v10M${hb.x + hb.w - 30} ${hb.top + 2}h6v10`} stroke-width="1" />
+  <path class="grafik__grund" d={`M${bu.x - 2} ${bu.y}h${bu.w + 4}v14h${-bu.w - 4}Z`} />
+  <path class="grafik__gold" d={`M${bu.x} ${bu.y + 2}h${bu.w}v10h${-bu.w}Z`} />
+  <path class="grafik__schnitt" d={`M${bu.x + 2} ${bu.y + 7}h${bu.w - 4}`} stroke-width="1" />
+  <!-- Person mit Abzieher -->
+  <g class="grafik__grund">
+    <circle cx={bu.x + 22} cy={bu.y - 14} r="3.4" />
+    <path d={`M${bu.x + 18} ${bu.y + 2}l1 -12q3 -3 6 0l1 12Z`} />
+  </g>
+  <path class="grafik__schnitt" d={`M${bu.x + 25} ${bu.y - 8}l7 -10l6 -2`} stroke-width="2" style="stroke-linecap: round" />
+  <path class="grafik__schnitt" d={`M${bu.x + 34} ${bu.y - 25}l8 6`} stroke-width="2.6" style="stroke-linecap: round" />
+
+  {sterne.map((s) => <path class="grafik-buero__stern" fill="#FFF6DF" d={stern(s)} />)}
+
+  <!-- Nebenbau rechts -->
+  <path d={`M${rechts.x} ${B}V${B - rechts.h}h${rechts.w}V${B}Z`} fill="#B39A68" />
+  <path class="grafik__schnitt" d={rechtsRaster.join('')} stroke-width="3" />
+
+  <!-- Boden mit Spiegelung -->
+  <path class="grafik__gold" d={`M0 ${B}H${W}v2.5H0Z`} />
+  <path class="grafik__gold" d={`M${hb.x} ${B + 6}h${hb.w}v3h${-hb.w}ZM${hb.x + 10} ${B + 13}h${hb.w - 20}v2h${-hb.w + 20}ZM${hb.x + 24} ${B + 19}h${hb.w - 48}v1.5h${-hb.w + 48}Z`} opacity="0.3" />
+  <path class="grafik__gold" d={`M${rechts.x} ${B + 6}h${rechts.w}v3h${-rechts.w}ZM${rechts.x + 8} ${B + 13}h${rechts.w - 16}v2h${-rechts.w + 16}Z`} opacity="0.22" />
+</svg>
+
+<style>
+  .grafik-buero :global(.grafik__gold) { fill: currentColor; }
+  .grafik-buero :global(.grafik__grund) { fill: var(--gravur-grund); }
+  .grafik-buero :global(.grafik__hinten) { fill: #554F41; }
+  .grafik-buero :global(.grafik__schnitt) { fill: none; stroke: var(--gravur-grund); stroke-linecap: square; }
+  .grafik-buero :global(.grafik__strich) { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
+
+  .grafik-buero__glanz { animation: glanz 2.4s cubic-bezier(0.4, 0, 0.2, 1) 0.6s 1 both; }
+  .grafik-buero__stern { transform-box: fill-box; transform-origin: center; animation: funkeln 2.4s ease-out 1.6s 1 both; }
+  :global(.karte:hover) .grafik-buero__glanz { animation: glanz 1.6s cubic-bezier(0.4, 0, 0.2, 1) 1 both; }
+  @keyframes glanz { from { transform: skewX(-18deg) translateX(0); } to { transform: skewX(-18deg) translateX(320px); } }
+  @keyframes funkeln { 0% { transform: scale(0); opacity: 0; } 40% { transform: scale(1.3); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) {
+    .grafik-buero__glanz, .grafik-buero__stern, :global(.karte:hover) .grafik-buero__glanz { animation: none; }
+  }
+</style>
