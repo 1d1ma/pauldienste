@@ -3,10 +3,10 @@
  * Kassel als klare Linienzeichnung fuer den Footer: links der Bergpark mit
  * Herkules, Kaskaden und Schloss Wilhelmshoehe, Hoehenlinien wie auf einer
  * Karte. Rechts die Stadt: Rathaus, Martinskirche, Fridericianum mit
- * Zwehrenturm, dazwischen moderne Bloecke und der Himmelsstuermer.
+ * Zwehrenturm, dazwischen moderne Bloecke, darunter die Spiegelung in der Fulda.
  * Die Linien werden beim Build erzeugt. Rein dekorativ, deshalb aria-hidden.
  */
-import { linie, n } from '../lib/gravur';
+import { linie, n, zufall } from '../lib/gravur';
 
 const W = 1600;
 const H = 440;
@@ -127,11 +127,11 @@ block(1000, 26, 48, 2);
   const x = 1032, w = 64;
   const linien = [`M${x} ${B}V${B - 26}L${x + w / 2} ${B - 44}L${x + w} ${B - 26}V${B}`];
   for (const tx of [x + 4, x + w - 16]) {
-    linien.push(`M${tx} ${B}V${B - 70}H${tx + 12}V${B}`, `M${tx} ${B - 70}L${tx + 6} ${B - 104}L${tx + 12} ${B - 70}`, `M${tx + 4} ${B - 60}v8M${tx + 8} ${B - 60}v8`);
+    linien.push(`M${tx} ${B}V${B - 84}H${tx + 12}V${B}`, `M${tx} ${B - 84}L${tx + 6} ${B - 128}L${tx + 12} ${B - 84}`, `M${tx + 4} ${B - 72}v8M${tx + 8} ${B - 72}v8`);
   }
   linien.push(`M${x + 26} ${B}V${B - 14}Q${x + 32} ${B - 22} ${x + 38} ${B - 14}V${B}`);
   bauten.push({
-    flaeche: `M${x} ${B}V${B - 26}L${x + 4} ${B - 28}V${B - 70}L${x + 10} ${B - 104}L${x + 16} ${B - 70}V${B - 36}L${x + w - 16} ${B - 36}V${B - 70}L${x + w - 10} ${B - 104}L${x + w - 4} ${B - 70}V${B - 28}L${x + w} ${B - 26}V${B}Z`,
+    flaeche: `M${x} ${B}V${B - 26}L${x + 4} ${B - 28}V${B - 84}L${x + 10} ${B - 128}L${x + 16} ${B - 84}V${B - 40}L${x + w - 16} ${B - 40}V${B - 84}L${x + w - 10} ${B - 128}L${x + w - 4} ${B - 84}V${B - 28}L${x + w} ${B - 26}V${B}Z`,
     linien,
   });
 }
@@ -155,64 +155,116 @@ block(1408, 24, 54, 2);
 block(1436, 46, 30, 5);
 block(1488, 30, 18);
 
-// Himmelsstuermer: schraeger Stab, der Mann laeuft aufrecht darauf nach oben
-const hs = { x0: 1326, y0: B, x1: 1214, y1: 156 };
-const aufStab = (t: number): [number, number] => [hs.x0 + (hs.x1 - hs.x0) * t, hs.y0 + (hs.y1 - hs.y0) * t];
-const [hfx, hfy] = aufStab(0.75); // vorderer Fuss
-const [hbx, hby] = aufStab(0.6); // hinterer Fuss
-const hx = (hfx + hbx) / 2 + 3, hy = (hfy + hby) / 2 - 16; // Huefte
-const mann = {
-  beine: `M${n(hbx)} ${n(hby)}L${n(hx + 3)} ${n(hy + 8)}L${n(hx)} ${n(hy)}L${n(hx - 4)} ${n(hfy - 9)}L${n(hfx)} ${n(hfy)}`,
-  rumpf: `M${n(hx)} ${n(hy)}L${n(hx - 2.5)} ${n(hy - 12)}`,
-  arme: `M${n(hx - 2.2)} ${n(hy - 10)}L${n(hx - 8)} ${n(hy - 4)}M${n(hx - 2.2)} ${n(hy - 10)}L${n(hx + 4)} ${n(hy - 5)}`,
-  kopf: [n(hx - 3.4), n(hy - 15.5)] as const,
-};
+/* --- Baeume hinter den Haeusern, damit die Skyline dicht wirkt --- */
+const rb = zufall(2026);
+const baeume: string[] = [];
+for (let x = 812; x < 1530; x += 9 + rb() * 16) {
+  const r = 5 + rb() * 8;
+  const cy = B - 8 - r * (0.6 + rb() * 0.8);
+  baeume.push(`M${n(x - r)} ${n(cy)}a${n(r)} ${n(r * 0.92)} 0 1 0 ${n(r * 2)} 0a${n(r)} ${n(r * 0.92)} 0 1 0 ${n(-r * 2)} 0Z`);
+  baeume.push(`M${n(x - 1)} ${n(cy)}h2V${B}h-2Z`);
+}
 
-/* --- Ebene: wenige gerade Linien, nach vorn weiter --- */
-const boden: string[] = [];
-for (let k = 1; k <= 9; k++) {
-  const y = HORIZONT + (H - HORIZONT) * (k / 9) ** 1.6;
-  boden.push(`M0 ${n(y)}H${W}`);
+/* --- Loewenburg am Hang neben dem Herkules --- */
+const lx = 470, lb = ebenen[1].kamm(470) + 6;
+/** Zinnenkranz als relative Pfadschritte nach rechts. */
+const zinnen = (w: number) => 'h2v-2.5h2v2.5'.repeat(Math.floor(w / 4));
+const loewenburg = [
+  `M${lx - 26} ${lb}V${lb - 18}${zinnen(52)}V${lb}Z`,
+  `M${lx + 6} ${lb}V${lb - 40}h12V${lb}Z`,
+  `M${lx + 4} ${lb - 40}h16l-8 -12Z`,
+  `M${lx - 30} ${lb}V${lb - 28}h9V${lb}Z`,
+  `M${lx - 31} ${lb - 28}h11v-3h-2v1.5h-2v-1.5h-3v1.5h-2v-1.5h-2Z`,
+].join('');
+
+/* Stadt groesser und naeher: um den Fusspunkt skalieren, nach links ruecken */
+const stadtTransform = `translate(540 ${B}) scale(1.45) translate(-820 ${-B})`;
+
+/* --- Hintere Haeuserreihe: Daecher, Giebel, ein paar Spitzen, gibt Tiefe --- */
+const rh = zufall(34);
+const hinten: string[] = [];
+for (let x = 520; x < W; ) {
+  const w = 18 + rh() * 34;
+  const h = 34 + rh() * 60;
+  const art = rh();
+  if (art < 0.45) hinten.push(`M${n(x)} ${B}V${n(B - h)}L${n(x + w / 2)} ${n(B - h - w * 0.45)}L${n(x + w)} ${n(B - h)}V${B}Z`);
+  else if (art < 0.9) hinten.push(`M${n(x)} ${B}V${n(B - h)}H${n(x + w)}V${B}Z`);
+  else hinten.push(`M${n(x)} ${B}V${n(B - h)}H${n(x + w / 2 - 3)}L${n(x + w / 2)} ${n(B - h - 40)}L${n(x + w / 2 + 3)} ${n(B - h)}H${n(x + w)}V${B}Z`);
+  x += w - 2;
 }
 ---
 
 <svg class="panorama" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMinYMax slice" aria-hidden="true" focusable="false">
-  <g class="panorama__linie">
-    {flaechen.map((f, i) => (
-      <g>
-        <path class="panorama__flaeche" d={f.flaeche} />
-        <path d={f.linien} stroke-width="0.6" opacity={f.deckung} />
-        <path d={f.kamm} stroke-width="1.1" opacity={i === 0 ? 0.6 : 1} />
+  <defs>
+    <radialGradient id="pano-schein" cx="0.5" cy="0.8" r="0.6">
+      <stop offset="0" stop-color="#B99B63" stop-opacity="0.34" />
+      <stop offset="1" stop-color="#B99B63" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="pano-wasser" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.55" />
+      <stop offset="1" stop-color="#fff" stop-opacity="0" />
+    </linearGradient>
+    <mask id="pano-spiegel" maskUnits="userSpaceOnUse" x="0" y={B} width={W} height={H - B}>
+      <rect x="0" y={B} width={W} height={H - B} fill="url(#pano-wasser)" />
+      <g fill="#000">
+        {Array.from({ length: 22 }, (_, k) => <rect x="0" y={B + 3 + k * 5 + k * k * 0.12} width={W} height={1.4 + k * 0.08} />)}
       </g>
-    ))}
+    </mask>
+    <g id="pano-stadt">
+      <path class="panorama__gold" d={baeume.join('')} opacity="0.55" />
+      {bauten.map((b) => <path class="panorama__gold" d={b.flaeche} />)}
+      <path class="panorama__schnitt" d={bauten.flatMap((b) => b.linien.slice(1)).join('')} stroke-width="0.9" />
+    </g>
+  </defs>
 
-    <path class="panorama__flaeche" d={kaskadeFlaeche} />
-    <path d={kaskade.join('')} stroke-width="0.7" />
-    <path class="panorama__flaeche" d={`M${ox} ${hb}V${oy}H${ox + ow}V${hb}Z`} />
-    <path class="panorama__flaeche" d={`M${herkulesX - 30} ${oy}V${py}L${herkulesX} ${py - pyH}L${herkulesX + 30} ${py}V${oy}Z`} />
-    <path d={herk.join('')} stroke-width="0.9" />
-    <path class="panorama__voll" d={figur} />
-    <circle class="panorama__voll" cx={herkulesX} cy={sy - 26} r="2" />
+  <!-- Bergpark im Hintergrund, nach hinten blasser -->
+  {flaechen.map((f, i) => (
+    <g>
+      <path class="panorama__grund" d={f.flaeche} />
+      <path class="panorama__gold" d={f.flaeche} opacity={i === 0 ? 0.05 : 0.1} />
+      <path class="panorama__gold-strich" d={f.linien} stroke-width="0.6" opacity={i === 0 ? 0.18 : 0.3} />
+      <path class="panorama__gold-strich" d={f.kamm} stroke-width="1" opacity={i === 0 ? 0.3 : 0.55} />
+    </g>
+  ))}
+  <!-- Abendschein hinter der Stadt -->
+  <ellipse cx="1080" cy={B} rx="620" ry="260" fill="url(#pano-schein)" />
 
-    <path class="panorama__flaeche" d={`M0 ${HORIZONT}H${W}V${H}H0Z`} />
-    <path d={boden.join('')} stroke-width="0.6" opacity="0.45" />
-    <path d={`M0 ${HORIZONT}H${W}`} stroke-width="1.1" />
+  <g opacity="0.6">
+    <path class="panorama__gold" d={kaskadeFlaeche} />
+    <path class="panorama__schnitt" d={kaskade.join('')} stroke-width="0.8" />
+    <path class="panorama__gold" d={`M${ox} ${hb}V${oy}H${ox + ow}V${hb}Z`} />
+    <path class="panorama__gold" d={`M${herkulesX - 30} ${oy}V${py}L${herkulesX} ${py - pyH}L${herkulesX + 30} ${py}V${oy}Z`} />
+    <path class="panorama__schnitt" d={herk.slice(1).join('')} stroke-width="1" />
+    <path class="panorama__gold" d={figur} />
+    <circle class="panorama__gold" cx={herkulesX} cy={sy - 26} r="2" />
+    <path class="panorama__gold" d={loewenburg} />
+    <path class="panorama__gold" d={schlossFlaeche} />
+    <path class="panorama__schnitt" d={schlossLinien.slice(1).join('')} stroke-width="0.9" />
+  </g>
 
-    <path class="panorama__flaeche" d={schlossFlaeche} />
-    <path d={schlossLinien.join('')} stroke-width="0.8" />
+  <!-- Boden deckt die Huegelflaechen unter dem Horizont ab -->
+  <path class="panorama__grund" d={`M0 ${B}H${W}V${H}H0Z`} />
 
-    <path d={`M${hs.x0} ${hs.y0}L${hs.x1} ${hs.y1}`} stroke-width="2" />
-    {bauten.map((b) => <path class="panorama__flaeche" d={b.flaeche} />)}
-    <path d={bauten.flatMap((b) => b.linien).join('')} stroke-width="0.8" />
-
-    <path d={`${mann.beine}${mann.rumpf}${mann.arme}`} stroke-width="1.6" />
-    <circle class="panorama__voll" cx={mann.kopf[0]} cy={mann.kopf[1]} r="2.6" />
+  <!-- Stadt, darunter ihr Spiegelbild in der Fulda -->
+  <path class="panorama__hinten" d={hinten.join('')} />
+  <g transform={stadtTransform}><use href="#pano-stadt" /></g>
+  <path class="panorama__gold" d={`M0 ${B - 1}H${W}V${B + 2}H0Z`} />
+  <g mask="url(#pano-spiegel)" opacity="0.5">
+    <g transform={`translate(0 ${2 * B}) scale(1 -1)`}>
+      <path class="panorama__hinten" d={hinten.join('')} />
+      <g transform={stadtTransform}><use href="#pano-stadt" /></g>
+      <path class="panorama__gold" d={`M${ox} ${hb}V${oy}H${ox + ow}V${hb}Z`} opacity="0.35" />
+    </g>
   </g>
 </svg>
 
 <style>
-  .panorama { color: var(--color-primary); display: block; width: 100%; height: clamp(12rem, 27.5vw, 26rem); }
-  .panorama__linie { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
-  .panorama__flaeche { fill: var(--color-petrol); stroke: none; }
-  .panorama__voll { fill: currentColor; stroke: none; }
+  .panorama { color: var(--color-primary); display: block; width: 100%; height: clamp(13rem, 30vw, 28rem); }
+  .panorama__grund { fill: var(--color-petrol); }
+  .panorama__gold { fill: currentColor; }
+  /* Gold zu 32 % auf Graphit, deckend, damit die Huegellinien nicht durchscheinen */
+  .panorama__hinten { fill: #4E4636; }
+  .panorama__gold-strich { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
+  /* Fenster und Kanten als Aussparung in der Goldflaeche */
+  .panorama__schnitt { fill: none; stroke: var(--color-petrol); stroke-linecap: round; stroke-linejoin: round; }
 </style>
