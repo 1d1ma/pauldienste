@@ -82,14 +82,14 @@ export const pages: Record<string, Page> = {
   },
   '/handwerker-kassel/': {
     slug: '/handwerker-kassel/',
-    title: 'Innenausbau und Renovierung Kassel | Paul Gebäudedienste',
+    title: 'Handwerker Kassel für Innenausbau | Paul Gebäudedienste',
     label: 'Innenausbau',
     description:
-      'Innenausbau in Kassel: Boden verlegen, Streichen, Küchenmontage, Fliegengitter und Plissees nach Maß. Festpreis nach kostenloser Besichtigung.',
-    h1: 'Innenausbau und Renovierung in Kassel',
+      'Handwerker in Kassel: Boden verlegen, Streichen, Küchenmontage, Fliegengitter und Plissees. Kostenlose Besichtigung, dann Festpreis.',
+    h1: 'Handwerker in Kassel: Innenausbau und Renovierung aus einer Hand',
     cluster: 'handwerk',
     primaryKeyword: 'handwerker kassel',
-    secondaryKeywords: ['innenausbau kassel', 'renovierung kassel'],
+    secondaryKeywords: ['innenausbau kassel', 'renovierung kassel', 'wohnung renovieren lassen kassel'],
     linksTo: ['/boden-verlegen-kassel/', '/streichen-tapezieren-kassel/', '/gebaeudereinigung-kassel/', '/hausmeisterservice-kassel/'],
     status: 'live',
   },

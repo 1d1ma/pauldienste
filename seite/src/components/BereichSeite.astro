@@ -15,6 +15,7 @@ import BereichKarte from './BereichKarte.astro';
 import Vignette from './gravur/Vignette.astro';
 import RatingBadge from './RatingBadge.astro';
 import ReinigungTexte from './ReinigungTexte.astro';
+import HandwerkTexte from './HandwerkTexte.astro';
 import { Image } from 'astro:assets';
 import reinigungFoto from '../assets/images/architecture-2256489_1920.jpg';
 import { bereiche, leistung, type Bereich } from '../data/leistungen';
@@ -85,6 +86,7 @@ const foto = id === 'reinigung' ? reinigungFoto : undefined;
   </section>
 
   {id === 'reinigung' && <ReinigungTexte />}
+  {id === 'handwerk' && <HandwerkTexte />}
 
   <section class="mehr">
     <div class="container">
