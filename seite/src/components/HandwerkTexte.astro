@@ -1,0 +1,324 @@
+---
+/**
+ * Textteil der Bereichsseite Innenausbau, gebaut nach dem Muster von
+ * ReinigungTexte.astro. Suchabsicht "Handwerker Kassel" und Varianten
+ * (Renovierung Kassel, Wohnung renovieren lassen, Innenausbau, alles aus
+ * einer Hand) laut PLAN-website.md, 4.
+ *
+ * Wortwahl nach 4b (Meisterpflicht): nie "Maler", "Malerbetrieb",
+ * "Parkettleger", "Bodenleger" oder "Raumausstatter" als Berufsbezeichnung,
+ * nur Taetigkeiten ("Wände streichen", "Vinyl verlegen").
+ *
+ * Bildfelder: Bis echte Fotos von Pauls Einsaetzen da sind, stehen dort
+ * Vektor-Platzhalter (Dielenboden, Farbkarte, Gravur Wohnraum). Zum Tausch
+ * die Grafik durch <Image> ersetzen wie in ReinigungTexte.astro.
+ */
+import Section from './Section.astro';
+import Faq from './Faq.astro';
+import InternalLink from './InternalLink.astro';
+import { internalLink } from '../data/pages';
+import CtaGruppe from './CtaGruppe.astro';
+import ReviewsStatic from './ReviewsStatic.astro';
+import Icon from './Icon.astro';
+import FloorPlanks from './FloorPlanks.astro';
+import Wohnraum from './gravur/Wohnraum.astro';
+import { bewertungen, site } from '../data/site';
+
+const faq = [
+  {
+    q: 'Was kostet eine Renovierung in Kassel?',
+    a: 'Das hängt von Fläche, Untergrund, Material und Umfang ab. Deshalb nennen wir keine Pauschalpreise am Telefon. Wir sehen uns die Räume kostenlos an, messen auf und geben Ihnen danach einen Festpreis, der auch gilt, wenn es länger dauert.',
+  },
+  {
+    q: 'Was kostet es, einen Boden verlegen zu lassen?',
+    a: 'Entscheidend sind die Quadratmeter, der Belag und der Untergrund. Muss ein alter Teppich oder Laminat raus oder der Estrich ausgeglichen werden, ist das mehr Arbeit als ein ebener, leerer Raum. Nach dem Aufmaß nennen wir einen Festpreis für Material und Verlegung oder nur für die Verlegung.',
+  },
+  {
+    q: 'Kann ich Boden und Farbe selbst kaufen?',
+    a: 'Ja. Wir verlegen und verarbeiten auch Material, das Sie selbst gekauft haben. Wer sich beraten lassen möchte, sieht sich Vinyl, Teppich und Farben nach Termin in unserer Ausstellung in Kassel an.',
+  },
+  {
+    q: 'Bauen Sie auch Küchen aus dem Möbelhaus auf?',
+    a: 'Ja. Wir bauen Küchen und Möbel aus dem Möbelhaus oder dem Online-Handel auf, auch IKEA-Küchen. Auf Wunsch bauen wir die alte Küche vorher ab.',
+  },
+  {
+    q: 'Muss ich die Räume vorher ausräumen?',
+    a: 'Das klären wir bei der Besichtigung. Kleine Möbel und Dekoration räumen Sie am besten selbst, schwere Möbel rücken wir auf Wunsch mit und stellen sie danach zurück.',
+  },
+  {
+    q: 'Renovieren Sie auch für Vermieter und Hausverwaltungen?',
+    a: 'Ja. Zwischen zwei Mietern streichen wir die Wohnung, erneuern den Boden und übergeben sie besenrein oder gereinigt. So ist die Wohnung schnell wieder vermietbar und Sie haben einen Ansprechpartner statt mehrerer Firmen.',
+  },
+  {
+    q: 'In welchen Orten arbeiten Sie als Handwerker?',
+    a: 'In Kassel und im Umkreis von etwa 30 Kilometern, zum Beispiel in Baunatal, Vellmar, Kaufungen, Lohfelden, Fuldatal und Hann. Münden. Größere Aufträge wie eine Bodenverlegung oder eine Renovierung übernehmen wir auch bis etwa 50 Kilometer.',
+  },
+];
+
+const note = bewertungen.schnitt.toLocaleString('de-DE', { minimumFractionDigits: 1 });
+
+const faktoren = [
+  { icon: 'ruler', titel: 'Fläche', text: 'Wie viele Quadratmeter Boden, Wand und Decke bearbeitet werden.' },
+  { icon: 'stack', titel: 'Untergrund', text: 'Alten Belag entfernen, Estrich ausgleichen, Wände spachteln oder nicht.' },
+  { icon: 'paint-roller', titel: 'Material', text: 'Laminat, Vinyl oder Teppich, Farbe und Tapete, von uns oder von Ihnen.' },
+  { icon: 'calendar-check', titel: 'Umfang', text: 'Ein Raum oder die ganze Wohnung, Möbel rücken, Küche ab- und aufbauen.' },
+] as const;
+
+const weitere = [
+  { slug: '/bodenbelaege-farben-kassel/', icon: 'stack', label: 'Bodenbeläge und Farben' },
+  { slug: '/fliegengitter-kassel/', icon: 'grid-four', label: 'Fliegengitter' },
+  { slug: '/plissees-kassel/', icon: 'columns', label: 'Plissees' },
+  { slug: '/bauendreinigung-kassel/', icon: 'sparkle', label: 'Bauendreinigung' },
+] as const;
+
+/* Wandfarben fuer die Farbkarte (Platzhalter fuer ein Foto der Ausstellung) */
+const farben = ['#EFEDE8', '#E2DBCD', '#C9AD78', '#D6CFC4', '#9C9A8E', '#B98D6E', '#5E6B66', '#3A4A4F', '#26292D'];
+
+const orte = [
+  'Baunatal', 'Vellmar', 'Kaufungen', 'Lohfelden', 'Niestetal', 'Fuldatal', 'Fuldabrück', 'Ahnatal',
+  'Calden', 'Schauenburg', 'Espenau', 'Söhrewald', 'Hann. Münden', 'Hofgeismar',
+];
+---
+
+<Section title="Handwerker in Kassel: Innenausbau aus einer Hand" space="default">
+  <div class="split">
+    <div class="text">
+      <p>
+        Boden raus, Wände frisch, neue Küche: Bei einer Renovierung greifen mehrere Arbeiten ineinander. Als Handwerker
+        in Kassel übernehmen wir sie zusammen. Sie sprechen mit einer Person, bekommen einen Festpreis und müssen keine
+        Termine zwischen mehreren Firmen abstimmen.
+      </p>
+      <p>
+        Ob Sie eine Wohnung renovieren lassen oder nur einen Raum erneuern: Wir besichtigen kostenlos, messen auf und
+        arbeiten danach zum vereinbarten Preis. Laminat, Vinyl und Teppich finden Sie unter
+        <InternalLink to="/boden-verlegen-kassel/">Boden verlegen</InternalLink>, frische Wände und Decken unter
+        <InternalLink to="/streichen-tapezieren-kassel/">Streichen und Tapezieren</InternalLink>.
+      </p>
+    </div>
+    <dl class="fakten">
+      {bewertungen.echt && (
+        <div><dt>Google-Bewertungen</dt><dd>{note}<small>/ 5 · {bewertungen.anzahl}</small></dd></div>
+      )}
+      <div><dt>In Kassel tätig</dt><dd>seit 2013</dd></div>
+      <div><dt>Besichtigung</dt><dd>kostenlos</dd></div>
+      <div><dt>Angebot</dt><dd>Festpreis</dd></div>
+    </dl>
+  </div>
+</Section>
+
+<section class="mosaik" aria-label="Innenausbau für Privat und Vermieter">
+  <div class="mosaik__bild mosaik__bild--grafik">
+    <FloorPlanks />
+  </div>
+  <div class="mosaik__text">
+    <p class="mosaik__kicker">Innenausbau für Privat</p>
+    <h2>Wohnung renovieren lassen</h2>
+    <p>
+      Neuer Boden im Wohnzimmer, frisch gestrichene Wände vor dem Einzug, die Küche aus dem Möbelhaus fertig montiert:
+      Wir übernehmen einzelne Arbeiten oder die ganze Renovierung. Fliegengitter und Plissees messen wir vor Ort auf und
+      montieren sie passgenau.
+    </p>
+    <ul class="mosaik__links">
+      <li><a href={internalLink('/boden-verlegen-kassel/').href}>Boden verlegen<Icon name="arrow-right" size={16} class="hover-pfeil" /></a></li>
+      <li><a href={internalLink('/kuechenmontage-moebelmontage-kassel/').href}>Küchenmontage<Icon name="arrow-right" size={16} class="hover-pfeil" /></a></li>
+    </ul>
+  </div>
+  <div class="mosaik__text mosaik__text--zwei">
+    <p class="mosaik__kicker">Renovierung für Vermieter</p>
+    <h2>Renovierung für Vermieter und Hausverwaltungen</h2>
+    <p>
+      Zieht ein Mieter aus, soll die Wohnung schnell wieder bezugsfertig sein. Wir streichen Wände und Decken, erneuern
+      abgenutzte Böden und übergeben die Wohnung nach der Endreinigung. Ein Auftrag, ein Termin, ein Ansprechpartner.
+    </p>
+    <ul class="mosaik__links">
+      <li><a href={internalLink('/streichen-tapezieren-kassel/').href}>Streichen und Tapezieren<Icon name="arrow-right" size={16} class="hover-pfeil" /></a></li>
+      <li><a href={internalLink('/bauendreinigung-kassel/').href}>Endreinigung<Icon name="arrow-right" size={16} class="hover-pfeil" /></a></li>
+    </ul>
+  </div>
+  <div class="mosaik__bild mosaik__bild--zwei mosaik__bild--grafik">
+    <ul class="farbkarte" aria-hidden="true">
+      {farben.map((f) => <li style={`background:${f}`} />)}
+    </ul>
+  </div>
+</section>
+
+<Section title="So arbeiten wir beim Innenausbau" variant="petrol-dark" space="default">
+  <ol class="schritte">
+    <li>
+      <strong>Besichtigung und Aufmaß</strong>
+      <span>Wir sehen uns die Räume kostenlos an, messen auf und besprechen Material, Farben und Termine.</span>
+    </li>
+    <li>
+      <strong>Festpreis-Angebot</strong>
+      <span>Sie erhalten ein verbindliches Angebot. Was darin steht, gilt, ohne Überraschung auf der Rechnung.</span>
+    </li>
+    <li>
+      <strong>Ausführung und Übergabe</strong>
+      <span>Wir arbeiten zum vereinbarten Termin, räumen auf und übergeben die Räume sauber. Sie haben immer denselben Ansprechpartner.</span>
+    </li>
+  </ol>
+  <div class="cta"><CtaGruppe /></div>
+</Section>
+
+<Section title="Renovierung in Kassel: aussuchen, verlegen, streichen, übergeben" space="default">
+  <div class="split split--foto">
+    <figure class="rahmen rahmen--grafik">
+      <Wohnraum id="gr-raum-rahmen" />
+    </figure>
+    <div class="text">
+      <p>
+        Wer „Handwerker“, „Renovierung“ oder „Innenausbau“ sucht, möchte meist dasselbe: fertige Räume, ohne selbst
+        mehrere Gewerke zu koordinieren. Bei uns beginnt das bei der Auswahl. Vinyl, Teppich und Farben sehen Sie
+        nach Termin in unserer Ausstellung in Kassel.
+      </p>
+      <p>
+        Danach verlegen wir den Boden, streichen die Wände und bauen Küche und Möbel auf. Zum Schluss übernimmt unsere
+        Reinigung Baustaub und Farbreste, sodass Sie in saubere Räume einziehen.
+      </p>
+      <ul class="minis">
+        {weitere.map((w) => (
+          <li>
+            <a class="hover-kachel" href={internalLink(w.slug).href}>
+              <Icon name={w.icon} size={26} /><span>{w.label}</span>
+              <Icon name="arrow-right" size={18} class="minis__pfeil hover-pfeil" />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</Section>
+
+{
+  bewertungen.echt && (
+    <section class="bewertungen" id="bewertungen">
+      <div class="container"><ReviewsStatic /></div>
+    </section>
+  )
+}
+
+<section class="mosaik mosaik--kosten" aria-labelledby="kosten-titel">
+  <div class="mosaik__text">
+    <p class="mosaik__kicker">Kosten</p>
+    <h2 id="kosten-titel">Was kostet ein Handwerker für die Renovierung in Kassel?</h2>
+    <p>
+      Eine pauschale Antwort gibt es nicht, weil jeder Raum anders ist. Deshalb schätzen wir nicht am Telefon, sondern
+      besichtigen kostenlos und nennen Ihnen danach einen Festpreis. So können Sie Angebote für Ihre Renovierung in
+      Kassel fair vergleichen.
+    </p>
+    <a class="btn btn--gold" href={site.angebotUrl}>{site.ctaLabel}</a>
+  </div>
+  <ul class="faktoren" aria-label="Wovon der Preis abhängt">
+    {faktoren.map((f) => (
+      <li>
+        <span class="faktoren__icon"><Icon name={f.icon} size={36} /></span>
+        <h3>{f.titel}</h3>
+        <p>{f.text}</p>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<Section title="Häufige Fragen zu Innenausbau und Renovierung" space="default">
+  <Faq items={faq} />
+</Section>
+
+<Section title="Handwerker im Umkreis von Kassel" variant="petrol" space="default">
+  <div class="split">
+    <div class="text">
+      <p>
+        Wir sind in Kassel und im Umkreis von etwa 30 Kilometern für Sie da, bei größeren Aufträgen wie einer
+        Bodenverlegung oder Renovierung auch bis etwa 50 Kilometer. Ihr Ort fehlt? Fragen Sie einfach an, wir sagen Ihnen
+        ehrlich, ob wir den Weg übernehmen.
+      </p>
+    </div>
+    <ul class="orte">
+      {orte.map((o) => <li>{o}</li>)}
+    </ul>
+  </div>
+</Section>
+
+<style>
+  .text { max-width: 60ch; }
+  .text p + p { margin-top: var(--space-4); }
+  .split { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(2rem, 6vw, 5rem); align-items: center; }
+  .split--foto { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); }
+  @media (max-width: 900px) { .split, .split--foto { grid-template-columns: 1fr; } }
+
+  /* Kernzahlen: dunkle Karte neben dem Einleitungstext */
+  .fakten { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--color-border-dark); border: 1px solid var(--color-border-dark); }
+  .fakten div { background: var(--color-petrol); padding: var(--space-6); display: grid; gap: var(--space-2); align-content: center; min-height: 9rem; }
+  .fakten dt { font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-on-dark-soft); }
+  .fakten dd { margin: 0; font-family: var(--font-heading); font-weight: var(--weight-bold); font-size: clamp(1.5rem, 1rem + 1.4vw, 2.1rem); color: var(--color-primary-on-dark); line-height: 1.1; }
+  .fakten small { font-size: 0.8rem; font-weight: var(--weight-normal); color: var(--color-on-dark-soft); margin-left: 0.4rem; }
+
+  /* Globale Regel "li + li { margin-top }" schiebt Listenelemente in Rastern nach unten */
+  .mosaik__links li, .faktoren li, .minis li, .schritte li, .orte li, .farbkarte li { margin: 0; }
+
+  /* Mosaik wie auf der Gebaeudereinigung: zwei gleiche Spalten ueber die
+     volle Breite, Zellen Ecke an Ecke, Reihen wechseln ueber Kreuz. */
+  .mosaik { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mosaik__bild { position: relative; min-height: clamp(20rem, 34vw, 30rem); background: var(--color-petrol); overflow: hidden; }
+  /* Vektor-Platzhalter fuellen die Zelle, bis echte Fotos da sind */
+  .mosaik__bild--grafik :global(svg), .farbkarte { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .mosaik__text { background: var(--color-bg-alt); display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: clamp(2rem, 5vw, 4.5rem); }
+  .mosaik__text--zwei { background: #EBEAE6; }
+  .mosaik__kicker { font-size: 0.8rem; font-weight: var(--weight-medium); letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-accent-text); margin-bottom: var(--space-3); }
+  .mosaik__text h2 { font-size: clamp(1.5rem, 1rem + 1.6vw, 2.2rem); line-height: 1.15; max-width: 22ch; margin-bottom: var(--space-4); }
+  .mosaik__text > p:not(.mosaik__kicker) { max-width: 46ch; color: var(--color-text); }
+  .mosaik__text .btn { margin-top: var(--space-6); }
+  .mosaik__links { list-style: none; padding: 0; margin: var(--space-6) 0 0; display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-6); }
+  .mosaik__links a { display: inline-flex; align-items: center; gap: var(--space-2); font-weight: var(--weight-bold); font-size: 0.9rem; color: var(--color-accent-text); text-decoration: none; }
+  .mosaik__links a:hover { color: var(--color-heading); }
+
+  /* Farbkarte: Wandfarben als Kacheln Ecke an Ecke */
+  .farbkarte { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); }
+
+  /* Kosten: Text | vier Faktoren als Schachbrett, ebenfalls Ecke an Ecke */
+  .faktoren { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .faktoren li { background: var(--color-petrol); color: var(--color-on-dark-soft); padding: clamp(1.5rem, 3vw, 2.5rem); display: flex; flex-direction: column; justify-content: center; gap: var(--space-2); min-height: clamp(12rem, 17vw, 15rem); }
+  .faktoren li:nth-child(2), .faktoren li:nth-child(3) { background: #26292D; }
+  .faktoren__icon { display: block; line-height: 0; color: var(--color-primary-on-dark); margin-bottom: var(--space-2); }
+  .faktoren h3 { color: #fff; font-size: 1.15rem; }
+  .faktoren p { font-size: 0.92rem; line-height: 1.55; }
+
+  /* Text in der linken Spalte fluchtet mit der Containerkante der uebrigen Sektionen */
+  @media (min-width: 761px) {
+    .mosaik > .mosaik__text:nth-child(odd) { padding-left: max(clamp(2rem, 5vw, 4.5rem), calc((100vw - var(--container-max)) / 2 + var(--container-padding))); }
+  }
+  @media (max-width: 760px) {
+    .mosaik { grid-template-columns: 1fr; }
+    /* auf dem Handy folgt jedem Bild sein Text */
+    .mosaik__bild--zwei { order: 3; }
+    .mosaik__text--zwei { order: 4; }
+    .mosaik__bild { min-height: 15rem; }
+  }
+  @media (max-width: 420px) { .faktoren { grid-template-columns: 1fr; } .faktoren li { min-height: 0; } }
+
+  /* Grafik im versetzten Goldrahmen, Platzhalter fuer ein Foto */
+  .rahmen { position: relative; margin: 0; aspect-ratio: 4 / 3; isolation: isolate; }
+  .rahmen::before { content: ''; position: absolute; inset: 0; transform: translate(14px, 14px); border: 1px solid var(--color-primary); z-index: -1; }
+  .rahmen--grafik { display: grid; place-items: center; background: #23262A; color: #C9AD78; --gravur-grund: #23262A; --gravur-tinte: #C9AD78; }
+  .rahmen--grafik :global(svg) { width: 100%; height: auto; }
+
+  .minis { list-style: none; padding: 0; margin: var(--space-6) 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
+  @media (max-width: 520px) { .minis { grid-template-columns: 1fr; } .rahmen { margin-right: 10px; } .rahmen::before { transform: translate(10px, 10px); } }
+  .minis a { display: flex; align-items: center; gap: var(--space-3); min-height: 3.5rem; padding: var(--space-3) var(--space-4); background: var(--color-petrol); color: #fff; text-decoration: none; font-size: 0.95rem; }
+  .minis a :global(.icon) { flex: none; color: var(--color-primary-on-dark); transition: color var(--duration-base) var(--ease-out-soft); }
+  .minis a :global(.minis__pfeil) { margin-left: auto; }
+  .minis a:hover { background: var(--color-primary); color: var(--color-petrol); }
+  .minis a:hover :global(.icon) { color: var(--color-petrol); }
+
+  .schritte { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-8); counter-reset: s; }
+  @media (max-width: 760px) { .schritte { grid-template-columns: 1fr; } }
+  .schritte li { counter-increment: s; display: grid; gap: var(--space-2); align-content: start; padding-top: var(--space-4); border-top: 1px solid var(--color-primary); }
+  .schritte li::before { content: counter(s, decimal-leading-zero); font-family: var(--font-heading); font-weight: var(--weight-bold); font-size: 2.6rem; line-height: 1; color: var(--color-primary-on-dark); }
+  .schritte strong { font-family: var(--font-heading); font-size: 1.15rem; color: #fff; }
+  .schritte span { color: var(--color-on-dark-soft); }
+  .cta { margin-top: var(--space-12); }
+  .bewertungen { padding-block: clamp(2rem, 4vw, 3rem); }
+
+  .orte { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: var(--space-3); }
+  .orte li { padding: 0.5rem 1rem; border: 1px solid var(--color-border-dark); color: #fff; font-size: 0.95rem; }
+  .orte li:first-child { border-color: var(--color-primary); }
+</style>

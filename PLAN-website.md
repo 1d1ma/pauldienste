@@ -342,6 +342,8 @@ Bestand auf beiden alten Seiten (ohne Logos, Icons, Borlabs-Grafiken):
 - [x] Ausstellung: nur nach Termin
 - [x] Privat und Gewerbe: alle Leistungen
 - [x] Sortiment: Vinyl, Parkett, Teppich, Farben für innen
+- [x] **Parkett nicht nennen** (21.10.2026, wegen Meisterpflicht Parkettleger): weder beim Verlegen noch im Sortiment auf der Website
+- [x] Innenausbau: verarbeitet auch vom Kunden gekauftes Material, rückt Möbel und stellt sie zurück, baut alte Küche ab, renoviert für Vermieter zwischen zwei Mietern (21.10.2026)
 - [x] Preise: keine, Besichtigung kostenlos
 - [x] Festnetz: keins
 - [x] Einsatzgebiet: 30 km, größere Aufträge 50 km
