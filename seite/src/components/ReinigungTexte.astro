@@ -8,9 +8,13 @@
 import Section from './Section.astro';
 import Faq from './Faq.astro';
 import InternalLink from './InternalLink.astro';
+import { internalLink } from '../data/pages';
 import CtaGruppe from './CtaGruppe.astro';
 import ReviewsStatic from './ReviewsStatic.astro';
-import { bewertungen } from '../data/site';
+import Icon from './Icon.astro';
+import { Image } from 'astro:assets';
+import foto from '../assets/images/fensterputzer-kassel1.jpg';
+import { bewertungen, site } from '../data/site';
 
 const faq = [
   {
@@ -43,6 +47,22 @@ const faq = [
   },
 ];
 
+const note = bewertungen.schnitt.toLocaleString('de-DE', { minimumFractionDigits: 1 });
+
+const faktoren = [
+  { icon: 'ruler', titel: 'Fläche', text: 'Wie viele Quadratmeter, Fenster oder Etagen gereinigt werden.' },
+  { icon: 'sparkle', titel: 'Zustand', text: 'Normale Unterhaltung oder starke Verschmutzung, etwa nach dem Umbau.' },
+  { icon: 'key', titel: 'Zugang', text: 'Höhe, Treppenhaus, Parkplatz und Öffnungszeiten des Objekts.' },
+  { icon: 'calendar-check', titel: 'Häufigkeit', text: 'Einmalig oder im festen Rhythmus, meist günstiger je Einsatz.' },
+] as const;
+
+const weitere = [
+  { slug: '/fensterreinigung-kassel/', icon: 'squares-four', label: 'Fensterreinigung' },
+  { slug: '/fassadenreinigung-kassel/', icon: 'house-line', label: 'Fassadenreinigung' },
+  { slug: '/steinreinigung-kassel/', icon: 'checkerboard', label: 'Steinreinigung' },
+  { slug: '/winterdienst-kassel/', icon: 'snowflake', label: 'Winterdienst' },
+] as const;
+
 const orte = [
   'Baunatal', 'Vellmar', 'Kaufungen', 'Lohfelden', 'Niestetal', 'Fuldatal', 'Fuldabrück', 'Ahnatal',
   'Calden', 'Schauenburg', 'Espenau', 'Söhrewald', 'Hann. Münden', 'Hofgeismar',
@@ -50,64 +70,93 @@ const orte = [
 ---
 
 <Section title="Reinigungsfirma in Kassel: ein Ansprechpartner für alles" space="default">
-  <div class="text">
-    <p>
-      Sie suchen eine Reinigungsfirma in Kassel, die zuverlässig kommt und sauber arbeitet? Als Gebäudereiniger
-      kümmern wir uns um Fenster, Büros, Treppenhäuser, Fassaden und Außenflächen. Sie sprechen mit einer Person,
-      bekommen einen Festpreis und müssen nicht mehrere Dienstleister koordinieren.
-    </p>
-    <p>
-      Ob Sie ein Reinigungsunternehmen für die laufende Unterhaltsreinigung brauchen oder einen Reinigungsservice
-      für einen einzelnen Termin: Wir besichtigen das Objekt kostenlos, legen den Umfang fest und reinigen danach
-      zum vereinbarten Preis. Die Reinigung von Fenstern und Glas finden Sie unter
-      <InternalLink to="/fensterreinigung-kassel/">Fensterreinigung</InternalLink>, die regelmäßige Pflege von
-      Gewerberäumen unter <InternalLink to="/bueroreinigung-kassel/">Büro- und Unterhaltsreinigung</InternalLink>.
-    </p>
+  <div class="split">
+    <div class="text">
+      <p>
+        Sie suchen eine Reinigungsfirma in Kassel, die zuverlässig kommt und sauber arbeitet? Als Gebäudereiniger
+        kümmern wir uns um Fenster, Büros, Treppenhäuser, Fassaden und Außenflächen. Sie sprechen mit einer Person,
+        bekommen einen Festpreis und müssen nicht mehrere Dienstleister koordinieren.
+      </p>
+      <p>
+        Ob Sie ein Reinigungsunternehmen für die laufende Unterhaltsreinigung brauchen oder einen Reinigungsservice
+        für einen einzelnen Termin: Wir besichtigen das Objekt kostenlos, legen den Umfang fest und reinigen danach
+        zum vereinbarten Preis. Die Reinigung von Fenstern und Glas finden Sie unter
+        <InternalLink to="/fensterreinigung-kassel/">Fensterreinigung</InternalLink>, die regelmäßige Pflege von
+        Gewerberäumen unter <InternalLink to="/bueroreinigung-kassel/">Büro- und Unterhaltsreinigung</InternalLink>.
+      </p>
+    </div>
+    <dl class="fakten">
+      {bewertungen.echt && (
+        <div><dt>Google-Bewertungen</dt><dd>{note}<small>/ 5 · {bewertungen.anzahl}</small></dd></div>
+      )}
+      <div><dt>In Kassel tätig</dt><dd>seit 2013</dd></div>
+      <div><dt>Besichtigung</dt><dd>kostenlos</dd></div>
+      <div><dt>Angebot</dt><dd>Festpreis</dd></div>
+    </dl>
   </div>
 </Section>
 
 <Section title="Gebäudereinigung für Privat und Gewerbe" variant="alt" space="default">
-  <div class="zwei">
-    <div class="text">
+  <div class="quadrate">
+    <article class="quadrat">
+      <span class="quadrat__icon"><Icon name="broom" size={48} /></span>
       <h3>Reinigungsservice für Privathaushalte</h3>
       <p>
-        Wohnung, Haus oder Wintergarten: Wir reinigen einmalig oder in festen Abständen. Zur Auswahl stehen die
-        gründliche <InternalLink to="/grundreinigung-kassel/">Grundreinigung</InternalLink> vor dem Einzug, nach dem
-        Auszug oder zum Frühjahrsputz, saubere Fenster samt Rahmen und Fensterbänken sowie die Reinigung von
-        <InternalLink to="/wintergartenreinigung-kassel/">Wintergarten</InternalLink> und Glasdach.
+        Wohnung, Haus oder Wintergarten: Wir reinigen einmalig oder in festen Abständen. Dazu gehören saubere
+        Fenster samt Rahmen und Fensterbänken, die Reinigung von Wintergarten und Glasdach und die gründliche
+        Grundreinigung vor dem Einzug, nach dem Auszug oder zum Frühjahrsputz.
       </p>
-    </div>
-    <div class="text">
+      <ul class="quadrat__links">
+        <li><InternalLink to="/grundreinigung-kassel/">Grundreinigung</InternalLink></li>
+        <li><InternalLink to="/wintergartenreinigung-kassel/">Wintergartenreinigung</InternalLink></li>
+      </ul>
+    </article>
+    <article class="quadrat">
+      <span class="quadrat__icon"><Icon name="building-office" size={48} /></span>
       <h3>Reinigungsunternehmen für Gewerbe und Hausverwaltungen</h3>
       <p>
         Büros, Arztpraxen, Geschäfte und Treppenhäuser brauchen einen festen Rhythmus und Termine, die den Betrieb
-        nicht stören. Wir reinigen auf Wunsch früh, abends oder am Wochenende. Große Bodenflächen lassen sich mit
-        einem <InternalLink to="/reinigungsroboter-gewerbe/">Reinigungsroboter</InternalLink> ergänzen, den wir
-        gemeinsam mit einem Partner aus Nordhessen anbieten. Nach Umbauten übernehmen wir die
-        <InternalLink to="/bauendreinigung-kassel/">Bauendreinigung</InternalLink> bis zur Übergabe.
+        nicht stören. Wir reinigen auf Wunsch früh, abends oder am Wochenende. Große Bodenflächen ergänzen wir mit
+        einem Reinigungsroboter, nach Umbauten übernehmen wir die Endreinigung bis zur Übergabe.
       </p>
-    </div>
+      <ul class="quadrat__links">
+        <li><InternalLink to="/bueroreinigung-kassel/">Büroreinigung</InternalLink></li>
+        <li><InternalLink to="/reinigungsroboter-gewerbe/">Reinigungsroboter</InternalLink></li>
+        <li><InternalLink to="/bauendreinigung-kassel/">Bauendreinigung</InternalLink></li>
+      </ul>
+    </article>
   </div>
 </Section>
 
 <Section title="Putzfirma oder Gebäudereiniger: Was wir für Sie reinigen" space="default">
-  <div class="text">
-    <p>
-      Wer „Putzfirma“, „Reinigungsfirma“ oder „Gebäudereinigung“ sucht, meint meist dasselbe: Jemand soll Räume und
-      Flächen verlässlich sauber halten. Bei uns gehört dazu die Innenreinigung von Büros und Wohnungen genauso wie
-      die Pflege der Außenhülle, etwa die
-      <InternalLink to="/fassadenreinigung-kassel/">Fassadenreinigung</InternalLink> von Putz und Klinker oder die
-      <InternalLink to="/steinreinigung-kassel/">Reinigung von Pflaster, Terrasse und Einfahrt</InternalLink>.
-    </p>
-    <p>
-      Im Winter ergänzt unser <InternalLink to="/winterdienst-kassel/">Winterdienst</InternalLink> die Reinigung,
-      sodass Wege und Zugänge das ganze Jahr in Ordnung sind. So bleibt Ihr Gebäude von innen und außen gepflegt,
-      ohne dass Sie mehrere Anbieter beauftragen müssen.
-    </p>
+  <div class="split split--foto">
+    <figure class="rahmen">
+      <Image src={foto} alt="Fensterreinigung mit Wischer und Schaum auf einer Glasscheibe" widths={[500, 800, 1100]} sizes="(max-width: 900px) 100vw, 45vw" loading="lazy" />
+    </figure>
+    <div class="text">
+      <p>
+        Wer „Putzfirma“, „Reinigungsfirma“ oder „Gebäudereinigung“ sucht, meint meist dasselbe: Jemand soll Räume und
+        Flächen verlässlich sauber halten. Bei uns gehört dazu die Innenreinigung von Büros und Wohnungen genauso wie
+        die Pflege der Außenhülle von Fassade bis Einfahrt.
+      </p>
+      <p>
+        Im Winter ergänzt der Winterdienst die Reinigung, sodass Wege und Zugänge das ganze Jahr in Ordnung sind.
+        So bleibt Ihr Gebäude von innen und außen gepflegt, ohne dass Sie mehrere Anbieter beauftragen müssen.
+      </p>
+      <ul class="minis">
+        {weitere.map((w) => (
+          <li>
+            <a href={internalLink(w.slug).href}>
+              <Icon name={w.icon} size={26} /><span>{w.label}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
   </div>
 </Section>
 
-<Section title="So arbeiten wir als Reinigungsunternehmen" variant="alt" space="default">
+<Section title="So arbeiten wir als Reinigungsunternehmen" variant="petrol-dark" space="default">
   <ol class="schritte">
     <li>
       <strong>Kostenlose Besichtigung</strong>
@@ -133,52 +182,96 @@ const orte = [
   )
 }
 
-<Section title="Was kostet eine Reinigungsfirma in Kassel?" space="default">
-  <div class="text">
-    <p>
-      Eine pauschale Antwort gibt es nicht, weil jedes Objekt anders ist. Den Preis bestimmen vor allem die
-      Fläche, der Verschmutzungsgrad, die Art der Böden und Fenster, der Zugang (etwa Höhe oder Etagen) und wie oft
-      gereinigt wird. Regelmäßige Reinigung ist je Einsatz meist günstiger als ein einmaliger Großeinsatz.
-    </p>
-    <p>
-      Deshalb schätzen wir nicht am Telefon, sondern besichtigen kostenlos und nennen Ihnen danach einen Festpreis.
-      So können Sie Angebote von Reinigungsunternehmen in Kassel fair vergleichen.
-    </p>
-  </div>
+<Section title="Was kostet eine Reinigungsfirma in Kassel?" variant="alt" space="default"
+  lead="Eine pauschale Antwort gibt es nicht, weil jedes Objekt anders ist. Vier Dinge bestimmen den Preis:">
+  <ul class="quadrate quadrate--vier">
+    {faktoren.map((f) => (
+      <li class="quadrat quadrat--hell">
+        <span class="quadrat__icon"><Icon name={f.icon} size={40} /></span>
+        <h3>{f.titel}</h3>
+        <p>{f.text}</p>
+      </li>
+    ))}
+  </ul>
+  <p class="fest">
+    Deshalb schätzen wir nicht am Telefon, sondern besichtigen kostenlos und nennen Ihnen danach einen Festpreis.
+    So können Sie Angebote von Reinigungsunternehmen in Kassel fair vergleichen.
+    <a class="btn btn--gold" href={site.angebotUrl}>{site.ctaLabel}</a>
+  </p>
 </Section>
 
-<Section title="Häufige Fragen zur Gebäudereinigung in Kassel" variant="alt" space="default">
+<Section title="Häufige Fragen zur Gebäudereinigung in Kassel" space="default">
   <Faq items={faq} />
 </Section>
 
-<Section title="Gebäudereiniger im Umkreis von Kassel" space="default">
-  <div class="text">
-    <p>
-      Wir sind in Kassel und im Umkreis von etwa 30 Kilometern für Sie da, bei größeren Aufträgen auch bis etwa
-      50 Kilometer.
-    </p>
+<Section title="Gebäudereiniger im Umkreis von Kassel" variant="petrol" space="default">
+  <div class="split">
+    <div class="text">
+      <p>
+        Wir sind in Kassel und im Umkreis von etwa 30 Kilometern für Sie da, bei größeren Aufträgen auch bis etwa
+        50 Kilometer. Ihr Ort fehlt? Fragen Sie einfach an, wir sagen Ihnen ehrlich, ob wir den Weg übernehmen.
+      </p>
+    </div>
     <ul class="orte">
       {orte.map((o) => <li>{o}</li>)}
     </ul>
-    <p>Ihr Ort fehlt? Fragen Sie einfach an, wir sagen Ihnen ehrlich, ob wir den Weg übernehmen.</p>
   </div>
 </Section>
 
 <style>
-  .text { max-width: 68ch; }
-  .text h3 { font-size: 1.15rem; margin-bottom: var(--space-3); }
+  .text { max-width: 60ch; }
   .text p + p { margin-top: var(--space-4); }
-  .zwei { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-8); }
-  @media (max-width: 760px) { .zwei { grid-template-columns: 1fr; } }
-  .zwei .text { max-width: none; }
-  .schritte { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-6); counter-reset: s; }
+  .split { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(2rem, 6vw, 5rem); align-items: center; }
+  .split--foto { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); }
+  @media (max-width: 900px) { .split, .split--foto { grid-template-columns: 1fr; } }
+
+  /* Kernzahlen: dunkle Karte neben dem Einleitungstext */
+  .fakten { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--color-border-dark); border: 1px solid var(--color-border-dark); }
+  .fakten div { background: var(--color-petrol); padding: var(--space-6); display: grid; gap: var(--space-2); align-content: center; min-height: 9rem; }
+  .fakten dt { font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-on-dark-soft); }
+  .fakten dd { margin: 0; font-family: var(--font-heading); font-weight: var(--weight-bold); font-size: clamp(1.5rem, 1rem + 1.4vw, 2.1rem); color: var(--color-primary-on-dark); line-height: 1.1; }
+  .fakten small { font-size: 0.8rem; font-weight: var(--weight-regular, 400); color: var(--color-on-dark-soft); margin-left: 0.4rem; }
+
+  /* Quadrate wie die Bereichskarten */
+  .quadrate { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6); }
+  .quadrate--vier { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  @media (max-width: 1000px) { .quadrate--vier { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 700px) { .quadrate, .quadrate--vier { grid-template-columns: 1fr; } }
+  .quadrat { background: var(--color-petrol); color: var(--color-on-dark-soft); padding: clamp(1.5rem, 3vw, 2.5rem); display: grid; gap: var(--space-3); align-content: start; border-top: 2px solid var(--color-primary); }
+  .quadrat h3 { color: #fff; font-size: 1.2rem; line-height: 1.25; }
+  .quadrat p { font-size: 0.95rem; line-height: 1.6; }
+  .quadrat__icon { display: block; height: 3rem; line-height: 0; color: var(--color-primary-on-dark); margin-bottom: var(--space-2); }
+  .quadrat__links { list-style: none; padding: 0; margin: var(--space-2) 0 0; display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); }
+  .quadrat__links :global(a) { color: var(--color-primary-on-dark); font-size: 0.9rem; }
+  .quadrat__links :global(a):hover { color: #fff; }
+  .quadrat--hell { background: #fff; color: var(--color-text); border: 1px solid var(--color-border); border-top: 2px solid var(--color-primary); }
+  .quadrat--hell h3 { color: var(--color-heading); }
+  .quadrat--hell .quadrat__icon { color: var(--color-accent-text); }
+  .fest { margin-top: var(--space-8); max-width: 60ch; display: grid; gap: var(--space-4); justify-items: start; }
+
+  /* Foto mit Gold-Duoton und versetztem Rahmen */
+  .rahmen { position: relative; margin: 0; aspect-ratio: 4 / 3; isolation: isolate; }
+  .rahmen::before { content: ''; position: absolute; inset: 0; transform: translate(14px, 14px); border: 1px solid var(--color-primary); z-index: -1; }
+  .rahmen :global(img) { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(1) contrast(1.05) brightness(1.15); }
+  .rahmen::after { content: ''; position: absolute; inset: 0; background: #C9AD78; mix-blend-mode: multiply; opacity: 0.9; pointer-events: none; }
+
+  .minis { list-style: none; padding: 0; margin: var(--space-6) 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
+  @media (max-width: 520px) { .minis { grid-template-columns: 1fr; } .rahmen { margin-right: 10px; } .rahmen::before { transform: translate(10px, 10px); } }
+  .minis a { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-4); background: var(--color-petrol); color: #fff; text-decoration: none; font-size: 0.95rem; transition: background 0.25s, color 0.25s; }
+  .minis a :global(.icon) { color: var(--color-primary-on-dark); transition: color 0.25s; }
+  .minis a:hover { background: var(--color-primary); color: var(--color-petrol); }
+  .minis a:hover :global(.icon) { color: var(--color-petrol); }
+
+  .schritte { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-8); counter-reset: s; }
   @media (max-width: 760px) { .schritte { grid-template-columns: 1fr; } }
   .schritte li { counter-increment: s; display: grid; gap: var(--space-2); align-content: start; padding-top: var(--space-4); border-top: 1px solid var(--color-primary); }
-  .schritte li::before { content: counter(s, decimal-leading-zero); font-family: var(--font-heading); color: var(--color-accent-text); font-size: 0.9rem; }
-  .schritte strong { font-family: var(--font-heading); font-size: 1.1rem; color: var(--color-heading); }
-  .schritte span { color: var(--color-text-muted); }
-  .cta { margin-top: var(--space-8); }
+  .schritte li::before { content: counter(s, decimal-leading-zero); font-family: var(--font-heading); font-weight: var(--weight-bold); font-size: 2.6rem; line-height: 1; color: var(--color-primary-on-dark); }
+  .schritte strong { font-family: var(--font-heading); font-size: 1.15rem; color: #fff; }
+  .schritte span { color: var(--color-on-dark-soft); }
+  .cta { margin-top: var(--space-12); }
   .bewertungen { padding-block: clamp(2rem, 4vw, 3rem); }
-  .orte { list-style: none; padding: 0; margin: var(--space-4) 0; display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-3); }
-  .orte li { padding: 0.25rem 0.75rem; border: 1px solid var(--color-border); font-size: 0.9rem; }
+
+  .orte { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: var(--space-3); }
+  .orte li { padding: 0.5rem 1rem; border: 1px solid var(--color-border-dark); color: #fff; font-size: 0.95rem; }
+  .orte li:first-child { border-color: var(--color-primary); }
 </style>
