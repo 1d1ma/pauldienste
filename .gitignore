@@ -12,3 +12,4 @@ smtp-config.php
 *.log
 .DS_Store
 *.xml.gz
+entwurf-bilder/

@@ -55,14 +55,53 @@ export interface Page {
 export const pages: Record<string, Page> = {
   '/': {
     slug: '/',
-    title: 'Paul Gebäudedienste Kassel | Reinigung & Handwerk',
+    title: 'Paul Gebäudedienste Kassel | Reinigung & Innenausbau',
     description:
       'Gebäudereinigung, Renovierung und Hausmeisterservice in Kassel aus einer Hand. Kostenlose Besichtigung, danach Festpreis. Für Privat und Gewerbe.',
-    h1: 'Reinigung und Handwerk aus einer Hand in Kassel',
+    h1: 'Reinigung und Innenausbau aus einer Hand in Kassel',
     cluster: 'startseite',
     primaryKeyword: 'gebäudeservice kassel',
     secondaryKeywords: ['gebäudedienste kassel', 'hausmeisterservice kassel'],
     linksTo: ['/gebaeudereinigung-kassel/', '/handwerker-kassel/', '/hausmeisterservice-kassel/', '/kontakt/'],
+    status: 'live',
+  },
+
+  /* Bereichsseiten: Kopf, Raster aller Leistungen, die anderen Bereiche */
+  '/gebaeudereinigung-kassel/': {
+    slug: '/gebaeudereinigung-kassel/',
+    title: 'Gebäudereinigung Kassel | Paul Gebäudedienste',
+    label: 'Gebäudereinigung',
+    description:
+      'Gebäudereinigung in Kassel: Fenster, Büro, Grund- und Bauendreinigung, Fassade und Stein. Kostenlose Besichtigung, danach Festpreis.',
+    h1: 'Gebäudereinigung in Kassel',
+    cluster: 'reinigung',
+    primaryKeyword: 'gebäudereinigung kassel',
+    linksTo: ['/fensterreinigung-kassel/', '/bueroreinigung-kassel/', '/grundreinigung-kassel/', '/handwerker-kassel/', '/hausmeisterservice-kassel/'],
+    status: 'live',
+  },
+  '/handwerker-kassel/': {
+    slug: '/handwerker-kassel/',
+    title: 'Innenausbau und Renovierung Kassel | Paul Gebäudedienste',
+    label: 'Innenausbau',
+    description:
+      'Innenausbau in Kassel: Boden verlegen, Streichen, Küchenmontage, Fliegengitter und Plissees nach Maß. Festpreis nach kostenloser Besichtigung.',
+    h1: 'Innenausbau und Renovierung in Kassel',
+    cluster: 'handwerk',
+    primaryKeyword: 'handwerker kassel',
+    secondaryKeywords: ['innenausbau kassel', 'renovierung kassel'],
+    linksTo: ['/boden-verlegen-kassel/', '/streichen-tapezieren-kassel/', '/gebaeudereinigung-kassel/', '/hausmeisterservice-kassel/'],
+    status: 'live',
+  },
+  '/hausmeisterservice-kassel/': {
+    slug: '/hausmeisterservice-kassel/',
+    title: 'Hausmeisterservice Kassel | Paul Gebäudedienste',
+    label: 'Hausmeisterservice',
+    description:
+      'Hausmeisterservice in Kassel: Winterdienst, Gartenpflege und Entrümpelung für Privat, Vermieter und Gewerbe. Besichtigung kostenlos, dann Festpreis.',
+    h1: 'Hausmeisterservice in Kassel',
+    cluster: 'hausmeister',
+    primaryKeyword: 'hausmeisterservice kassel',
+    linksTo: ['/winterdienst-kassel/', '/gartenpflege-kassel/', '/gebaeudereinigung-kassel/', '/handwerker-kassel/'],
     status: 'live',
   },
 
@@ -93,7 +132,6 @@ const geplant = (
 ): [string, Page] => [slug, { slug, title, label, cluster, primaryKeyword, status: 'geplant' }];
 
 export const plannedPages: Record<string, Page> = Object.fromEntries([
-  geplant('/gebaeudereinigung-kassel/', 'Gebäudereinigung', 'reinigung', 'gebäudereinigung kassel'),
   geplant('/fensterreinigung-kassel/', 'Fensterreinigung', 'reinigung', 'fensterputzer kassel'),
   geplant('/wintergartenreinigung-kassel/', 'Wintergartenreinigung', 'reinigung', 'wintergartenreinigung kassel'),
   geplant('/bueroreinigung-kassel/', 'Büro- und Unterhaltsreinigung', 'reinigung', 'büroreinigung kassel'),
@@ -106,8 +144,6 @@ export const plannedPages: Record<string, Page> = Object.fromEntries([
   geplant('/entruempelung-kassel/', 'Entrümpelung', 'hausmeister', 'entrümpelung kassel'),
   geplant('/gartenpflege-kassel/', 'Gartenpflege', 'hausmeister', 'gartenpflege kassel'),
 
-  geplant('/hausmeisterservice-kassel/', 'Hausmeisterservice', 'hausmeister', 'hausmeisterservice kassel'),
-  geplant('/handwerker-kassel/', 'Handwerk', 'handwerk', 'handwerker kassel'),
   geplant('/boden-verlegen-kassel/', 'Boden verlegen', 'handwerk', 'boden verlegen lassen kassel'),
   geplant('/streichen-tapezieren-kassel/', 'Streichen und Tapezieren', 'handwerk', 'wohnung streichen lassen kassel'),
   geplant('/kuechenmontage-moebelmontage-kassel/', 'Küchen- und Möbelmontage', 'handwerk', 'küchenmontage kassel'),

@@ -1,0 +1,92 @@
+---
+/**
+ * Karte fuer einen der drei Bereiche: gravierte Vignette oben, darunter Titel,
+ * Kurztext und (auf der Startseite) die wichtigsten Leistungen als Links.
+ * Startseite (Hero) und Bereichsseiten ("Wir haben noch mehr zu bieten").
+ */
+import { bereiche, type Bereich } from '../data/leistungen';
+import { internalLink, registry } from '../data/pages';
+import Icon from './Icon.astro';
+import Vignette from './gravur/Vignette.astro';
+
+interface Props {
+  id: Bereich['id'];
+  /** Leistungen als Links zeigen (Startseite) */
+  leistungen?: number;
+  ueberschrift?: 'h2' | 'h3';
+}
+const { id, leistungen = 0, ueberschrift = 'h2' } = Astro.props;
+const b = bereiche.find((x) => x.id === id)!;
+const slugs = b.gruppen.flatMap((g) => g.slugs).slice(0, leistungen);
+const Titel = ueberschrift;
+---
+
+<article class={`karte karte--${id}`}>
+  <a class="karte__bild" href={internalLink(b.start).href} tabindex="-1" aria-hidden="true">
+    <Vignette bereich={id} />
+  </a>
+  <div class="karte__text">
+    <Titel class="karte__titel"><a href={internalLink(b.start).href}>{b.label}</a></Titel>
+    <p class="karte__kurz">{b.intro}</p>
+    {
+      slugs.length > 0 && (
+        <ul class="karte__liste">
+          {slugs.map((s) => (
+            <li><a href={internalLink(s).href}>{registry[s].label}</a></li>
+          ))}
+        </ul>
+      )
+    }
+    <a class="karte__mehr" href={internalLink(b.start).href} aria-label={`${b.label}: alle Leistungen`}>
+      Alle Leistungen <Icon name="arrow-right" size={16} />
+    </a>
+  </div>
+</article>
+
+<style>
+  .karte {
+    position: relative;
+    display: flex; flex-direction: column;
+    background: #fff;
+    box-shadow: 0 1px 0 rgb(28 30 33 / 0.06), 0 18px 40px -18px rgb(28 30 33 / 0.35);
+    border-radius: 2px;
+    overflow: clip;
+  }
+  .karte__bild {
+    display: block; aspect-ratio: 8 / 5;
+    background: var(--gravur-grund); color: var(--gravur-tinte);
+    border-bottom: 1px solid var(--gravur-tinte);
+  }
+  .karte__bild :global(.gravur) { transition: transform 0.9s var(--ease-out-soft, ease-out); }
+  .karte:hover .karte__bild :global(.gravur) { transform: scale(1.035); }
+
+  .karte--reinigung { --gravur-grund: #EEEBE4; --gravur-tinte: #806433; }
+  .karte--handwerk { --gravur-grund: #23262A; --gravur-tinte: #C9AD78; }
+  .karte--hausmeister { --gravur-grund: #33382F; --gravur-tinte: #CDB584; }
+
+  .karte__text { display: flex; flex-direction: column; flex: 1; padding: var(--space-6); }
+  .karte__titel { font-size: 1.3rem; letter-spacing: -0.01em; }
+  .karte__titel a { color: var(--color-heading); text-decoration: none; }
+  /* ganze Karte klickbar ueber den Titel-Link */
+  .karte__titel a::after { content: ''; position: absolute; inset: 0; z-index: 0; }
+  .karte__kurz { margin-top: var(--space-2); font-size: 0.9rem; line-height: 1.55; color: var(--color-text-muted); }
+
+  .karte__liste { list-style: none; margin: var(--space-4) 0 0; padding: 0; flex: 1; position: relative; z-index: 1; }
+  .karte__liste li { margin: 0; }
+  .karte__liste a {
+    display: block; padding: 0.45rem 0;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-heading); font-size: 0.9rem; text-decoration: none;
+  }
+  .karte__liste a:hover { color: var(--color-accent-text); }
+
+  .karte__mehr {
+    position: relative; z-index: 1;
+    margin-top: var(--space-4); align-self: flex-start;
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    font-weight: var(--weight-bold); font-size: 0.85rem; letter-spacing: 0.02em;
+    color: var(--color-accent-text); text-decoration: none;
+  }
+  .karte__mehr :global(.icon) { transition: transform 0.25s var(--ease-out-soft, ease-out); }
+  .karte:hover .karte__mehr :global(.icon) { transform: translateX(4px); }
+</style>

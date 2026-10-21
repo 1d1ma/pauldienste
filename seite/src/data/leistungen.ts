@@ -63,11 +63,11 @@ export const bereiche: Bereich[] = [
   },
   {
     id: 'handwerk',
-    label: 'Handwerk',
+    label: 'Innenausbau',
     icon: 'paint-roller',
     kurz: 'Boden, Streichen, Küchenmontage, Fliegengitter, Plissees',
     start: '/handwerker-kassel/',
-    intro: 'Renovierung und Innenausbau: Wir machen Ihre Räume fertig, vom Boden bis zum Insektenschutz.',
+    intro: 'Böden verlegen, Wände streichen, Küchen aufbauen: Wir machen Ihre Räume fertig.',
     gruppen: [
       {
         titel: 'Boden und Wand',

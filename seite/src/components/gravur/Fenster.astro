@@ -1,0 +1,107 @@
+---
+/**
+ * Vignette Gebaeudereinigung: Altbaufenster in Sandsteinwand. Das Glas ist
+ * schraffiert, ein frisch abgezogener Streifen bleibt blank, am Ende der
+ * Abzieher. Farbe ueber currentColor, Deckflaechen ueber --gravur-grund.
+ */
+import { n, schraffur, welle, zufall } from '../../lib/gravur';
+
+interface Props { id?: string; }
+const { id = 'gv-fenster' } = Astro.props;
+const r = zufall(31);
+const W = 400, H = 250;
+
+// Wand: Steinlagen mit versetzten Fugen, feine waagerechte Linien darin
+const wand: string[] = [];
+const fugen: string[] = [];
+for (let y = 6, lage = 0; y < H; y += 18, lage++) {
+  for (let k = 4; k < 18; k += 4.5) {
+    const w = welle(r, 0.4);
+    let x = -5;
+    while (x < W) {
+      const len = 20 + r() * 70;
+      wand.push(`M${n(x)} ${n(y + k + w(x))}L${n(x + len)} ${n(y + k + w(x + len))}`);
+      x += len + 4 + r() * 12;
+    }
+  }
+  fugen.push(`M0 ${y}L${W} ${y}`);
+  for (let x = (lage % 2) * 26; x < W; x += 52) fugen.push(`M${n(x)} ${y}l0 18`);
+}
+
+// Fenster
+const fx = 128, fw = 144, ftop = 40, fbot = 214, kampfer = 74, stich = 22;
+const laibung = `M${fx - 12} ${fbot}L${fx - 12} ${kampfer}Q${fx + fw / 2} ${kampfer - (stich + 8) * 2} ${fx + fw + 12} ${kampfer}L${fx + fw + 12} ${fbot}Z`;
+const rahmen = `M${fx} ${fbot}L${fx} ${kampfer}Q${fx + fw / 2} ${kampfer - stich * 2} ${fx + fw} ${kampfer}L${fx + fw} ${fbot}Z`;
+const mitte = fx + fw / 2;
+const kampferRiegel = 92;
+const rb = 6; // Rahmenbreite
+const scheiben = [
+  // Oberlicht
+  `M${fx + rb} ${kampferRiegel - 4}L${fx + rb} ${kampfer + 2}Q${mitte} ${kampfer - (stich - 4) * 2} ${fx + fw - rb} ${kampfer + 2}L${fx + fw - rb} ${kampferRiegel - 4}Z`,
+  // Fluegel links, rechts: je zwei Scheiben
+  ...[fx + rb, mitte + 4].flatMap((x0) => {
+    const b = fw / 2 - rb - 4;
+    return [
+      `M${x0} ${kampferRiegel + 4}h${b}V${(kampferRiegel + fbot) / 2 - 3}h${-b}Z`,
+      `M${x0} ${(kampferRiegel + fbot) / 2 + 3}h${b}V${fbot - rb}h${-b}Z`,
+    ];
+  }),
+];
+const glas = schraffur(fx - 20, ftop - 20, fw + 40, fbot - ftop + 40, 3.1, -58, r, 0.6);
+const spiegel = schraffur(fx - 20, ftop - 20, fw + 40, fbot - ftop + 40, 9, 32, r, 1);
+const laibungSchraffur = schraffur(fx - 20, ftop - 30, fw + 40, fbot - ftop + 40, 2.4, 90);
+// gewischter Streifen und Abzieher
+const wisch = `M${fx - 6} ${fbot - 30}C${fx + 40} ${fbot - 70} ${fx + 60} ${kampferRiegel + 70} ${mitte + 30} ${kampferRiegel + 34}`;
+const az = { x: mitte + 34, y: kampferRiegel + 30, w: -34 };
+const sterne = [[fx + 26, fbot - 52, 6], [fx + 58, kampferRiegel + 74, 4]];
+const stern = ([x, y, s]: number[]) =>
+  `M${x} ${y - s}Q${x} ${y} ${x + s} ${y}Q${x} ${y} ${x} ${y + s}Q${x} ${y} ${x - s} ${y}Q${x} ${y} ${x} ${y - s}Z`;
+---
+
+<svg class="gravur" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+  <defs>
+    <clipPath id={`${id}-scheiben`}>{scheiben.map((d) => <path d={d} />)}</clipPath>
+    <mask id={`${id}-wisch`}>
+      <rect width={W} height={H} fill="#fff" />
+      <path d={wisch} stroke="#000" stroke-width="30" stroke-linecap="round" fill="none" />
+    </mask>
+    <clipPath id={`${id}-laibung`}><path d={laibung} /></clipPath>
+  </defs>
+  <g class="gravur__strich">
+    <path d={wand.join('')} stroke-width="0.5" opacity="0.4" />
+    <path d={fugen.join('')} stroke-width="0.7" opacity="0.6" />
+
+    <path class="gravur__grund" d={laibung} />
+    <g clip-path={`url(#${id}-laibung)`}><path d={laibungSchraffur} stroke-width="0.6" opacity="0.7" /></g>
+    <path d={laibung} stroke-width="1" />
+    <path class="gravur__grund" d={rahmen} />
+    <path d={rahmen} stroke-width="1.4" />
+    {scheiben.map((d) => <path d={d} stroke-width="0.9" />)}
+    <path d={`M${mitte} ${kampferRiegel}V${fbot}`} stroke-width="1" />
+
+    <g clip-path={`url(#${id}-scheiben)`} mask={`url(#${id}-wisch)`}>
+      <path d={glas} stroke-width="0.6" opacity="0.85" />
+      <path d={spiegel} stroke-width="0.5" opacity="0.5" />
+    </g>
+    <g clip-path={`url(#${id}-scheiben)`}>
+      <path d={wisch} stroke-width="0.6" stroke-dasharray="2 3" opacity="0.6" transform="translate(0 15)" />
+      <path d={wisch} stroke-width="0.6" stroke-dasharray="2 3" opacity="0.6" transform="translate(0 -15)" />
+    </g>
+    {sterne.map((s) => <path class="gravur__voll" d={stern(s)} />)}
+
+    <!-- Fensterbank -->
+    <path class="gravur__grund" d={`M${fx - 22} ${fbot}h${fw + 44}v9h${-fw - 44}Z`} />
+    <path d={`M${fx - 22} ${fbot}h${fw + 44}v9h${-fw - 44}Z`} stroke-width="1.1" />
+    <path d={`M${fx - 20} ${fbot + 4}h${fw + 40}M${fx - 20} ${fbot + 6.5}h${fw + 40}`} stroke-width="0.5" opacity="0.6" />
+
+    <!-- Abzieher -->
+    <g transform={`translate(${az.x} ${az.y}) rotate(-38)`}>
+      <path class="gravur__grund" d="M-3 -17h6v34h-6Z" />
+      <path d="M-3 -17h6v34h-6Z" stroke-width="1.1" />
+      <path d="M-1 -15v30" stroke-width="0.6" />
+      <path class="gravur__grund" d="M3 -3h34v6h-34Z" />
+      <path d="M3 -3h34v6h-34Z" stroke-width="1.1" />
+      <path d="M8 -1h26M8 1h26" stroke-width="0.5" opacity="0.7" />
+    </g>
+  </g>
+</svg>

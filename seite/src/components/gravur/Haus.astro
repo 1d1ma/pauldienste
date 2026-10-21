@@ -1,0 +1,131 @@
+---
+/**
+ * Vignette Hausmeisterservice: nordhessisches Fachwerkhaus von vorn, daneben
+ * ein Baum, davor Zaun und Hecke, am Zaun lehnt ein Rechen.
+ */
+import { n, schraffur, welle, zufall } from '../../lib/gravur';
+
+interface Props { id?: string; }
+const { id = 'gv-haus' } = Astro.props;
+const r = zufall(83);
+const W = 400, H = 250;
+const BODEN = 224;
+const h = { l: 168, r: 312, traufe: 112, first: 30 };
+const mitte = (h.l + h.r) / 2;
+const giebel = `M${h.l - 10} ${h.traufe}L${mitte} ${h.first}L${h.r + 10} ${h.traufe}Z`;
+const wand = `M${h.l} ${h.traufe}H${h.r}V${BODEN}H${h.l}Z`;
+
+// Fachwerk: Staender, Riegel, Streben
+const holz: string[] = [];
+const staender = [h.l, h.l + 36, mitte, h.r - 36, h.r];
+const riegel = [h.traufe, 150, 186, BODEN];
+for (const x of staender) holz.push(`M${x} ${h.traufe}V${BODEN}`);
+for (const y of riegel) holz.push(`M${h.l} ${y}H${h.r}`);
+holz.push(`M${h.l} ${BODEN}L${h.l + 36} 150M${h.r} ${BODEN}L${h.r - 36} 150`); // Mann-Streben unten
+holz.push(`M${h.l} 150L${h.l + 36} ${h.traufe}M${h.r} 150L${h.r - 36} ${h.traufe}`);
+// Giebel: Kehlbalken und Streben
+holz.push(`M${h.l + 22} 92H${h.r - 22}M${mitte} ${h.first + 8}V${h.traufe}M${mitte - 24} 92L${mitte} ${h.first + 20}L${mitte + 24} 92`);
+
+const fensterOrte: Array<[number, number, number, number]> = [
+  [h.l + 44, 120, 24, 24], [h.r - 68, 120, 24, 24],
+  [h.l + 8, 158, 22, 22], [h.r - 30, 158, 22, 22],
+  [mitte - 10, 64, 20, 20],
+];
+const tuer = { x: mitte - 13, y: 160, b: 26, h: BODEN - 160 };
+
+// Gefache: feine Schraffur, Holz bleibt frei
+const gefache = schraffur(h.l, h.first, h.r - h.l, BODEN - h.first, 3.4, 90, r, 0.6);
+const dach = schraffur(h.l - 20, h.first - 10, h.r - h.l + 40, h.traufe - h.first + 20, 2.2, 0, r, 0.4);
+
+// Baum: Krone aus kleinen Boegen, schattig nach rechts unten
+const baum = { x: 92, y: 96, rx: 64, ry: 62 };
+const laub: string[] = [];
+const laubDunkel: string[] = [];
+for (let i = 0; i < 420; i++) {
+  const a = r() * Math.PI * 2;
+  const d = Math.sqrt(r());
+  const x = baum.x + Math.cos(a) * baum.rx * d;
+  const y = baum.y + Math.sin(a) * baum.ry * d;
+  const s = 3 + r() * 4;
+  const schatten = Math.cos(a) * 0.6 + Math.sin(a) * 0.8 > 0.2 && d > 0.35;
+  (schatten ? laubDunkel : laub).push(`M${n(x - s)} ${n(y)}q${n(s / 2)} ${n(-s * 0.9)} ${n(s)} 0q${n(s / 2)} ${n(-s * 0.9)} ${n(s)} 0`);
+}
+const stamm = `M${baum.x - 7} ${BODEN}C${baum.x - 5} ${BODEN - 40} ${baum.x - 6} ${BODEN - 70} ${baum.x - 14} ${baum.y + 20}M${baum.x + 7} ${BODEN}C${baum.x + 5} ${BODEN - 40} ${baum.x + 8} ${BODEN - 70} ${baum.x + 18} ${baum.y + 26}`;
+
+// Boden und Hecke
+const boden: string[] = [];
+for (let k = 0; k < 6; k++) {
+  const y = BODEN + 2 + k * k * 1.1 + k * 2;
+  const w = welle(r, 0.6);
+  let x = -5;
+  while (x < W) {
+    const len = 30 + r() * 90;
+    boden.push(`M${n(x)} ${n(y + w(x))}L${n(x + len)} ${n(y + w(x + len))}`);
+    x += len + 6 + r() * 20;
+  }
+}
+const zaun: string[] = [];
+for (let x = 4; x < 160; x += 9) zaun.push(`M${x} ${BODEN + 1}V${BODEN - 26}l2.5 -4l2.5 4V${BODEN + 1}`);
+zaun.push(`M0 ${BODEN - 18}H160M0 ${BODEN - 8}H160`);
+const hecke: string[] = [];
+for (let i = 0; i < 160; i++) {
+  const x = h.r + 8 + r() * (W - h.r - 4);
+  const y = BODEN - r() * 24;
+  const s = 2.5 + r() * 3;
+  hecke.push(`M${n(x - s)} ${n(y)}q${n(s / 2)} ${n(-s)} ${n(s)} 0q${n(s / 2)} ${n(-s)} ${n(s)} 0`);
+}
+---
+
+<svg class="gravur" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+  <defs>
+    <clipPath id={`${id}-wand`}><path d={wand} /><path d={giebel} /></clipPath>
+    <clipPath id={`${id}-dach`}>
+      <path d={`M${h.l - 14} ${h.traufe + 2}L${mitte} ${h.first - 6}L${h.r + 14} ${h.traufe + 2}L${h.r + 4} ${h.traufe + 2}L${mitte} ${h.first + 6}L${h.l - 4} ${h.traufe + 2}Z`} />
+    </clipPath>
+  </defs>
+  <g class="gravur__strich">
+    <path d={boden.join('')} stroke-width="0.6" opacity="0.7" />
+
+    <!-- Baum -->
+    <path d={stamm} stroke-width="1.1" />
+    <path d={`M${baum.x - 3} ${BODEN - 8}V${baum.y + 40}M${baum.x + 2} ${BODEN - 4}V${baum.y + 50}`} stroke-width="0.5" opacity="0.7" />
+    <path d={laub.join('')} stroke-width="0.6" opacity="0.75" />
+    <path d={laubDunkel.join('')} stroke-width="0.8" />
+
+    <!-- Haus -->
+    <path class="gravur__grund" d={giebel} />
+    <path class="gravur__grund" d={wand} />
+    <g clip-path={`url(#${id}-wand)`}><path d={gefache} stroke-width="0.5" opacity="0.5" /></g>
+    <path d={holz.join('')} stroke-width="3.2" class="gravur__holz" />
+    <path d={holz.join('')} stroke-width="1.6" class="gravur__holz-innen" />
+    <g clip-path={`url(#${id}-dach)`}><path d={dach} stroke-width="0.7" /></g>
+    <path d={`M${h.l - 14} ${h.traufe + 2}L${mitte} ${h.first - 6}L${h.r + 14} ${h.traufe + 2}`} stroke-width="1.4" />
+    <path d={`M${h.l - 4} ${h.traufe + 2}L${mitte} ${h.first + 6}L${h.r + 4} ${h.traufe + 2}`} stroke-width="0.9" />
+    <path d={`M${mitte + 30} ${h.first + 22}V${h.first + 4}h9V${h.first + 32}`} stroke-width="1" />
+
+    {fensterOrte.map(([x, y, b, hh]) => (
+      <g>
+        <path class="gravur__grund" d={`M${x} ${y}h${b}v${hh}h${-b}Z`} />
+        <path d={`M${x + 2} ${y + 2}h${b - 4}v${hh - 4}h${-(b - 4)}Z`} stroke-width="0.4" />
+        <path d={`M${x} ${y}h${b}v${hh}h${-b}ZM${x + b / 2} ${y}v${hh}M${x} ${y + hh / 2}h${b}`} stroke-width="1" />
+        <path d={`M${x + 3} ${y + 3}l${b / 2 - 6} ${hh / 2 - 6}M${x + b / 2 + 3} ${y + hh / 2 + 3}l${b / 2 - 6} ${hh / 2 - 6}`} stroke-width="0.5" opacity="0.7" />
+      </g>
+    ))}
+    <path class="gravur__grund" d={`M${tuer.x} ${tuer.y}h${tuer.b}v${tuer.h}h${-tuer.b}Z`} />
+    <path d={`M${tuer.x} ${BODEN}V${tuer.y}h${tuer.b}V${BODEN}M${tuer.x + tuer.b / 2} ${tuer.y}V${BODEN}`} stroke-width="1.1" />
+    <path d={`M${tuer.x + 4} ${tuer.y + 6}V${BODEN - 4}M${tuer.x + 8} ${tuer.y + 6}V${BODEN - 4}M${tuer.x + tuer.b - 4} ${tuer.y + 6}V${BODEN - 4}M${tuer.x + tuer.b - 8} ${tuer.y + 6}V${BODEN - 4}`} stroke-width="0.5" opacity="0.8" />
+
+    <!-- Zaun und Rechen -->
+    <path d={zaun.join('')} stroke-width="0.9" />
+    <path d={`M146 ${BODEN}L164 ${BODEN - 92}`} stroke-width="1.6" />
+    <path d={`M156 ${BODEN - 96}l18 4M157 ${BODEN - 95}l-1 7M161 ${BODEN - 94}l-1 7M165 ${BODEN - 93}l-1 7M169 ${BODEN - 92}l-1 7M173 ${BODEN - 91}l-1 7`} stroke-width="1" />
+
+    <!-- Hecke rechts -->
+    <path d={hecke.join('')} stroke-width="0.7" />
+  </g>
+</svg>
+
+<style>
+  .gravur__holz { stroke: currentColor; }
+  .gravur__holz-innen { stroke: var(--gravur-grund, var(--color-petrol)); opacity: 0.55; }
+</style>

@@ -10,48 +10,15 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Section from '../components/Section.astro';
 import Faq from '../components/Faq.astro';
-import Icon from '../components/Icon.astro';
 import FloorPlanks from '../components/FloorPlanks.astro';
 import RatingBadge from '../components/RatingBadge.astro';
 import ReviewsStatic from '../components/ReviewsStatic.astro';
+import BereichKarte from '../components/BereichKarte.astro';
 import { bereiche } from '../data/leistungen';
-import { internalLink, registry } from '../data/pages';
+import { internalLink } from '../data/pages';
 import { bewertungen, site } from '../data/site';
 
 const href = (slug: string) => internalLink(slug).href;
-
-const kacheln = [
-  { bereich: 'reinigung', titel: 'Gebäudereinigung', text: 'Fenster, Büro, Fassade', icon: 'sparkle', klasse: 'gross' },
-  { bereich: 'handwerk', titel: 'Handwerk', text: 'Boden, Wand, Montage', icon: 'paint-roller', klasse: '' },
-  { bereich: 'hausmeister', titel: 'Hausmeisterservice', text: 'Winterdienst, Garten', icon: 'key', klasse: '' },
-] as const;
-
-const liste: Record<string, Array<[string, string]>> = {
-  reinigung: [
-    ['/fensterreinigung-kassel/', 'innen und außen'],
-    ['/bueroreinigung-kassel/', 'Büros, Praxen, Läden'],
-    ['/grundreinigung-kassel/', 'Einzug und Auszug'],
-    ['/bauendreinigung-kassel/', 'nach Umbau'],
-    ['/fassadenreinigung-kassel/', 'Putz und Klinker'],
-  ],
-  handwerk: [
-    ['/boden-verlegen-kassel/', 'Vinyl, Parkett, Laminat'],
-    ['/streichen-tapezieren-kassel/', 'sauber abgeklebt'],
-    ['/kuechenmontage-moebelmontage-kassel/', 'Aufbau'],
-    ['/fliegengitter-kassel/', 'nach Maß'],
-    ['/plissees-kassel/', 'nach Maß'],
-  ],
-  hausmeister: [
-    ['/winterdienst-kassel/', 'Räumen und Streuen'],
-    ['/gartenpflege-kassel/', 'einmalig oder regelmäßig'],
-    ['/entruempelung-kassel/', 'Wohnung, Keller, Garage'],
-  ],
-};
-const notiz: Record<string, string> = {
-  reinigung: 'für Haushalte, Verwaltungen und Gewerbe',
-  handwerk: 'Renovierung und Innenausbau',
-  hausmeister: 'für Privat und Vermieter',
-};
 
 const farben = [
   ['Kalkweiß', '#ECEAE5', '#1C1E21'],
@@ -83,7 +50,7 @@ const faq = [
     a: 'Für beide. Jede Leistung gibt es für Haushalte, Büros, Praxen, Hausverwaltungen und Handel. Für Gewerbe planen wir Termine früh, abends oder am Wochenende, damit Ihr Betrieb nicht unterbrochen wird.',
   },
   {
-    q: 'Kann ich Reinigung und Handwerk zusammen beauftragen?',
+    q: 'Kann ich Reinigung und Innenausbau zusammen beauftragen?',
     a: 'Ja, und das ist oft sinnvoll. Bei einem Auszug entrümpeln, streichen, den Boden erneuern und reinigen wir in einem Auftrag. Sie haben einen Ansprechpartner und einen Festpreis statt mehrerer Angebote.',
   },
   {
@@ -96,76 +63,39 @@ const faq = [
 <Base slug="/">
   <Header slot="header" />
 
-  <!-- Hero -->
+  <!-- Hero: Botschaft oben, die drei Bereiche als gravierte Karten ragen in die naechste Flaeche -->
   <section class="hero" data-anim="hero">
-    <div class="container hero__inner">
-      <div class="hero__text">
-        <h1 data-anim="hero-title">Reinigung und Handwerk aus einer Hand in Kassel</h1>
+    <div class="container hero__kopf">
+      <div>
+        <p class="hero__marke">Gebäudedienste in Kassel · seit 2013</p>
+        <h1 data-anim="hero-title">Reinigung und Innenausbau aus einer Hand in Kassel</h1>
+      </div>
+      <div class="hero__seite">
         <p class="hero__intro">
           Gebäudereinigung, Renovierung und Hausmeisterservice für Privat und Gewerbe. Ein Ansprechpartner, ein Festpreis.
         </p>
         <div class="hero__actions">
           <a class="btn btn--gold lift" href={site.angebotUrl}>Besichtigung anfragen</a>
-          <a class="btn btn--ghost lift" href="#bereiche">Leistungen ansehen</a>
+          <a class="btn btn--ghost lift" href={`tel:${site.kontakt.telefon}`}>{site.kontakt.telefonAnzeige}</a>
         </div>
         <div class="hero__rating"><RatingBadge /></div>
       </div>
-
-      <ul class="mosaik" data-anim="mosaik">
-        {
-          kacheln.map((k) => (
-            <li class={`mosaik__item ${k.klasse}`}>
-              <a href={href(bereiche.find((b) => b.id === k.bereich)!.start)} class={`kachel kachel--${k.bereich} lift`} data-anim="kachel">
-                <span class="kachel__icon"><Icon name={k.icon} size={64} /></span>
-                <span class="kachel__text">
-                  <strong>{k.titel}</strong>
-                  <span>{k.text}</span>
-                </span>
-              </a>
-            </li>
-          ))
-        }
-      </ul>
+    </div>
+    <div class="container">
+      <div class="karten" id="bereiche" data-anim="karten">
+        {bereiche.map((b) => <BereichKarte id={b.id} leistungen={5} />)}
+      </div>
     </div>
   </section>
 
   <!-- Bewertungen -->
   {
     bewertungen.echt && (
-      <Section id="bewertungen" variant="default" space="tight">
-        <ReviewsStatic />
-      </Section>
+      <section class="nach-hero">
+        <div class="container"><ReviewsStatic /></div>
+      </section>
     )
   }
-
-  <!-- Drei Bereiche -->
-  <Section id="bereiche" variant="alt" title="Drei Bereiche, ein Ansprechpartner">
-    <div class="bereiche reveal" data-anim="bereiche">
-      {
-        bereiche.map((b) => (
-          <section class="bereich" aria-labelledby={`b-${b.id}`}>
-            <header>
-              <h3 id={`b-${b.id}`}>{b.label}</h3>
-              <p>{notiz[b.id]}</p>
-            </header>
-            <ul>
-              {liste[b.id].map(([slug, text]) => (
-                <li>
-                  <a href={href(slug)}>
-                    <span>{registry[slug].label}</span>
-                    <small>{text}</small>
-                  </a>
-                </li>
-              ))}
-            </ul>
-            <a class="bereich__alle" href={href(b.start)}>
-              Alle Leistungen <Icon name="arrow-right" size={16} />
-            </a>
-          </section>
-        ))
-      }
-    </div>
-  </Section>
 
   <!-- Bodenbelaege -->
   <section class="split split--boden" data-anim="boden">
@@ -228,73 +158,45 @@ const faq = [
 </Base>
 
 <style>
-  /* --- Buttons (ein Stil: Gold, daneben Kontur) --- */
-  .btn {
-    display: inline-flex; align-items: center; justify-content: center;
-    min-height: 3rem; padding: 0 1.5rem; border-radius: var(--radius);
-    font-weight: var(--weight-bold); font-size: 0.95rem; text-decoration: none; white-space: nowrap;
-  }
-  .btn--gold { background: var(--color-primary); color: var(--color-primary-contrast); }
-  .btn--gold:hover { background: var(--color-primary-hover); color: var(--color-primary-contrast); }
-  .btn--ghost { border: 1px solid var(--color-primary); color: var(--color-primary-on-dark); }
-  .btn--ghost:hover { background: rgb(185 155 99 / 0.12); color: #fff; }
-
   /* --- Hero --- */
-  .hero { background: var(--color-petrol); padding-block: clamp(2.5rem, 6vw, 5rem); }
-  .hero__inner { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 6vw, 5rem); align-items: center; }
-  @media (max-width: 900px) { .hero__inner { grid-template-columns: 1fr; } }
-  .hero h1 { color: #fff; font-size: clamp(2rem, 1.2rem + 2.4vw, 2.9rem); letter-spacing: -0.02em; max-width: 19ch; }
-  .hero__intro { margin-top: var(--space-4); color: var(--color-on-dark-soft); font-size: 1.05rem; max-width: 40ch; }
+  .hero {
+    position: relative; isolation: isolate;
+    background: var(--color-petrol);
+    padding-top: clamp(2.5rem, 6vw, 5rem);
+  }
+  /* Papierkorn wie im Footer */
+  .hero::before {
+    content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='k'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23k)'/%3E%3C/svg%3E");
+  }
+  /* untere Kante: die Karten stehen halb auf Kalkweiss */
+  .hero::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: clamp(9rem, 16vw, 13rem);
+    background: var(--color-bg-alt); z-index: -1;
+  }
+  .hero__kopf {
+    display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    gap: clamp(2rem, 6vw, 5rem); align-items: end;
+  }
+  @media (max-width: 900px) { .hero__kopf { grid-template-columns: 1fr; gap: var(--space-6); } }
+  .hero__marke {
+    font-family: var(--font-heading); font-size: 0.75rem; font-weight: var(--weight-medium);
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-primary-on-dark);
+    display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4);
+  }
+  .hero__marke::before { content: ''; width: 2rem; height: 1px; background: currentColor; }
+  .hero h1 { color: #fff; font-size: clamp(2.2rem, 1.2rem + 3.4vw, 3.9rem); line-height: 1.06; letter-spacing: -0.025em; max-width: 15ch; }
+  .hero__intro { color: var(--color-on-dark-soft); font-size: 1.05rem; max-width: 40ch; }
+  .hero__actions { margin-top: var(--space-6); display: flex; flex-wrap: wrap; gap: var(--space-3); }
   .hero__rating { margin-top: var(--space-6); }
-  .hero__actions { margin-top: var(--space-8); display: flex; flex-wrap: wrap; gap: var(--space-3); }
 
-  .mosaik {
-    list-style: none; padding: 0; margin: 0; position: relative;
-    display: grid; grid-template-columns: 1.1fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px;
-    aspect-ratio: 1 / 0.92;
+  .karten {
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1rem, 2vw, 1.75rem);
   }
-  /* goldener Rahmen versetzt dahinter */
-  .mosaik::before {
-    content: ''; position: absolute; inset: 0; transform: translate3d(14px, -14px, 0);
-    border: 1px solid var(--color-primary); opacity: 0.55; pointer-events: none;
-  }
-  .mosaik__item { margin: 0; position: relative; }
-  .mosaik__item.gross { grid-row: span 2; }
-  .kachel {
-    position: relative; display: flex; flex-direction: column; justify-content: flex-end;
-    height: 100%; min-height: 9rem; padding: var(--space-4);
-    background: var(--kachel); color: var(--kachel-ink);
-    background-image: var(--foto, none); background-size: cover; background-position: center;
-    text-decoration: none; overflow: clip;
-  }
-  .kachel--reinigung { --kachel: #4E5A63; --kachel-ink: #F2F3F2; }
-  .kachel--handwerk { --kachel: #6F5A45; --kachel-ink: #F5EFE6; }
-  .kachel--hausmeister { --kachel: #56604F; --kachel-ink: #F1F3EE; }
-  .kachel__icon { position: absolute; top: var(--space-4); right: var(--space-4); opacity: 0.22; }
-  .kachel__text { position: relative; display: grid; gap: 2px; }
-  .kachel__text strong { font-family: var(--font-heading); font-size: 1.05rem; line-height: 1.2; }
-  .kachel__text span { font-size: 0.85rem; opacity: 0.8; }
-  .kachel:hover { filter: brightness(1.08); }
+  @media (max-width: 900px) { .karten { grid-template-columns: 1fr; max-width: 34rem; } }
 
-  /* --- Drei Bereiche --- */
-  .bereiche { display: grid; grid-template-columns: repeat(3, 1fr); background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-lg); }
-  @media (max-width: 900px) { .bereiche { grid-template-columns: 1fr; } }
-  .bereich { padding: var(--space-6); display: flex; flex-direction: column; }
-  .bereich + .bereich { border-left: 1px solid var(--color-border); }
-  @media (max-width: 900px) { .bereich + .bereich { border-left: 0; border-top: 1px solid var(--color-border); } }
-  .bereich header h3 { font-size: 1.15rem; color: var(--color-heading); }
-  .bereich header p { font-size: 0.85rem; color: var(--color-accent-text); margin-top: 2px; }
-  .bereich ul { list-style: none; padding: 0; margin: var(--space-4) 0; flex: 1; }
-  .bereich li { margin: 0; }
-  .bereich li a {
-    display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-4);
-    padding: 0.7rem 0; border-top: 1px solid var(--color-border);
-    text-decoration: none; color: var(--color-heading); font-weight: var(--weight-medium); font-size: 0.95rem;
-  }
-  .bereich li a small { color: var(--color-text-muted); font-size: 0.85rem; font-weight: var(--weight-normal); text-align: right; }
-  .bereich li a:hover span { color: var(--color-accent-text); }
-  .bereich__alle { display: inline-flex; align-items: center; gap: var(--space-2); font-weight: var(--weight-bold); font-size: 0.9rem; color: var(--color-accent-text); text-decoration: none; }
-  .bereich__alle:hover { color: var(--color-heading); }
+  .nach-hero { background: var(--color-bg-alt); padding-block: clamp(2.5rem, 5vw, 4rem) clamp(3rem, 6vw, 5rem); }
 
   /* --- Split: Boden und Farben --- */
   .split { display: grid; grid-template-columns: 1fr 1fr; min-height: 26rem; }

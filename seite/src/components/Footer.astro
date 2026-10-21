@@ -1,129 +1,125 @@
 ---
 /**
- * Footer: Spalten aus pages.ts, Kontaktblock mit NAP wie im Google-Profil.
+ * Footer: Marke mit Kontakt (NAP wie im Google-Profil), je Bereich eine
+ * Spalte aus leistungen.ts, darunter Kassel als Kupferstich.
  * Im Copyright steht die Marke, die Firmierung steht im Impressum.
  */
-import { navByCluster, pagesByCluster } from '../data/pages';
+import { pagesByCluster, registry } from '../data/pages';
+import { bereiche } from '../data/leistungen';
 import { site } from '../data/site';
 import InternalLink from './InternalLink.astro';
+import Icon from './Icon.astro';
+import KasselPanorama from './KasselPanorama.astro';
 
 const rechtliches = [...pagesByCluster('kontakt'), ...pagesByCluster('rechtliches')];
-
-const columns = [
-  { title: 'Gebäudereinigung', items: navByCluster('reinigung') },
-  { title: 'Handwerk', items: navByCluster('handwerk') },
-];
-
 const year = 2026;
 ---
 
 <footer class="site-footer">
-  <div class="container">
-    <div class="site-footer__top">
-      <div class="site-footer__brand">
-        <img src="/logo/quer-dunkel.svg" alt="Paul Nagel Gebäudedienste" width="464" height="128" class="site-footer__logo" />
-        <p class="site-footer__text">
-          Reinigung, Renovierung und Hausmeisterservice für Privat und Gewerbe.
-          Wir arbeiten in {site.vorOrtGebiet}.
-        </p>
-        <address class="site-footer__nap">
-          {site.kontakt.strasse}<br />
-          {site.kontakt.plz} {site.kontakt.ort}<br />
-          <a href={`tel:${site.kontakt.telefon}`}>{site.kontakt.telefonAnzeige}</a><br />
-          <a href={`mailto:${site.kontakt.email}`}>{site.kontakt.email}</a><br />
-          Mo bis Fr 8 bis 17 Uhr
-        </address>
-      </div>
+  <div class="container site-footer__top">
+    <div class="site-footer__brand">
+      <img src="/logo/quer-dunkel.svg" alt="Paul Nagel Gebäudedienste" width="464" height="128" class="site-footer__logo" />
+      <p class="site-footer__text">Reinigung, Innenausbau und Hausmeisterservice in und um Kassel. Für Privat und Gewerbe.</p>
+      <address class="site-footer__nap">
+        <a href={`tel:${site.kontakt.telefon}`}><Icon name="phone" size={16} />{site.kontakt.telefonAnzeige}</a>
+        <a href={`mailto:${site.kontakt.email}`}><Icon name="arrow-up-right" size={16} />{site.kontakt.email}</a>
+        <span><Icon name="map-pin" size={16} />{site.kontakt.strasse}, {site.kontakt.plz} {site.kontakt.ort}</span>
+        <span><Icon name="clock" size={16} />Mo bis Fr 8 bis 17 Uhr</span>
+      </address>
+    </div>
 
+    {
+      bereiche.map((b) => (
+        <nav class="site-footer__col" aria-label={b.label}>
+          <h3 class="site-footer__title"><InternalLink to={b.start}>{b.label}</InternalLink></h3>
+          <ul>
+            {b.gruppen.flatMap((g) => g.slugs).map((slug) => (
+              <li><InternalLink to={slug}>{registry[slug].label}</InternalLink></li>
+            ))}
+          </ul>
+        </nav>
+      ))
+    }
+  </div>
+
+  <div class="container site-footer__bottom">
+    <p>© {year} {site.name} · {site.vorOrtGebiet}</p>
+    <ul class="site-footer__legal">
       {
-        columns.map((col) => (
-          <nav class="site-footer__col" aria-label={col.title}>
-            <h3 class="site-footer__title">{col.title}</h3>
-            <ul>
-              {col.items.map((p) => (
-                <li><InternalLink to={p.slug}>{p.label ?? p.title}</InternalLink></li>
-              ))}
-            </ul>
-          </nav>
+        rechtliches.map((p) => (
+          <li><InternalLink to={p.slug}>{p.label ?? p.title}</InternalLink></li>
         ))
       }
-    </div>
+    </ul>
+  </div>
 
-    <div class="site-footer__bottom">
-      <p>© {year} {site.name}</p>
-      <ul class="site-footer__legal">
-        {
-          rechtliches.map((p) => (
-            <li><InternalLink to={p.slug}>{p.label ?? p.title}</InternalLink></li>
-          ))
-        }
-      </ul>
-    </div>
+  <div class="site-footer__bild">
+    <KasselPanorama />
   </div>
 </footer>
 
 <style>
   .site-footer {
+    position: relative;
     background: var(--color-petrol);
     color: var(--color-on-dark-soft);
-    padding-block: var(--space-16) var(--space-6);
+    padding-top: var(--space-16);
+    isolation: isolate;
     /* KEIN margin-top: die vorhergehende Sektion bringt ihren eigenen
        Abstand mit. Ein Aussenabstand erzeugte hier einen weissen Streifen
        zwischen der farbigen CTA-Sektion und dem Footer. */
   }
+  /* Papierkorn wie bei einem Druck */
+  .site-footer::before {
+    content: '';
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='k'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23k)'/%3E%3C/svg%3E");
+    opacity: 0.9;
+  }
 
   .site-footer__top {
     display: grid;
-    grid-template-columns: 1.5fr 1fr 1fr;
-    gap: var(--space-8);
+    grid-template-columns: 1.6fr repeat(3, 1fr);
+    gap: var(--space-8) var(--space-6);
   }
-  @media (max-width: 980px) {
-    .site-footer__top { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (max-width: 560px) {
-    .site-footer__top { grid-template-columns: 1fr; }
-  }
+  @media (max-width: 980px) { .site-footer__top { grid-template-columns: repeat(3, 1fr); } .site-footer__brand { grid-column: 1 / -1; } }
+  @media (max-width: 600px) { .site-footer__top { grid-template-columns: 1fr 1fr; } }
 
-  .site-footer__logo { width: 14rem; height: auto; margin-bottom: var(--space-4); }
-  .site-footer__nap { font-style: normal; font-size: var(--size-small); line-height: 1.8; margin-top: var(--space-4); }
-  .site-footer__claim {
-    font-family: var(--font-heading);
-    font-weight: var(--weight-bold);
-    color: #fff;
-    font-size: 1.05rem;
-    margin-bottom: var(--space-3);
-  }
-  .site-footer__text { font-size: var(--size-small); line-height: 1.6; }
+  .site-footer__logo { width: 13rem; height: auto; margin-bottom: var(--space-4); }
+  .site-footer__text { font-size: var(--size-small); line-height: 1.6; max-width: 34ch; font-style: italic; }
+  .site-footer__nap { font-style: normal; display: grid; gap: var(--space-2); margin-top: var(--space-6); font-size: var(--size-small); }
+  .site-footer__nap > * { display: inline-flex; align-items: center; gap: var(--space-3); }
+  .site-footer__nap :global(.icon) { color: var(--color-primary); }
 
   .site-footer__title {
-    font-size: var(--size-small);
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    font-weight: var(--weight-medium);
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--color-primary);
-    margin-bottom: var(--space-3);
+    letter-spacing: 0.14em;
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-3);
+    position: relative;
   }
+  .site-footer__title::after { content: ''; position: absolute; left: 0; bottom: 0; width: 1.5rem; height: 1px; background: var(--color-primary); }
+  .site-footer__title :global(a) { color: #fff; font-size: inherit; }
 
   .site-footer ul { list-style: none; margin: 0; padding: 0; }
   .site-footer li { margin: 0 0 var(--space-2); }
 
-  .site-footer :global(a) {
-    color: var(--color-on-dark-soft);
-    text-decoration: none;
-    font-size: var(--size-small);
-  }
+  .site-footer :global(a) { color: var(--color-on-dark-soft); text-decoration: none; font-size: var(--size-small); transition: color var(--duration-base, 0.2s); }
   .site-footer :global(a:hover) { color: var(--color-primary); }
 
   .site-footer__bottom {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
     gap: var(--space-4);
     margin-top: var(--space-12);
-    padding-top: var(--space-6);
-    border-top: 1px solid var(--color-border-dark);
-    font-size: var(--size-small);
+    font-size: 0.8rem;
+    font-style: italic;
   }
   .site-footer__legal { display: flex; gap: var(--space-4); }
   .site-footer__legal li { margin: 0; }
+  .site-footer__legal li + li { padding-left: var(--space-4); border-left: 1px solid var(--color-border-dark); }
+
+  .site-footer__bild { margin-top: calc(var(--space-6) * -1); position: relative; z-index: 0; }
 </style>

@@ -144,3 +144,21 @@ li + li { margin-top: var(--space-2); }
   transition: top var(--duration-fast) var(--ease-out-soft);
 }
 .skip-link:focus { top: var(--space-4); color: #fff; }
+
+/* --- Gravur: Kupferstich-Zeichnungen (src/components/gravur, KasselPanorama) ---
+   Strichfarbe = currentColor, Deckflaechen = --gravur-grund der Umgebung. */
+.gravur { display: block; width: 100%; height: 100%; }
+.gravur__strich { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
+.gravur__grund { fill: var(--gravur-grund, var(--color-petrol)); stroke: none; }
+.gravur__voll { fill: currentColor; stroke: none; }
+
+/* --- Buttons (ein Stil: Gold, daneben Kontur) --- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 3rem; padding: 0 1.5rem; border-radius: var(--radius);
+  font-weight: var(--weight-bold); font-size: 0.95rem; text-decoration: none; white-space: nowrap;
+}
+.btn--gold { background: var(--color-primary); color: var(--color-primary-contrast); }
+.btn--gold:hover { background: var(--color-primary-hover); color: var(--color-primary-contrast); }
+.btn--ghost { border: 1px solid var(--color-primary); color: var(--color-primary-on-dark); }
+.btn--ghost:hover { background: rgb(185 155 99 / 0.12); color: #fff; }
