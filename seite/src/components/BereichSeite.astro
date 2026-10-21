@@ -70,7 +70,7 @@ const foto = id === 'reinigung' ? reinigungFoto : undefined;
             <ul class="raster">
               {g.slugs.map((slug) => (
                 <li>
-                  <a class="kachel" href={internalLink(slug).href}>
+                  <a class="kachel hover-kachel" href={internalLink(slug).href}>
                     <span class="kachel__icon"><Icon name={leistung[slug].icon} size={48} /></span>
                     <strong>{registry[slug].label}</strong>
                     <span class="kachel__kurz">{leistung[slug].kurz}</span>
@@ -155,12 +155,12 @@ const foto = id === 'reinigung' ? reinigungFoto : undefined;
   .kachel__icon {
     display: grid; place-items: center; aspect-ratio: 5 / 4; margin-bottom: var(--space-2);
     background: var(--color-petrol); color: var(--color-primary-on-dark);
-    transition: background 0.25s, color 0.25s, transform 0.35s var(--ease-out-soft, ease-out);
+    transition: background-color var(--duration-base) var(--ease-out-soft), color var(--duration-base) var(--ease-out-soft);
   }
   .kachel__icon :global(.icon) { width: 30%; height: auto; }
   .kachel strong { font-family: var(--font-heading); font-size: 1.05rem; line-height: 1.3; }
   .kachel__kurz { font-size: 0.9rem; line-height: 1.5; color: var(--color-text-muted); }
-  .kachel:hover .kachel__icon { background: var(--color-primary); color: var(--color-petrol); transform: translateY(-4px); }
+  .kachel:hover .kachel__icon { background: var(--color-primary); color: var(--color-petrol); }
   .kachel:hover strong { color: var(--color-accent-text); }
 
   /* --- Mehr --- */

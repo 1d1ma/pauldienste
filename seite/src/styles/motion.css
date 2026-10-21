@@ -31,7 +31,9 @@
 
   /* --- Bewegungsdistanzen --- */
   --motion-rise: 12px;   /* Reveal von unten */
-  --motion-lift: -2px;   /* Hover-Anhebung */
+  --motion-lift: -2px;   /* Hover-Anhebung Button */
+  --motion-lift-karte: -4px; /* Hover-Anhebung Kachel */
+  --motion-nudge: 4px;   /* Pfeil rueckt in Leserichtung */
 }
 
 /* ------------------------------------------------------------------ *
@@ -72,6 +74,51 @@
 .stagger > *:nth-child(4) { --reveal-delay: 180ms; }
 .stagger > *:nth-child(5) { --reveal-delay: 240ms; }
 .stagger > *:nth-child(n + 6) { --reveal-delay: 300ms; }
+
+/* ------------------------------------------------------------------ *
+ * HOVER-REGELN – gelten seitenweit. Jedes klickbare Element gehoert zu
+ * einer dieser vier Arten. Keine eigenen Dauern oder Distanzen erfinden.
+ *
+ *  1. Textlink       Farbe wechselt, Unterstrich bleibt. Keine Bewegung.
+ *  2. Button (.btn)  Farbe wechselt, hebt sich um --motion-lift (2 px).
+ *  3. Kachel         ganze Flaeche ist der Link (.hover-kachel): Icon-Feld
+ *                    oder Hintergrund wird Gold, hebt sich um
+ *                    --motion-lift-karte (4 px). Farben je Komponente.
+ *  4. Pfeil          rueckt um --motion-nudge (4 px) nach rechts (.hover-pfeil
+ *                    im Link oder in der Karte).
+ *
+ *  Dauer immer --duration-base, Kurve --ease-out-soft. Bewegung nur bei
+ *  echtem Zeiger (hover: hover), auf Touch bleibt es beim Farbwechsel.
+ *  Grafik-Animationen der Bereichskarten (gravur/*) sind eigene Effekte.
+ * ------------------------------------------------------------------ */
+
+a,
+button {
+  transition:
+    color var(--duration-base) var(--ease-out-soft),
+    background-color var(--duration-base) var(--ease-out-soft),
+    border-color var(--duration-base) var(--ease-out-soft),
+    text-decoration-color var(--duration-base) var(--ease-out-soft);
+}
+
+.btn,
+.hover-kachel {
+  transition:
+    color var(--duration-base) var(--ease-out-soft),
+    background-color var(--duration-base) var(--ease-out-soft),
+    border-color var(--duration-base) var(--ease-out-soft),
+    transform var(--duration-base) var(--ease-out-soft);
+}
+.hover-pfeil { transition: transform var(--duration-base) var(--ease-out-soft); }
+
+@media (hover: hover) {
+  .btn:hover { transform: translate3d(0, var(--motion-lift), 0); }
+  .hover-kachel:hover { transform: translate3d(0, var(--motion-lift-karte), 0); }
+  a:hover .hover-pfeil,
+  .karte:hover .hover-pfeil { transform: translate3d(var(--motion-nudge), 0, 0); }
+}
+.btn:active,
+.hover-kachel:active { transform: translate3d(0, 0, 0) scale(0.99); }
 
 /* ------------------------------------------------------------------ *
  * INTERAKTIONEN – wiederverwendbare Utility-Klassen
@@ -124,7 +171,12 @@
   }
 
   .lift:hover,
-  .lift:active {
-    transform: none;
+  .lift:active,
+  .btn:hover,
+  .btn:active,
+  .hover-kachel:hover,
+  .hover-kachel:active,
+  .hover-pfeil {
+    transform: none !important;
   }
 }

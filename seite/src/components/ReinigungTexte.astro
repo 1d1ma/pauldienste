@@ -97,7 +97,8 @@ const orte = [
 </Section>
 
 <section class="bahn bahn--alt">
-  <div class="container"><h2>Gebäudereinigung für Privat und Gewerbe</h2></div>
+  <div class="container">
+  <h2>Gebäudereinigung für Privat und Gewerbe</h2>
   <div class="flush flush--2">
     <article class="flaeche">
       <span class="flaeche__icon"><Icon name="broom" size={48} /></span>
@@ -127,6 +128,7 @@ const orte = [
       </ul>
     </article>
   </div>
+  </div>
 </section>
 
 <Section title="Putzfirma oder Gebäudereiniger: Was wir für Sie reinigen" space="default">
@@ -147,8 +149,9 @@ const orte = [
       <ul class="minis">
         {weitere.map((w) => (
           <li>
-            <a href={internalLink(w.slug).href}>
+            <a class="hover-kachel" href={internalLink(w.slug).href}>
               <Icon name={w.icon} size={26} /><span>{w.label}</span>
+              <Icon name="arrow-right" size={18} class="minis__pfeil hover-pfeil" />
             </a>
           </li>
         ))}
@@ -187,7 +190,6 @@ const orte = [
   <div class="container">
     <h2>Was kostet eine Reinigungsfirma in Kassel?</h2>
     <p class="bahn__lead">Eine pauschale Antwort gibt es nicht, weil jedes Objekt anders ist. Vier Dinge bestimmen den Preis:</p>
-  </div>
   <ul class="flush flush--4">
     {faktoren.map((f, i) => (
       <li class={`flaeche flaeche--${i % 2 ? 'zwei' : 'eins'}`}>
@@ -197,7 +199,6 @@ const orte = [
       </li>
     ))}
   </ul>
-  <div class="container">
     <p class="fest">
       Deshalb schätzen wir nicht am Telefon, sondern besichtigen kostenlos und nennen Ihnen danach einen Festpreis.
       So können Sie Angebote von Reinigungsunternehmen in Kassel fair vergleichen.
@@ -239,34 +240,37 @@ const orte = [
   .fakten small { font-size: 0.8rem; font-weight: var(--weight-regular, 400); color: var(--color-on-dark-soft); margin-left: 0.4rem; }
 
   /* Globale Regel "li + li { margin-top }" schiebt Listenelemente in Rastern nach unten */
-  .flush, .flush > li, .flaeche__links, .flaeche__links li, .minis li, .schritte li, .orte li { margin: 0; }
+  .flush > li, .flaeche__links li, .minis li, .schritte li, .orte li { margin: 0; }
 
-  /* Bündige Flächen ueber die ganze Breite, Ecke an Ecke, Text buendig zum Container */
-  .bahn { padding-block: clamp(3rem, 6vw, 5rem) 0; }
+  /* Buendige Flaechen Ecke an Ecke. Das Raster sitzt im Container, damit alle
+     Felder gleich breit sind; die Farbe der Randfelder laeuft per Schatten bis
+     zum Bildschirmrand, clip-path gibt nur die Aussenseite frei. */
+  .bahn { padding-top: clamp(3rem, 6vw, 5rem); }
   .bahn--alt { background: var(--color-bg-alt); }
   .bahn--kosten { padding-bottom: clamp(3rem, 6vw, 5rem); }
-  .bahn .container > h2 { margin-bottom: var(--space-4); }
+  .bahn h2 { margin-bottom: var(--space-4); }
   .bahn__lead { max-width: 60ch; }
-  .flush { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; margin-top: var(--space-8) !important; }
+  .flush { list-style: none; padding: 0; margin: var(--space-8) 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; }
   .flush--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  @media (max-width: 1000px) { .flush--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (max-width: 760px) { .flush, .flush--4 { grid-template-columns: 1fr; } }
-  .bahn:not(.bahn--kosten) { padding-bottom: 0; }
-  .flaeche { --rand: max(var(--container-padding), calc((100vw - var(--container-max)) / 2 + var(--container-padding))); background: var(--color-petrol); color: var(--color-on-dark-soft); padding: clamp(2rem, 4vw, 3.5rem) clamp(1.5rem, 3vw, 3rem); display: grid; gap: var(--space-3); align-content: start; }
-  .flaeche--zwei { background: #26292D; }
+  .flaeche { --f: var(--color-petrol); background: var(--f); box-shadow: 0 0 0 100vmax var(--f); clip-path: inset(0); color: var(--color-on-dark-soft); padding: clamp(2rem, 4vw, 3.5rem) clamp(1.5rem, 3vw, 2.5rem); display: grid; gap: var(--space-3); align-content: start; }
+  .flaeche--zwei { --f: #26292D; }
+  .flush--2 > .flaeche:nth-child(odd), .flush--4 > .flaeche:first-child { clip-path: inset(0 0 0 -100vmax); }
+  .flush--2 > .flaeche:nth-child(even), .flush--4 > .flaeche:last-child { clip-path: inset(0 -100vmax 0 0); }
+  @media (max-width: 1000px) {
+    .flush--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .flush--4 > .flaeche:nth-child(odd) { clip-path: inset(0 0 0 -100vmax); }
+    .flush--4 > .flaeche:nth-child(even) { clip-path: inset(0 -100vmax 0 0); }
+  }
+  @media (max-width: 760px) {
+    .flush, .flush--4 { grid-template-columns: 1fr; }
+    .flush > .flaeche:nth-child(n) { clip-path: inset(0 -100vmax); }
+  }
   .flaeche h3 { color: #fff; font-size: 1.25rem; line-height: 1.25; }
   .flaeche p { font-size: 0.95rem; line-height: 1.65; max-width: 52ch; }
   .flaeche__icon { display: block; height: 3rem; line-height: 0; color: var(--color-primary-on-dark); margin-bottom: var(--space-2); }
-  .flaeche__links { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); margin-top: var(--space-2) !important; }
-  .flaeche__links :global(a) { color: var(--color-primary-on-dark); font-size: 0.9rem; }
-  .flaeche__links :global(a):hover { color: #fff; }
-  /* Kante des ersten Feldes fluchtet mit dem Container, des letzten ebenfalls */
-  @media (min-width: 1001px) {
-    .flush--2 > .flaeche:first-child { padding-left: var(--rand); }
-    .flush--2 > .flaeche:last-child { padding-right: var(--rand); }
-    .flush--4 > .flaeche:first-child { padding-left: var(--rand); }
-    .flush--4 > .flaeche:last-child { padding-right: var(--rand); }
-  }
+  .flaeche__links { list-style: none; padding: 0; margin: var(--space-2) 0 0; display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5, 1.25rem); }
+  .flaeche__links :global(a) { color: var(--color-primary-on-dark); font-size: 0.9rem; text-decoration-color: rgb(201 173 120 / 0.5); }
+  .flaeche__links :global(a):hover { color: #fff; text-decoration-color: #fff; }
   .fest { margin-top: var(--space-8); max-width: 60ch; display: grid; gap: var(--space-4); justify-items: start; }
 
   /* Foto mit Gold-Duoton und versetztem Rahmen */
@@ -277,8 +281,9 @@ const orte = [
 
   .minis { list-style: none; padding: 0; margin: var(--space-6) 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
   @media (max-width: 520px) { .minis { grid-template-columns: 1fr; } .rahmen { margin-right: 10px; } .rahmen::before { transform: translate(10px, 10px); } }
-  .minis a { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-4); background: var(--color-petrol); color: #fff; text-decoration: none; font-size: 0.95rem; transition: background 0.25s, color 0.25s; }
-  .minis a :global(.icon) { color: var(--color-primary-on-dark); transition: color 0.25s; }
+  .minis a { display: flex; align-items: center; gap: var(--space-3); min-height: 3.5rem; padding: var(--space-3) var(--space-4); background: var(--color-petrol); color: #fff; text-decoration: none; font-size: 0.95rem; }
+  .minis a :global(.icon) { flex: none; color: var(--color-primary-on-dark); transition: color var(--duration-base) var(--ease-out-soft); }
+  .minis a :global(.minis__pfeil) { margin-left: auto; }
   .minis a:hover { background: var(--color-primary); color: var(--color-petrol); }
   .minis a:hover :global(.icon) { color: var(--color-petrol); }
 

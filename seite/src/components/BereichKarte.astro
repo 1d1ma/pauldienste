@@ -87,6 +87,6 @@ const Titel = ueberschrift;
     font-weight: var(--weight-bold); font-size: 0.85rem; letter-spacing: 0.02em;
     color: var(--color-accent-text); text-decoration: none;
   }
-  .karte__mehr :global(.icon) { transition: transform 0.25s var(--ease-out-soft, ease-out); }
-  .karte:hover .karte__mehr :global(.icon) { transform: translateX(4px); }
+  .karte__mehr :global(.icon) { transition: transform var(--duration-base) var(--ease-out-soft); }
+  @media (hover: hover) { .karte:hover .karte__mehr :global(.icon) { transform: translateX(var(--motion-nudge)); } }
 </style>

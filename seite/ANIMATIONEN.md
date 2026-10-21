@@ -24,6 +24,17 @@ Ideen: Kacheln fahren gestaffelt ein, goldener Rahmen zeichnet sich, Dielen schi
 7. Mobil (375 px) gleichwertig, Touch hat kein Hover. Kein horizontales Scrollen.
 8. Hinweise aus der Skill beachten: kein `overflow: hidden` bei Scroll-Timelines (`overflow: clip`), `animation`-Kurzschreibweise nicht mit `var()` (Longhands), Scroll-Zielen gegen den gebauten Stand prüfen (`npm run build`, dann `dist/` ausliefern).
 
+## Hover-Regeln (seitenweit, seit 21.10.2026)
+Stehen in `src/styles/motion.css`. Jedes klickbare Element gehört zu genau einer Art, keine eigenen Dauern oder Distanzen:
+1. **Textlink**: Farbe wechselt, Unterstrich bleibt, keine Bewegung (global für `a`).
+2. **Button** (`.btn`): Farbe wechselt, hebt sich 2 px (`--motion-lift`), eingebaut in `.btn`.
+3. **Kachel** (`.hover-kachel` auf dem Link, ganze Fläche klickbar): Icon-Feld oder Hintergrund wird Gold, hebt sich 4 px (`--motion-lift-karte`). Farben legt die Komponente fest.
+4. **Pfeil** (`.hover-pfeil`): rückt 4 px nach rechts (`--motion-nudge`), wenn Link oder Karte gehovert wird.
+
+Dauer immer `--duration-base`, Kurve `--ease-out-soft`, Bewegung nur bei `(hover: hover)`. Die Grafik-Animationen der Bereichskarten (`gravur/*`) sind eigene Effekte und fallen nicht darunter.
+
+Falle: `global.css` hat `li + li { margin-top }`. In Rastern aus `<li>` immer `margin: 0` setzen, sonst sitzt jedes Element ab dem zweiten versetzt.
+
 ## Wunschliste (Reihenfolge nach Wirkung)
 1. **Hero**: Einstieg mit Nagel-Motiv und Titel (Wortweise oder Zeilen-Reveal, kurz). Die zwei Bereichs-Flächen (hell/dunkel) trennen sich beim Laden mit einer gezeichneten Linie oder fahren versetzt ein. Hover auf den Flächen: ruhiger Glanzdurchlauf.
 2. **Scroll-Übergang hell zu dunkel**: Der Wechsel von Gebäudereinigung (hell) zu Handwerk (dunkel) soll ein Moment sein (z. B. Fläche, die sich beim Scrollen zuzieht).
