@@ -165,18 +165,6 @@ for (let x = 812; x < 1530; x += 9 + rb() * 16) {
   baeume.push(`M${n(x - 1)} ${n(cy)}h2V${B}h-2Z`);
 }
 
-/* --- Loewenburg am Hang neben dem Herkules --- */
-const lx = 470, lb = ebenen[1].kamm(470) + 6;
-/** Zinnenkranz als relative Pfadschritte nach rechts. */
-const zinnen = (w: number) => 'h2v-2.5h2v2.5'.repeat(Math.floor(w / 4));
-const loewenburg = [
-  `M${lx - 26} ${lb}V${lb - 18}${zinnen(52)}V${lb}Z`,
-  `M${lx + 6} ${lb}V${lb - 40}h12V${lb}Z`,
-  `M${lx + 4} ${lb - 40}h16l-8 -12Z`,
-  `M${lx - 30} ${lb}V${lb - 28}h9V${lb}Z`,
-  `M${lx - 31} ${lb - 28}h11v-3h-2v1.5h-2v-1.5h-3v1.5h-2v-1.5h-2Z`,
-].join('');
-
 /* Stadt groesser und naeher: um den Fusspunkt skalieren, nach links ruecken */
 const stadtTransform = `translate(540 ${B}) scale(1.45) translate(-820 ${-B})`;
 
@@ -237,7 +225,6 @@ for (let x = 520; x < W; ) {
     <path class="panorama__schnitt" d={herk.slice(1).join('')} stroke-width="1" />
     <path class="panorama__gold" d={figur} />
     <circle class="panorama__gold" cx={herkulesX} cy={sy - 26} r="2" />
-    <path class="panorama__gold" d={loewenburg} />
     <path class="panorama__gold" d={schlossFlaeche} />
     <path class="panorama__schnitt" d={schlossLinien.slice(1).join('')} stroke-width="0.9" />
   </g>
