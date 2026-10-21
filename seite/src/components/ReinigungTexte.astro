@@ -14,6 +14,8 @@ import ReviewsStatic from './ReviewsStatic.astro';
 import Icon from './Icon.astro';
 import { Image } from 'astro:assets';
 import foto from '../assets/images/fensterputzer-kassel1.jpg';
+import fotoPrivat from '../assets/images/window-3065345_1920.jpg';
+import fotoGewerbe from '../assets/images/modern-office-1044807_1920.jpg';
 import { bewertungen, site } from '../data/site';
 
 const faq = [
@@ -96,40 +98,59 @@ const orte = [
   </div>
 </Section>
 
-<section class="bahn bahn--alt">
-  <div class="container">
-  <h2>Gebäudereinigung für Privat und Gewerbe</h2>
-  <div class="flush flush--2">
-    <article class="flaeche">
-      <span class="flaeche__icon"><Icon name="broom" size={48} /></span>
-      <h3>Reinigungsservice für Privathaushalte</h3>
-      <p>
-        Wohnung, Haus oder Wintergarten: Wir reinigen einmalig oder in festen Abständen. Dazu gehören saubere
-        Fenster samt Rahmen und Fensterbänken, die Reinigung von Wintergarten und Glasdach und die gründliche
-        Grundreinigung vor dem Einzug, nach dem Auszug oder zum Frühjahrsputz.
-      </p>
-      <ul class="flaeche__links">
-        <li><InternalLink to="/grundreinigung-kassel/">Grundreinigung</InternalLink></li>
-        <li><InternalLink to="/wintergartenreinigung-kassel/">Wintergartenreinigung</InternalLink></li>
-      </ul>
-    </article>
-    <article class="flaeche flaeche--zwei">
-      <span class="flaeche__icon"><Icon name="building-office" size={48} /></span>
-      <h3>Reinigungsunternehmen für Gewerbe und Hausverwaltungen</h3>
-      <p>
-        Büros, Arztpraxen, Geschäfte und Treppenhäuser brauchen einen festen Rhythmus und Termine, die den Betrieb
-        nicht stören. Wir reinigen auf Wunsch früh, abends oder am Wochenende. Große Bodenflächen ergänzen wir mit
-        einem Reinigungsroboter, nach Umbauten übernehmen wir die Endreinigung bis zur Übergabe.
-      </p>
-      <ul class="flaeche__links">
-        <li><InternalLink to="/bueroreinigung-kassel/">Büroreinigung</InternalLink></li>
-        <li><InternalLink to="/reinigungsroboter-gewerbe/">Reinigungsroboter</InternalLink></li>
-        <li><InternalLink to="/bauendreinigung-kassel/">Bauendreinigung</InternalLink></li>
-      </ul>
-    </article>
+<section class="mosaik" aria-label="Gebäudereinigung für Privat und Gewerbe">
+  <div class="mosaik__bild">
+    <Image src={fotoPrivat} alt="Heller Wohnraum mit großer Fensterfront" widths={[600, 960, 1400]} sizes="(max-width: 760px) 100vw, 50vw" loading="lazy" />
   </div>
+  <div class="mosaik__text">
+    <p class="mosaik__kicker">Gebäudereinigung für Privat</p>
+    <h2>Reinigungsservice für Privathaushalte</h2>
+    <p>
+      Wohnung, Haus oder Wintergarten: Wir reinigen einmalig oder in festen Abständen. Dazu gehören saubere Fenster
+      samt Rahmen und Fensterbänken, die Reinigung von Wintergarten und Glasdach und die gründliche Grundreinigung vor
+      dem Einzug, nach dem Auszug oder zum Frühjahrsputz.
+    </p>
+    <ul class="mosaik__links">
+      <li><a href={internalLink('/grundreinigung-kassel/').href}>Grundreinigung<Icon name="arrow-right" size={16} class="hover-pfeil" /></a></li>
+      <li><a href={internalLink('/wintergartenreinigung-kassel/').href}>Wintergartenreinigung<Icon name="arrow-right" size={16} class="hover-pfeil" /></a></li>
+    </ul>
+  </div>
+  <div class="mosaik__text mosaik__text--zwei">
+    <p class="mosaik__kicker">Gebäudereinigung für Gewerbe</p>
+    <h2>Reinigungsunternehmen für Gewerbe und Hausverwaltungen</h2>
+    <p>
+      Büros, Arztpraxen, Geschäfte und Treppenhäuser brauchen einen festen Rhythmus und Termine, die den Betrieb nicht
+      stören. Wir reinigen auf Wunsch früh, abends oder am Wochenende. Große Bodenflächen ergänzen wir mit einem
+      Reinigungsroboter, nach Umbauten übernehmen wir die Endreinigung bis zur Übergabe.
+    </p>
+    <ul class="mosaik__links">
+      <li><a href={internalLink('/bueroreinigung-kassel/').href}>Büroreinigung<Icon name="arrow-right" size={16} class="hover-pfeil" /></a></li>
+      <li><a href={internalLink('/reinigungsroboter-gewerbe/').href}>Reinigungsroboter<Icon name="arrow-right" size={16} class="hover-pfeil" /></a></li>
+      <li><a href={internalLink('/bauendreinigung-kassel/').href}>Bauendreinigung<Icon name="arrow-right" size={16} class="hover-pfeil" /></a></li>
+    </ul>
+  </div>
+  <div class="mosaik__bild mosaik__bild--zwei">
+    <Image src={fotoGewerbe} alt="Heller Büroflur mit Glasgeländer und Holzboden" widths={[600, 960, 1400]} sizes="(max-width: 760px) 100vw, 50vw" loading="lazy" />
   </div>
 </section>
+
+<Section title="So arbeiten wir als Reinigungsunternehmen" variant="petrol-dark" space="default">
+  <ol class="schritte">
+    <li>
+      <strong>Kostenlose Besichtigung</strong>
+      <span>Wir sehen uns das Objekt an, klären Umfang, Zugang und Wünsche und beantworten Ihre Fragen.</span>
+    </li>
+    <li>
+      <strong>Festpreis-Angebot</strong>
+      <span>Sie erhalten ein verbindliches Angebot. Was darin steht, gilt, ohne Überraschung auf der Rechnung.</span>
+    </li>
+    <li>
+      <strong>Reinigung nach Plan</strong>
+      <span>Einmalig oder in festen Intervallen, zu Zeiten, die zu Ihnen passen. Sie haben immer denselben Ansprechpartner.</span>
+    </li>
+  </ol>
+  <div class="cta"><CtaGruppe /></div>
+</Section>
 
 <Section title="Putzfirma oder Gebäudereiniger: Was wir für Sie reinigen" space="default">
   <div class="split split--foto">
@@ -160,24 +181,6 @@ const orte = [
   </div>
 </Section>
 
-<Section title="So arbeiten wir als Reinigungsunternehmen" variant="petrol-dark" space="default">
-  <ol class="schritte">
-    <li>
-      <strong>Kostenlose Besichtigung</strong>
-      <span>Wir sehen uns das Objekt an, klären Umfang, Zugang und Wünsche und beantworten Ihre Fragen.</span>
-    </li>
-    <li>
-      <strong>Festpreis-Angebot</strong>
-      <span>Sie erhalten ein verbindliches Angebot. Was darin steht, gilt, ohne Überraschung auf der Rechnung.</span>
-    </li>
-    <li>
-      <strong>Reinigung nach Plan</strong>
-      <span>Einmalig oder in festen Intervallen, zu Zeiten, die zu Ihnen passen. Sie haben immer denselben Ansprechpartner.</span>
-    </li>
-  </ol>
-  <div class="cta"><CtaGruppe /></div>
-</Section>
-
 {
   bewertungen.echt && (
     <section class="bewertungen" id="bewertungen">
@@ -186,25 +189,26 @@ const orte = [
   )
 }
 
-<section class="bahn bahn--alt bahn--kosten">
-  <div class="container">
-    <h2>Was kostet eine Reinigungsfirma in Kassel?</h2>
-    <p class="bahn__lead">Eine pauschale Antwort gibt es nicht, weil jedes Objekt anders ist. Vier Dinge bestimmen den Preis:</p>
-  <ul class="flush flush--4">
-    {faktoren.map((f, i) => (
-      <li class={`flaeche flaeche--${i % 2 ? 'zwei' : 'eins'}`}>
-        <span class="flaeche__icon"><Icon name={f.icon} size={40} /></span>
+<section class="mosaik mosaik--kosten" aria-labelledby="kosten-titel">
+  <div class="mosaik__text">
+    <p class="mosaik__kicker">Kosten</p>
+    <h2 id="kosten-titel">Was kostet eine Reinigungsfirma in Kassel?</h2>
+    <p>
+      Eine pauschale Antwort gibt es nicht, weil jedes Objekt anders ist. Deshalb schätzen wir nicht am Telefon,
+      sondern besichtigen kostenlos und nennen Ihnen danach einen Festpreis. So können Sie Angebote von
+      Reinigungsunternehmen in Kassel fair vergleichen.
+    </p>
+    <a class="btn btn--gold" href={site.angebotUrl}>{site.ctaLabel}</a>
+  </div>
+  <ul class="faktoren" aria-label="Wovon der Preis abhängt">
+    {faktoren.map((f) => (
+      <li>
+        <span class="faktoren__icon"><Icon name={f.icon} size={36} /></span>
         <h3>{f.titel}</h3>
         <p>{f.text}</p>
       </li>
     ))}
   </ul>
-    <p class="fest">
-      Deshalb schätzen wir nicht am Telefon, sondern besichtigen kostenlos und nennen Ihnen danach einen Festpreis.
-      So können Sie Angebote von Reinigungsunternehmen in Kassel fair vergleichen.
-      <a class="btn btn--gold" href={site.angebotUrl}>{site.ctaLabel}</a>
-    </p>
-  </div>
 </section>
 
 <Section title="Häufige Fragen zur Gebäudereinigung in Kassel" space="default">
@@ -240,37 +244,45 @@ const orte = [
   .fakten small { font-size: 0.8rem; font-weight: var(--weight-normal); color: var(--color-on-dark-soft); margin-left: 0.4rem; }
 
   /* Globale Regel "li + li { margin-top }" schiebt Listenelemente in Rastern nach unten */
-  .flush > li, .flaeche__links li, .minis li, .schritte li, .orte li { margin: 0; }
+  .mosaik__links li, .faktoren li, .minis li, .schritte li, .orte li { margin: 0; }
 
-  /* Buendige Flaechen Ecke an Ecke. Das Raster sitzt im Container, damit alle
-     Felder gleich breit sind; die Farbe der Randfelder laeuft per Schatten bis
-     zum Bildschirmrand, clip-path gibt nur die Aussenseite frei. */
-  .bahn { padding-top: clamp(3rem, 6vw, 5rem); }
-  .bahn--alt { background: var(--color-bg-alt); }
-  .bahn--kosten { padding-bottom: clamp(3rem, 6vw, 5rem); }
-  .bahn h2 { margin-bottom: var(--space-4); }
-  .bahn__lead { max-width: 60ch; }
-  .flush { list-style: none; padding: 0; margin: var(--space-8) 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; }
-  .flush--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .flaeche { --f: var(--color-petrol); background: var(--f); box-shadow: 0 0 0 100vmax var(--f); clip-path: inset(0); color: var(--color-on-dark-soft); padding: clamp(2rem, 4vw, 3.5rem) clamp(1.5rem, 3vw, 2.5rem); display: grid; gap: var(--space-3); align-content: start; }
-  .flaeche--zwei { --f: #26292D; }
-  .flush--2 > .flaeche:nth-child(odd), .flush--4 > .flaeche:first-child { clip-path: inset(0 0 0 -100vmax); }
-  .flush--2 > .flaeche:nth-child(even), .flush--4 > .flaeche:last-child { clip-path: inset(0 -100vmax 0 0); }
-  @media (max-width: 1000px) {
-    .flush--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .flush--4 > .flaeche:nth-child(odd) { clip-path: inset(0 0 0 -100vmax); }
-    .flush--4 > .flaeche:nth-child(even) { clip-path: inset(0 -100vmax 0 0); }
+  /* Mosaik wie Boden/Farben in stilvarianten.html: zwei gleiche Spalten ueber
+     die volle Breite, Zellen Ecke an Ecke, jede Zelle EINE Farbe oder EIN Bild,
+     die Ueberschrift steht in der Zelle. Reihen wechseln ueber Kreuz. */
+  .mosaik { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mosaik__bild { position: relative; min-height: clamp(20rem, 34vw, 30rem); background: var(--color-petrol); overflow: hidden; }
+  .mosaik__bild :global(img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.05) brightness(1.1); }
+  .mosaik__bild::after { content: ''; position: absolute; inset: 0; background: #C9AD78; mix-blend-mode: multiply; opacity: 0.9; pointer-events: none; }
+  .mosaik__text { background: var(--color-bg-alt); display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: clamp(2rem, 5vw, 4.5rem); }
+  .mosaik__text--zwei { background: #EBEAE6; }
+  .mosaik__kicker { font-size: 0.8rem; font-weight: var(--weight-medium); letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-accent-text); margin-bottom: var(--space-3); }
+  .mosaik__text h2 { font-size: clamp(1.5rem, 1rem + 1.6vw, 2.2rem); line-height: 1.15; max-width: 22ch; margin-bottom: var(--space-4); }
+  .mosaik__text > p:not(.mosaik__kicker) { max-width: 46ch; color: var(--color-text); }
+  .mosaik__text .btn { margin-top: var(--space-6); }
+  .mosaik__links { list-style: none; padding: 0; margin: var(--space-6) 0 0; display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-6); }
+  .mosaik__links a { display: inline-flex; align-items: center; gap: var(--space-2); font-weight: var(--weight-bold); font-size: 0.9rem; color: var(--color-accent-text); text-decoration: none; }
+  .mosaik__links a:hover { color: var(--color-heading); }
+
+  /* Kosten: Text | vier Faktoren als Schachbrett, ebenfalls Ecke an Ecke */
+  .faktoren { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .faktoren li { background: var(--color-petrol); color: var(--color-on-dark-soft); padding: clamp(1.5rem, 3vw, 2.5rem); display: flex; flex-direction: column; justify-content: center; gap: var(--space-2); min-height: clamp(12rem, 17vw, 15rem); }
+  .faktoren li:nth-child(2), .faktoren li:nth-child(3) { background: #26292D; }
+  .faktoren__icon { display: block; line-height: 0; color: var(--color-primary-on-dark); margin-bottom: var(--space-2); }
+  .faktoren h3 { color: #fff; font-size: 1.15rem; }
+  .faktoren p { font-size: 0.92rem; line-height: 1.55; }
+
+  /* Text in der linken Spalte fluchtet mit der Containerkante der uebrigen Sektionen */
+  @media (min-width: 761px) {
+    .mosaik > .mosaik__text:nth-child(odd) { padding-left: max(clamp(2rem, 5vw, 4.5rem), calc((100vw - var(--container-max)) / 2 + var(--container-padding))); }
   }
   @media (max-width: 760px) {
-    .flush, .flush--4 { grid-template-columns: 1fr; }
-    .flush > .flaeche:nth-child(n) { clip-path: inset(0 -100vmax); }
+    .mosaik { grid-template-columns: 1fr; }
+    /* auf dem Handy folgt jedem Bild sein Text */
+    .mosaik__bild--zwei { order: 3; }
+    .mosaik__text--zwei { order: 4; }
+    .mosaik__bild { min-height: 15rem; }
   }
-  .flaeche h3 { color: #fff; font-size: 1.25rem; line-height: 1.25; }
-  .flaeche p { font-size: 0.95rem; line-height: 1.65; max-width: 52ch; }
-  .flaeche__icon { display: block; height: 3rem; line-height: 0; color: var(--color-primary-on-dark); margin-bottom: var(--space-2); }
-  .flaeche__links { list-style: none; padding: 0; margin: var(--space-2) 0 0; display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6); }
-  .flaeche__links :global(a) { color: var(--color-primary-on-dark); font-size: 0.9rem; text-decoration-color: rgb(201 173 120 / 0.5); }
-  .flaeche__links :global(a):hover { color: #fff; text-decoration-color: #fff; }
+  @media (max-width: 420px) { .faktoren { grid-template-columns: 1fr; } .faktoren li { min-height: 0; } }
   .fest { margin-top: var(--space-8); max-width: 60ch; display: grid; gap: var(--space-4); justify-items: start; }
 
   /* Foto mit Gold-Duoton und versetztem Rahmen */
